@@ -405,6 +405,112 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .locked-grid{grid-template-columns:repeat(3,1fr)}
 }
 
+
+
+/* ============ PHOTOGRAPHER PUBLIC PROFILE ============ */
+.profile-hero{background:linear-gradient(180deg,#0a1628 0%,#0a2540 100%);
+  padding:100px 48px 60px;position:relative;overflow:hidden}
+.profile-hero::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 30% 50%,rgba(6,182,212,0.08) 0%,transparent 70%)}
+.profile-hero-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:40px;
+  position:relative;z-index:1;flex-wrap:wrap}
+.profile-big-avatar{width:120px;height:120px;border-radius:50%;background:var(--mid);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:48px;
+  border:3px solid rgba(6,182,212,0.4);flex-shrink:0;box-shadow:0 0 40px rgba(6,182,212,0.15)}
+.profile-big-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-hero-info{flex:1;min-width:200px}
+.profile-hero-name{font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+.profile-hero-bio{font-size:15px;color:var(--gray);line-height:1.6;margin-bottom:16px;max-width:520px}
+.profile-hero-locs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.profile-star-row{display:flex;align-items:center;gap:10px}
+.profile-stars{color:#fbbf24;font-size:20px;letter-spacing:2px}
+.profile-rating-val{font-size:18px;font-weight:800;color:var(--white)}
+.profile-rating-count{font-size:13px;color:var(--gray)}
+.profile-hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:16px;
+  padding:24px;min-width:280px}
+.ph-stat{text-align:center}
+.ph-stat-val{font-size:28px;font-weight:800;color:var(--cyan);letter-spacing:-1px}
+.ph-stat-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+
+/* PROFILE SESSIONS */
+.profile-body{max-width:1100px;margin:0 auto;padding:48px}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:var(--gray);
+  font-size:13px;font-weight:600;cursor:pointer;margin-bottom:32px;
+  background:none;border:none;font-family:inherit;transition:color .2s;padding:0}
+.back-btn:hover{color:var(--white)}
+
+/* STAR RATING WIDGET */
+.rate-wrap{display:flex;gap:6px;margin-top:8px}
+.rate-star{font-size:24px;cursor:pointer;transition:transform .15s;color:#94a3b8;line-height:1}
+.rate-star:hover,.rate-star.active{color:#fbbf24;transform:scale(1.15)}
+.already-rated{font-size:13px;color:#fbbf24;margin-top:6px}
+
+@media(max-width:768px){
+  .profile-hero{padding:80px 20px 40px}
+  .profile-hero-stats{grid-template-columns:repeat(3,1fr);gap:10px;padding:16px}
+  .ph-stat-val{font-size:22px}
+  .profile-body{padding:24px 16px}
+}
+
+/* ============ SURFER PORTAL ============ */
+.surfer-dash{min-height:100vh;background:var(--ocean);padding-top:52px}
+.surfer-header{background:var(--deep);border-bottom:1px solid var(--border);padding:28px 48px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.surfer-header-left{display:flex;align-items:center;gap:16px}
+.surfer-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid var(--border)}
+.surfer-header-name{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.surfer-header-status{font-size:12px;color:var(--cyan);font-weight:500;margin-top:2px}
+.surfer-body{max-width:1100px;margin:0 auto;padding:48px}
+.surfer-tabs{display:flex;gap:4px;margin-bottom:32px;background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content}
+.surfer-tab{padding:9px 22px;border-radius:9px;font-size:14px;font-weight:600;
+  cursor:pointer;border:none;background:transparent;color:var(--gray);transition:all .2s;font-family:inherit}
+.surfer-tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.surfer-tab:hover:not(.active){color:white;background:rgba(255,255,255,0.06)}
+
+/* PURCHASED SESSIONS */
+.purchased-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.purchased-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s}
+.purchased-card:hover{transform:translateY(-3px);border-color:rgba(6,182,212,0.3)}
+.purchased-card-img{height:180px;background:var(--deep);position:relative;overflow:hidden}
+.purchased-card-img img{width:100%;height:100%;object-fit:cover}
+.purchased-card-img .unlocked-badge{position:absolute;top:10px;right:10px;
+  background:rgba(34,197,94,0.9);color:white;font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:100px}
+.purchased-card-body{padding:16px 18px}
+.purchased-card-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.purchased-card-meta{font-size:12px;color:var(--gray);margin-bottom:14px}
+.download-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.download-btn:hover{opacity:.9}
+
+/* FAVOURITES */
+.fav-btn{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.5);
+  border:none;color:white;width:32px;height:32px;border-radius:50%;font-size:15px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+.fav-btn:hover{background:rgba(239,68,68,0.7);transform:scale(1.1)}
+.fav-btn.active{background:rgba(239,68,68,0.8);color:white}
+
+/* PURCHASE HISTORY TABLE */
+.history-table{width:100%;border-collapse:collapse}
+.history-table th{text-align:left;font-size:11px;font-weight:600;color:var(--gray);
+  text-transform:uppercase;letter-spacing:.06em;padding:10px 16px;
+  border-bottom:1px solid var(--border)}
+.history-table td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:13px;vertical-align:middle}
+.history-table tr:hover td{background:rgba(255,255,255,0.02)}
+.history-table .amount{color:#4ade80;font-weight:700}
+
+@media(max-width:768px){
+  .surfer-body{padding:24px 16px}
+  .surfer-header{padding:20px 16px}
+  .surfer-tabs{width:100%}
+  .surfer-tab{flex:1;text-align:center;padding:9px 12px;font-size:13px}
+}
+
 /* ============ PHOTOGRAPHER PAGES ============ */
 .pg-hero{min-height:60vh;background:linear-gradient(180deg,#0a1628 0%,#0a2540 100%);
   display:flex;align-items:center;justify-content:center;text-align:center;
@@ -555,10 +661,12 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <!-- DROPDOWN MENU -->
 <div class="dropdown-menu" id="dropdown-menu">
   <button class="dropdown-item" onclick="navTo('public')"><span class="item-icon">🌊</span>Gallery</button>
-  <button class="dropdown-item" onclick="navTo('photographers')"><span class="item-icon">📸</span>Photographers</button>
+  <button class="dropdown-item" onclick="navTo('photographers')"><span class="item-icon">📸</span>Our Photographers</button>
   <button class="dropdown-item" onclick="navTo('apply')"><span class="item-icon">🤙</span>Join as Photographer</button>
   <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')"><span class="item-icon">📊</span>My Dashboard</button>
   <div class="dropdown-divider"></div>
+  <button class="dropdown-item" id="surfer-login-menu-btn" onclick="navTo('surfer-auth')"><span class="item-icon">🏄</span>Surfer Login / Sign Up</button>
+  <button class="dropdown-item" id="surfer-dash-menu-btn" style="display:none" onclick="navTo('surfer-dash')"><span class="item-icon">🏄</span>My Sessions</button>
   <button class="dropdown-item" onclick="showPhotogLoginMenu()" id="photog-login-btn"><span class="item-icon">🔑</span>Photographer Login</button>
   <button class="dropdown-item" onclick="navTo('admin')"><span class="item-icon">⚙️</span>Admin</button>
 </div>
@@ -584,8 +692,8 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat"><div class="stat-num" id="stat-sessions">—</div><div class="stat-label">Sessions Available</div></div>
-    <div class="stat"><div class="stat-num">4K</div><div class="stat-label">Hi-Res Downloads</div></div>
+    <div class="stat"><div class="stat-num" id="stat-sessions">—</div><div class="stat-label">Sessions Uploaded</div></div>
+    <div class="stat"><div class="stat-num">HD+</div><div class="stat-label">Hi-Res Downloads</div></div>
     <div class="stat"><div class="stat-num">48hr</div><div class="stat-label">Avg. Turnaround</div></div>
     <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Satisfaction</div></div>
   </div>
@@ -633,7 +741,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <div style="text-align:center;margin-bottom:64px">
         <div class="sec-tag" style="margin-bottom:14px">Our Mission</div>
         <p style="font-size:18px;font-weight:400;line-height:1.7;color:var(--gray);max-width:580px;margin:0 auto">
-          Connecting surfers with the photographers who capture their waves — one session at a time. Empowering anyone with a camera and a love for the ocean to turn waves into income.
+          Connecting surfers with the photographers who capture their waves — one session at a time. <span style="color:var(--white)">Empowering anyone to turn waves into income.</span>
         </p>
       </div>
 
@@ -872,6 +980,104 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   </div>
 </div>
 
+
+
+
+<!-- ========== PHOTOGRAPHER PUBLIC PROFILE PAGE ========== -->
+<div id="page-photographer-profile" class="page">
+  <div id="photographer-profile-content">
+    <div class="loading-state" style="padding-top:120px"><div class="loading-spinner"></div><p>Loading profile...</p></div>
+  </div>
+</div>
+
+<!-- ========== SURFER LOGIN/SIGNUP PAGE ========== -->
+<div id="page-surfer-auth" class="page">
+  <div class="login-wrap" style="min-height:100vh;padding-top:80px">
+    <div class="login-card" style="max-width:420px">
+      <div style="font-size:40px;margin-bottom:16px">🏄</div>
+      
+      <!-- TAB SWITCHER -->
+      <div style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px">
+        <button id="auth-login-tab" onclick="switchAuthTab('login')" 
+          style="flex:1;padding:8px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;transition:all .2s">
+          Sign In
+        </button>
+        <button id="auth-signup-tab" onclick="switchAuthTab('signup')"
+          style="flex:1;padding:8px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;background:transparent;color:var(--gray);transition:all .2s">
+          Create Account
+        </button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="surfer-login-form">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome back</h2>
+        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to access your sessions</p>
+        <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+        <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferLogin()"/>
+        <button class="login-btn" onclick="surferLogin()">Sign In</button>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div id="surfer-signup-form" style="display:none">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Create account</h2>
+        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Join WaveShots to save and download your sessions</p>
+        <input type="text" id="ss-name" class="login-input" placeholder="Full name" style="margin-bottom:10px"/>
+        <input type="email" id="ss-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+        <input type="password" id="ss-password" class="login-input" placeholder="Password (min 8 chars)" style="margin-bottom:10px"/>
+        <input type="password" id="ss-password2" class="login-input" placeholder="Confirm password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferSignup()"/>
+        <button class="login-btn" onclick="surferSignup()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SURFER DASHBOARD PAGE ========== -->
+<div id="page-surfer-dash" class="page">
+  <div class="surfer-dash">
+    <div class="surfer-header">
+      <div class="surfer-header-left">
+        <div class="surfer-avatar">🏄</div>
+        <div>
+          <div class="surfer-header-name" id="sd-name">—</div>
+          <div class="surfer-header-status">🌊 WaveShots Member</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="nav-btn" onclick="showPage('public')">Browse Sessions</button>
+        <button class="nav-btn ghost" onclick="surferLogout()">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="surfer-body">
+      <div class="surfer-tabs">
+        <button class="surfer-tab active" onclick="switchSurferTab('purchases')" id="tab-purchases">🔓 My Sessions</button>
+        <button class="surfer-tab" onclick="switchSurferTab('favourites')" id="tab-favourites">❤️ Favourites</button>
+        <button class="surfer-tab" onclick="switchSurferTab('history')" id="tab-history">📋 Purchase History</button>
+      </div>
+
+      <!-- PURCHASES TAB -->
+      <div id="surfer-tab-purchases">
+        <div id="sd-purchases-content">
+          <div class="loading-state"><div class="loading-spinner"></div><p>Loading your sessions...</p></div>
+        </div>
+      </div>
+
+      <!-- FAVOURITES TAB -->
+      <div id="surfer-tab-favourites" style="display:none">
+        <div id="sd-favourites-content">
+          <div class="loading-state"><div class="loading-spinner"></div><p>Loading favourites...</p></div>
+        </div>
+      </div>
+
+      <!-- HISTORY TAB -->
+      <div id="surfer-tab-history" style="display:none">
+        <div id="sd-history-content">
+          <div class="loading-state"><div class="loading-spinner"></div><p>Loading history...</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ========== APPLY PAGE ========== -->
 <div id="page-apply" class="page">
@@ -1224,6 +1430,7 @@ function showPage(name) {
   if (name === "public") loadPublicGallery();
   if (name === "photographers") loadPhotographersPage();
   if (name === "photog-dash") loadPhotogDash();
+  if (name === "surfer-dash") loadSurferDash();
   if (name === "admin") {
     const loggedIn = sessionStorage.getItem("ws_admin");
     document.getElementById("admin-login").style.display = loggedIn ? "none" : "flex";
@@ -1488,7 +1695,12 @@ async function loadPublicGallery() {
     });
 
     const stat = document.getElementById("stat-sessions");
-    if (stat) stat.textContent = publicSessions.length;
+    try {
+      const allSess = await sbFetch("sessions?select=id", { headers: { "Prefer": "" } });
+      if (stat) stat.textContent = allSess.length;
+    } catch(e) {
+      if (stat) stat.textContent = publicSessions.length;
+    }
 
     populateFilterDropdowns();
     applyFilters();
@@ -1590,6 +1802,7 @@ function renderPublicCards(sessions, filtered) {
           ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>`
           : `<div class="preview-placeholder">🏄</div>`}
         <div class="wm-overlay"><div class="wm-text">WaveShots</div></div>
+        <button class="fav-btn" id="fav-${s.id}" onclick="event.stopPropagation();toggleFavourite('${s.id}')" title="Save to favourites">♡</button>
         <div class="locked-strip">
           <div class="lock-thumbs">
             ${Array(Math.min(4,locked)).fill(0).map(()=>`<div class="lock-thumb">🔒</div>`).join("")}
@@ -2262,14 +2475,28 @@ async function loadAdminApplications() {
         </div>
         ${a.bio ? `<div class="app-bio">"${a.bio}"</div>` : ""}
         <div class="app-locs">${(a.locations || []).map(l => `<span class="photog-loc-tag">📍 ${l}</span>`).join("")}</div>
-        ${a.status === "pending" ? `
-        <div class="app-actions">
-          <button class="approve-btn" onclick="reviewApplication('${a.id}','approved','${a.full_name}')">✅ Approve</button>
-          <button class="reject-btn" onclick="reviewApplication('${a.id}','rejected','${a.full_name}')">✕ Reject</button>
-        </div>` : `
-        <div class="app-actions">
-          ${a.status === "approved" ? `<button class="reject-btn" onclick="reviewApplication('${a.id}','rejected','${a.full_name}')">Revoke Approval</button>` : `<button class="approve-btn" onclick="reviewApplication('${a.id}','approved','${a.full_name}')">Re-Approve</button>`}
-        </div>`}
+        <div class="app-actions" style="flex-wrap:wrap;gap:8px">
+          ${a.status === "pending" ? `
+            <button class="approve-btn" onclick="reviewApplication('${a.id}','approved','${a.full_name}')">✅ Approve</button>
+            <button class="reject-btn" onclick="reviewApplication('${a.id}','rejected','${a.full_name}')">✕ Reject</button>
+          ` : a.status === "approved" ? `
+            <button class="reject-btn" onclick="reviewApplication('${a.id}','rejected','${a.full_name}')">Revoke Approval</button>
+          ` : `
+            <button class="approve-btn" onclick="reviewApplication('${a.id}','approved','${a.full_name}')">Re-Approve</button>
+          `}
+          <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+            <label style="font-size:12px;color:var(--gray);font-weight:600;white-space:nowrap">WaveShots Fee:</label>
+            <div style="display:flex;align-items:center;gap:6px">
+              <input type="number" id="fee-${a.id}" value="${a.platform_fee || 20}" min="0" max="50" step="1"
+                style="width:64px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;
+                padding:6px 10px;color:white;font-size:13px;font-family:inherit;outline:none;text-align:center"/>
+              <span style="font-size:13px;color:var(--gray)">%</span>
+              <button class="action-btn" onclick="updatePhotographerFee('${a.id}','${a.full_name}')" 
+                style="padding:6px 12px;font-size:12px;white-space:nowrap">Save</button>
+            </div>
+            <span style="font-size:12px;color:#4ade80;font-weight:600">${100 - (a.platform_fee || 20)}% to photographer</span>
+          </div>
+        </div>
       </div>`).join("");
   } catch(e) {
     cont.innerHTML = `<p style="color:var(--gray);font-size:13px">Could not load applications.</p>`;
@@ -2283,6 +2510,20 @@ async function reviewApplication(id, status, name) {
       body: JSON.stringify({ status })
     });
     toast(`${name} ${status === "approved" ? "approved ✅" : "rejected"}`, status === "approved" ? "success" : "info");
+    loadAdminApplications();
+  } catch(e) { toast("Error: " + e.message, "error"); }
+}
+
+async function updatePhotographerFee(id, name) {
+  const feeInput = document.getElementById(`fee-${id}`);
+  const fee = parseFloat(feeInput.value);
+  if (isNaN(fee) || fee < 0 || fee > 50) { toast("Fee must be between 0% and 50%", "error"); return; }
+  try {
+    await sbFetch(`photographers?id=eq.${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ platform_fee: fee })
+    });
+    toast(`${name}'s fee updated to ${fee}% (they keep ${100-fee}%) ✅`, "success");
     loadAdminApplications();
   } catch(e) { toast("Error: " + e.message, "error"); }
 }
@@ -2308,13 +2549,14 @@ async function loadPhotographersPage() {
     }
 
     grid.innerHTML = `<div class="photographer-grid">${photographers.map(p => `
-      <div class="photographer-card">
+      <div class="photographer-card" onclick="openPhotographerProfile('${p.id}')">
         <div class="pc-avatar">${p.profile_photo_url ? `<img src="${p.profile_photo_url}" alt=""/>` : "📸"}</div>
         <div class="pc-name">${p.full_name}</div>
         <div class="pc-bio">${p.bio || ""}</div>
         <div class="pc-locs">${(p.locations || []).map(l => `<span class="photog-loc-tag">📍 ${l}</span>`).join("")}</div>
         <div class="pc-stats">
           <div class="pc-stat"><div class="pc-stat-val">${sessionCounts[p.id] || 0}</div><div class="pc-stat-label">Sessions</div></div>
+          <div class="pc-stat"><div class="pc-stat-val" style="font-size:16px">${renderStarRating(p.avg_rating || 0)}</div><div class="pc-stat-label">${p.avg_rating ? parseFloat(p.avg_rating).toFixed(1) + " rating" : "No ratings"}</div></div>
         </div>
       </div>`).join("")}</div>`;
   } catch(e) {
@@ -2322,6 +2564,425 @@ async function loadPhotographersPage() {
   }
 }
 
+
+
+// ════════════════════════════════════════════════════════════════
+// SURFER SYSTEM
+// ════════════════════════════════════════════════════════════════
+
+let currentSurfer = null;
+let surferFavourites = [];
+
+// ── AUTH TAB SWITCH ───────────────────────────────────────────────
+function switchAuthTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('surfer-login-form').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('surfer-signup-form').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('auth-login-tab').style.background = isLogin ? 'linear-gradient(135deg,var(--accent),var(--accent2))' : 'transparent';
+  document.getElementById('auth-login-tab').style.color = isLogin ? 'white' : 'var(--gray)';
+  document.getElementById('auth-signup-tab').style.background = isLogin ? 'transparent' : 'linear-gradient(135deg,var(--accent),var(--accent2))';
+  document.getElementById('auth-signup-tab').style.color = isLogin ? 'var(--gray)' : 'white';
+}
+
+// ── SIGN UP ───────────────────────────────────────────────────────
+async function surferSignup() {
+  const name = document.getElementById('ss-name').value.trim();
+  const email = document.getElementById('ss-email').value.trim();
+  const pw = document.getElementById('ss-password').value;
+  const pw2 = document.getElementById('ss-password2').value;
+
+  if (!name || !email || !pw) { toast('Please fill in all fields', 'error'); return; }
+  if (pw !== pw2) { toast("Passwords don't match", 'error'); return; }
+  if (pw.length < 8) { toast('Password must be at least 8 characters', 'error'); return; }
+
+  try {
+    const existing = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=id`, { headers: { 'Prefer': '' } });
+    if (existing.length) { toast('An account with this email already exists', 'error'); return; }
+
+    const [surfer] = await sbFetch('surfers', {
+      method: 'POST',
+      body: JSON.stringify({ full_name: name, email, password_hash: simpleHash(pw) })
+    });
+
+    currentSurfer = surfer;
+    sessionStorage.setItem('ws_surfer', JSON.stringify(surfer));
+    updateSurferNav();
+    toast(`Welcome to WaveShots, ${name}! 🤙`, 'success');
+    showPage('surfer-dash');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────
+async function surferLogin() {
+  const email = document.getElementById('sl-email').value.trim();
+  const pw = document.getElementById('sl-password').value;
+  if (!email || !pw) { toast('Please enter email and password', 'error'); return; }
+
+  try {
+    const results = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=*`, { headers: { 'Prefer': '' } });
+    if (!results.length) { toast('No account found with that email', 'error'); return; }
+    const surfer = results[0];
+    if (surfer.password_hash !== simpleHash(pw)) { toast('Incorrect password', 'error'); return; }
+
+    currentSurfer = surfer;
+    sessionStorage.setItem('ws_surfer', JSON.stringify(surfer));
+    updateSurferNav();
+    toast(`Welcome back, ${surfer.full_name}! 🤙`, 'success');
+    showPage('surfer-dash');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── LOGOUT ────────────────────────────────────────────────────────
+function surferLogout() {
+  currentSurfer = null;
+  surferFavourites = [];
+  sessionStorage.removeItem('ws_surfer');
+  updateSurferNav();
+  showPage('public');
+  toast('Signed out', 'info');
+}
+
+function restoreSurferSession() {
+  const stored = sessionStorage.getItem('ws_surfer');
+  if (stored) {
+    currentSurfer = JSON.parse(stored);
+    updateSurferNav();
+  }
+}
+
+function updateSurferNav() {
+  const loginBtn = document.getElementById('surfer-login-menu-btn');
+  const dashBtn = document.getElementById('surfer-dash-menu-btn');
+  if (currentSurfer) {
+    if (loginBtn) loginBtn.style.display = 'none';
+    if (dashBtn) dashBtn.style.display = 'flex';
+  } else {
+    if (loginBtn) loginBtn.style.display = 'flex';
+    if (dashBtn) dashBtn.style.display = 'none';
+  }
+}
+
+// ── SURFER DASHBOARD ──────────────────────────────────────────────
+async function loadSurferDash() {
+  if (!currentSurfer) { showPage('surfer-auth'); return; }
+  document.getElementById('sd-name').textContent = currentSurfer.full_name;
+  await loadSurferFavourites();
+  loadSurferPurchases();
+}
+
+function switchSurferTab(tab) {
+  ['purchases','favourites','history'].forEach(t => {
+    document.getElementById(`surfer-tab-${t}`).style.display = t === tab ? 'block' : 'none';
+    document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+  });
+  if (tab === 'purchases') loadSurferPurchases();
+  if (tab === 'favourites') renderSurferFavourites();
+  if (tab === 'history') loadSurferHistory();
+}
+
+// ── PURCHASES ─────────────────────────────────────────────────────
+async function loadSurferPurchases() {
+  const cont = document.getElementById('sd-purchases-content');
+  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading your sessions...</p></div>`;
+  try {
+    const purchases = await sbFetch(`purchases?surfer_id=eq.${currentSurfer.id}&select=*,sessions(*)&order=purchased_at.desc`, { headers: { 'Prefer': '' } });
+    if (!purchases.length) {
+      cont.innerHTML = `<div class="empty-state"><div class="empty-icon">🌊</div><h3>No sessions yet</h3><p>Once you purchase a session it will appear here for re-download anytime.</p><button class="btn-primary" onclick="showPage('public')" style="margin-top:20px;padding:12px 28px;font-size:14px">Browse Sessions</button></div>`;
+      return;
+    }
+    cont.innerHTML = `<div class="purchased-grid">${purchases.map(p => {
+      const s = p.sessions;
+      if (!s) return '';
+      return `<div class="purchased-card">
+        <div class="purchased-card-img">
+          ${s.preview_url ? `<img src="${s.preview_url}" alt="${s.surfer_name}"/>` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🏄</div>'}
+          <span class="unlocked-badge">✓ Unlocked</span>
+        </div>
+        <div class="purchased-card-body">
+          <div class="purchased-card-name">${s.surfer_name}</div>
+          <div class="purchased-card-meta">📍 ${s.spot} · ${s.session_date} · ${s.total_photos} photos</div>
+          <button class="download-btn" onclick="downloadSession('${s.id}','${s.surfer_name}')">⬇️ Download All Photos</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Error loading sessions</h3><p>${e.message}</p></div>`;
+  }
+}
+
+async function downloadSession(sessionId, name) {
+  toast(`Preparing download for ${name}...`, 'info');
+  try {
+    const photos = await sbFetch(`photos?session_id=eq.${sessionId}&select=*`, { headers: { 'Prefer': '' } });
+    if (!photos.length) { toast('No photos found', 'error'); return; }
+    // Open each photo in new tab for download
+    photos.forEach((photo, i) => {
+      setTimeout(() => {
+        const url = sbImgUrl(photo.storage_path);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${name}-${i+1}.jpg`;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }, i * 300);
+    });
+    toast(`Downloading ${photos.length} photos... 📸`, 'success');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── FAVOURITES ────────────────────────────────────────────────────
+async function loadSurferFavourites() {
+  if (!currentSurfer) return;
+  try {
+    const favs = await sbFetch(`favourites?surfer_id=eq.${currentSurfer.id}&select=session_id`, { headers: { 'Prefer': '' } });
+    surferFavourites = favs.map(f => f.session_id);
+    updateFavButtons();
+  } catch(e) { console.error(e); }
+}
+
+function updateFavButtons() {
+  publicSessions.forEach(s => {
+    const btn = document.getElementById(`fav-${s.id}`);
+    if (btn) {
+      const isFav = surferFavourites.includes(s.id);
+      btn.textContent = isFav ? '❤️' : '♡';
+      btn.classList.toggle('active', isFav);
+    }
+  });
+}
+
+async function toggleFavourite(sessionId) {
+  if (!currentSurfer) { toast('Sign in to save favourites 🤙', 'info'); showPage('surfer-auth'); return; }
+  const isFav = surferFavourites.includes(sessionId);
+  try {
+    if (isFav) {
+      await sbFetch(`favourites?surfer_id=eq.${currentSurfer.id}&session_id=eq.${sessionId}`, { method: 'DELETE', headers: { 'Prefer': '' } });
+      surferFavourites = surferFavourites.filter(id => id !== sessionId);
+      toast('Removed from favourites', 'info');
+    } else {
+      await sbFetch('favourites', { method: 'POST', body: JSON.stringify({ surfer_id: currentSurfer.id, session_id: sessionId }) });
+      surferFavourites.push(sessionId);
+      toast('Saved to favourites ❤️', 'success');
+    }
+    updateFavButtons();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function renderSurferFavourites() {
+  const cont = document.getElementById('sd-favourites-content');
+  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div>`;
+  if (!surferFavourites.length) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">❤️</div><h3>No favourites yet</h3><p>Tap the ♡ on any session card to save it here.</p><button class="btn-primary" onclick="showPage('public')" style="margin-top:20px;padding:12px 28px;font-size:14px">Browse Sessions</button></div>`;
+    return;
+  }
+  try {
+    const ids = surferFavourites.join(',');
+    const sessions = await sbFetch(`sessions?id=in.(${ids})&select=*`, { headers: { 'Prefer': '' } });
+    cont.innerHTML = `<div class="purchased-grid">${sessions.map(s => {
+      const locked = Math.max(0, s.total_photos - 1);
+      return `<div class="purchased-card" onclick="openModal('${s.id}')" style="cursor:pointer">
+        <div class="purchased-card-img">
+          ${s.preview_url ? `<img src="${s.preview_url}" alt="${s.surfer_name}"/>` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🏄</div>'}
+          <button class="fav-btn active" onclick="event.stopPropagation();toggleFavourite('${s.id}')" style="position:absolute;top:10px;left:10px">❤️</button>
+        </div>
+        <div class="purchased-card-body">
+          <div class="purchased-card-name">${s.surfer_name}</div>
+          <div class="purchased-card-meta">📍 ${s.spot} · ${s.session_date} · ${s.total_photos} photos</div>
+          <button class="download-btn" onclick="event.stopPropagation();openModal('${s.id}')">👁️ View Bundle — $${parseFloat(s.price).toFixed(2)}</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+// ── PURCHASE HISTORY ──────────────────────────────────────────────
+async function loadSurferHistory() {
+  const cont = document.getElementById('sd-history-content');
+  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div>`;
+  try {
+    const purchases = await sbFetch(`purchases?surfer_id=eq.${currentSurfer.id}&select=*,sessions(surfer_name,spot,session_date,price)&order=purchased_at.desc`, { headers: { 'Prefer': '' } });
+    if (!purchases.length) {
+      cont.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><h3>No purchases yet</h3><p>Your purchase history will appear here.</p></div>`;
+      return;
+    }
+    cont.innerHTML = `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+      <table class="history-table">
+        <thead><tr>
+          <th>Session</th><th>Location</th><th>Date</th><th>Amount</th><th>Purchased</th>
+        </tr></thead>
+        <tbody>${purchases.map(p => {
+          const s = p.sessions;
+          return `<tr>
+            <td style="font-weight:600">${s ? s.surfer_name : '—'}</td>
+            <td style="color:var(--gray)">${s ? s.spot : '—'}</td>
+            <td style="color:var(--gray)">${s ? s.session_date : '—'}</td>
+            <td class="amount">$${s ? parseFloat(s.price).toFixed(2) : '—'}</td>
+            <td style="color:var(--gray)">${new Date(p.purchased_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>`;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// PHOTOGRAPHER PUBLIC PROFILES
+// ════════════════════════════════════════════════════════════════
+
+let allPhotographers = [];
+
+function renderStarRating(rating) {
+  if (!rating) return "☆☆☆☆☆";
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5 ? 1 : 0;
+  const empty = 5 - full - half;
+  return "★".repeat(full) + (half ? "⭐" : "") + "☆".repeat(empty);
+}
+
+async function openPhotographerProfile(photographerId) {
+  showPage("photographer-profile");
+  const cont = document.getElementById("photographer-profile-content");
+  cont.innerHTML = `<div class="loading-state" style="padding-top:120px"><div class="loading-spinner"></div><p>Loading profile...</p></div>`;
+
+  try {
+    // Load photographer
+    const [p] = await sbFetch(`photographers?id=eq.${photographerId}&select=*`, { headers: { "Prefer": "" } });
+    if (!p) { cont.innerHTML = `<div class="empty-state"><h3>Photographer not found</h3></div>`; return; }
+
+    // Load their sessions
+    const sessions = await sbFetch(`sessions?photographer_id=eq.${photographerId}&is_published=eq.true&order=session_date.desc&select=*`, { headers: { "Prefer": "" } });
+
+    // Load ratings
+    const ratings = await sbFetch(`photographer_ratings?photographer_id=eq.${photographerId}&select=*`, { headers: { "Prefer": "" } }).catch(() => []);
+    const avgRating = ratings.length ? ratings.reduce((a,b) => a + b.rating, 0) / ratings.length : 0;
+    const totalSales = await sbFetch(`sessions?photographer_id=eq.${photographerId}&select=id`, { headers: { "Prefer": "" } }).catch(() => []);
+
+    // Has current surfer already rated?
+    const myRating = currentSurfer ? ratings.find(r => r.surfer_id === currentSurfer.id) : null;
+
+    cont.innerHTML = `
+      <button class="back-btn" onclick="showPage('photographers')" style="position:absolute;top:70px;left:48px;z-index:10">← Back to Photographers</button>
+
+      <!-- HERO -->
+      <div class="profile-hero">
+        <div class="profile-hero-inner">
+          <div class="profile-big-avatar">
+            ${p.profile_photo_url ? `<img src="${p.profile_photo_url}" alt="${p.full_name}"/>` : "📸"}
+          </div>
+          <div class="profile-hero-info">
+            <div class="profile-hero-name">${p.full_name}</div>
+            <div class="profile-hero-bio">${p.bio || "Surf photographer"}</div>
+            <div class="profile-hero-locs">
+              ${(p.locations || []).map(l => `<span class="photog-loc-tag">📍 ${l}</span>`).join("")}
+            </div>
+            <div class="profile-star-row">
+              <div class="profile-stars">${"★".repeat(Math.round(avgRating))}${"☆".repeat(5-Math.round(avgRating))}</div>
+              <div class="profile-rating-val">${avgRating ? avgRating.toFixed(1) : "—"}</div>
+              <div class="profile-rating-count">(${ratings.length} review${ratings.length !== 1 ? "s" : ""})</div>
+            </div>
+            ${currentSurfer ? `
+              <div style="margin-top:12px">
+                ${myRating 
+                  ? `<div class="already-rated">✓ You rated this photographer ${myRating.rating}/5 stars</div>`
+                  : `<div style="font-size:13px;color:var(--gray);margin-bottom:4px">Rate this photographer:</div>
+                     <div class="rate-wrap" id="rate-wrap-${p.id}">
+                       ${[1,2,3,4,5].map(n => `<span class="rate-star" onclick="ratePhotographer('${p.id}',${n})" onmouseover="hoverStars(${n},'${p.id}')" onmouseout="unhoverStars('${p.id}')">☆</span>`).join("")}
+                     </div>`
+                }
+              </div>` : `<div style="font-size:12px;color:var(--gray);margin-top:10px"><a href="#" onclick="navTo('surfer-auth')" style="color:var(--cyan)">Sign in</a> to rate this photographer</div>`}
+          </div>
+          <div class="profile-hero-stats">
+            <div class="ph-stat"><div class="ph-stat-val">${sessions.length}</div><div class="ph-stat-label">Sessions</div></div>
+            <div class="ph-stat"><div class="ph-stat-val">${avgRating ? avgRating.toFixed(1) : "—"}</div><div class="ph-stat-label">Rating</div></div>
+            <div class="ph-stat"><div class="ph-stat-val">${ratings.length}</div><div class="ph-stat-label">Reviews</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SESSIONS -->
+      <div class="profile-body">
+        <div class="sec-header" style="text-align:left;margin-bottom:32px">
+          <div class="sec-tag">Portfolio</div>
+          <h2 style="margin-bottom:8px">${p.full_name}'s Sessions</h2>
+          <p>${sessions.length} published session${sessions.length !== 1 ? "s" : ""}</p>
+        </div>
+        ${sessions.length === 0 
+          ? `<div class="empty-state"><div class="empty-icon">📷</div><h3>No sessions yet</h3><p>This photographer hasn't published any sessions yet.</p></div>`
+          : `<div class="surfers-grid">${sessions.map(s => {
+              const locked = Math.max(0, s.total_photos - 1);
+              return `<div class="surfer-card" onclick="openModal('${s.id}')">
+                <div class="photo-stack">
+                  ${s.preview_url ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>` : `<div class="preview-placeholder">🏄</div>`}
+                  <div class="wm-overlay"><div class="wm-text">WaveShots</div></div>
+                  <div class="locked-strip">
+                    <div class="lock-thumbs">${Array(Math.min(4,locked)).fill(0).map(()=>`<div class="lock-thumb">🔒</div>`).join("")}</div>
+                    ${locked > 0 ? `<div class="more-badge">+${locked} locked</div>` : ""}
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="card-top"><div class="surfer-name">${s.surfer_name}</div><div class="session-date">${s.session_date}</div></div>
+                  <div class="card-pills">
+                    <span class="pill">📍 ${s.spot}</span>
+                    <span class="pill wave">🌊 ${s.wave_height}</span>
+                    ${formatTimeRange(s.time_start, s.time_end) ? `<span class="pill">🕐 ${formatTimeRange(s.time_start, s.time_end)}</span>` : ""}
+                  </div>
+                  <div class="card-footer">
+                    <div><div class="price-label">Full Bundle</div><div class="price">$${parseFloat(s.price).toFixed(2)} <span>/ ${s.total_photos} photos</span></div></div>
+                    <button class="buy-btn" onclick="event.stopPropagation();openModal('${s.id}')">View Bundle</button>
+                  </div>
+                </div>
+              </div>`;
+            }).join("")}</div>`
+        }
+      </div>
+    `;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state" style="padding-top:120px"><div class="empty-icon">⚠️</div><h3>Error loading profile</h3><p>${e.message}</p></div>`;
+  }
+}
+
+// ── STAR RATING ───────────────────────────────────────────────────
+function hoverStars(n, photographerId) {
+  const wrap = document.getElementById(`rate-wrap-${photographerId}`);
+  if (!wrap) return;
+  wrap.querySelectorAll(".rate-star").forEach((s, i) => {
+    s.textContent = i < n ? "★" : "☆";
+    s.style.color = i < n ? "#fbbf24" : "#94a3b8";
+  });
+}
+
+function unhoverStars(photographerId) {
+  const wrap = document.getElementById(`rate-wrap-${photographerId}`);
+  if (!wrap) return;
+  wrap.querySelectorAll(".rate-star").forEach(s => {
+    s.textContent = "☆";
+    s.style.color = "#94a3b8";
+  });
+}
+
+async function ratePhotographer(photographerId, rating) {
+  if (!currentSurfer) { toast("Sign in to rate photographers", "info"); return; }
+  try {
+    await sbFetch("photographer_ratings", {
+      method: "POST",
+      body: JSON.stringify({
+        photographer_id: photographerId,
+        surfer_id: currentSurfer.id,
+        rating
+      }),
+      headers: { "Prefer": "resolution=merge-duplicates" }
+    });
+    toast(`Rated ${rating}/5 stars ⭐`, "success");
+    openPhotographerProfile(photographerId);
+  } catch(e) { toast("Error: " + e.message, "error"); }
+}
 
 // ── SURF SPOTS DATA ───────────────────────────────────────────────────────
 const SURF_SPOTS = [{"name": "El Doradillo", "country": "Argentina", "region": "Patagonia", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mar del Plata - Waikiki", "country": "Argentina", "region": "Buenos Aires Province", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Villa Gesell", "country": "Argentina", "region": "Buenos Aires Province", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Angourie", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Ballina", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Bells Beach", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Bondi Beach", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Burleigh Heads", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Byron Bay - Main Beach", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Byron Bay - The Pass", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Byron Bay - Wategos", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Cactus - Castles", "country": "Australia", "region": "South Australia", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Cactus Beach", "country": "Australia", "region": "South Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Canal Rocks", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Coolum", "country": "Australia", "region": "Queensland - Sunshine Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Crescent Head", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Cronulla", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Currumbin", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Dee Why", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Duranbah (D-Bah)", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Freshwater", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Indicators WA", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Jan Juc", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Jervis Bay", "country": "Australia", "region": "NSW - South", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Johanna Beach", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Kirra", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Lennox Head", "country": "Australia", "region": "NSW - North", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Lorne", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Manly Beach", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Margaret River - Main Break", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Margaret River - Surfers Point", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Maroubra", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Merewether", "country": "Australia", "region": "NSW - Newcastle", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Middleton", "country": "Australia", "region": "South Australia", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mooloolaba", "country": "Australia", "region": "Queensland - Sunshine Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Narrabeen", "country": "Australia", "region": "NSW - Sydney", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Noosa - First Point", "country": "Australia", "region": "Queensland - Sunshine Coast", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Noosa - Granite Bay", "country": "Australia", "region": "Queensland - Sunshine Coast", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "North Point", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Ocean Grove", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Palm Beach GC", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Phillip Island", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Point Leo", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Rottnest Island", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Scarborough Beach WA", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Snapper Rocks", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Sunshine Beach", "country": "Australia", "region": "Queensland - Sunshine Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Superbank", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Sand-bar", "direction": "Right", "level": "Experienced surfers"}, {"name": "Surfers Paradise", "country": "Australia", "region": "Queensland - Gold Coast", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "The Box", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right", "level": "Pros only"}, {"name": "Torquay", "country": "Australia", "region": "Victoria", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Trigg Beach", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Victor Harbor", "country": "Australia", "region": "South Australia", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Yallingup", "country": "Australia", "region": "Western Australia", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Freights Bay", "country": "Barbados", "region": "East Coast", "continent": "Central America", "type": "Reef", "direction": "Right", "level": "All surfers"}, {"name": "Soup Bowl", "country": "Barbados", "region": "East Coast", "continent": "Central America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Arpoador", "country": "Brazil", "region": "Rio de Janeiro", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Barra da Tijuca", "country": "Brazil", "region": "Rio de Janeiro", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Florianopolis - Joaquina", "country": "Brazil", "region": "Santa Catarina", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Florianopolis - Praia Mole", "country": "Brazil", "region": "Santa Catarina", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Icara\u00ed de Amontada", "country": "Brazil", "region": "Ceara", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ipanema", "country": "Brazil", "region": "Rio de Janeiro", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Itacar\u00e9", "country": "Brazil", "region": "Bahia", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Maresias", "country": "Brazil", "region": "Sao Paulo", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pipa", "country": "Brazil", "region": "Rio Grande do Norte", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Prainha", "country": "Brazil", "region": "Rio de Janeiro", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Jordan River", "country": "Canada", "region": "British Columbia - Vancouver Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Lawrencetown Beach", "country": "Canada", "region": "Nova Scotia", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Martinique Beach", "country": "Canada", "region": "Nova Scotia", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Tofino - Chesterman Beach", "country": "Canada", "region": "British Columbia - Vancouver Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Tofino - Cox Bay", "country": "Canada", "region": "British Columbia - Vancouver Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Tofino - Long Beach", "country": "Canada", "region": "British Columbia - Vancouver Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ucluelet", "country": "Canada", "region": "British Columbia - Vancouver Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Baia das Gatas", "country": "Cape Verde", "region": "S\u00e3o Vicente", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ponta Preta", "country": "Cape Verde", "region": "Sal Island", "continent": "Africa", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Santa Maria", "country": "Cape Verde", "region": "Sal Island", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Arica", "country": "Chile", "region": "North", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Iquique", "country": "Chile", "region": "North", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Matanzas", "country": "Chile", "region": "Central", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pichilemu", "country": "Chile", "region": "Central", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pichilemu - Punta de Lobos", "country": "Chile", "region": "Central", "continent": "South America", "type": "Point-break", "direction": "Left", "level": "Pros only"}, {"name": "Nuqu\u00ed", "country": "Colombia", "region": "Pacific", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Boca Barranca", "country": "Costa Rica", "region": "Central Pacific", "continent": "Central America", "type": "River mouth", "direction": "Left", "level": "Experienced surfers"}, {"name": "Dominical", "country": "Costa Rica", "region": "Osa Peninsula", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Jaco", "country": "Costa Rica", "region": "Central Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Manuel Antonio", "country": "Costa Rica", "region": "Central Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Matapalo", "country": "Costa Rica", "region": "Osa Peninsula", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Ollie's Point", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Pavones", "country": "Costa Rica", "region": "Osa Peninsula", "continent": "Central America", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Playa Avellanas", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa Cocles", "country": "Costa Rica", "region": "Caribbean", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa Grande", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa Guiones", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa Hermosa Jaco", "country": "Costa Rica", "region": "Central Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Playa Negra", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Playa Nosara", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Puerto Viejo Costa Rica", "country": "Costa Rica", "region": "Caribbean", "continent": "Central America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Salsa Brava", "country": "Costa Rica", "region": "Caribbean", "continent": "Central America", "type": "Reef-coral", "direction": "Right", "level": "Pros only"}, {"name": "Tamarindo", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Witch's Rock", "country": "Costa Rica", "region": "Guanacaste", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Hanstholm", "country": "Denmark", "region": "North Jutland", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Klitm\u00f8ller (Cold Hawaii)", "country": "Denmark", "region": "North Jutland", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cabarete", "country": "Dominican Republic", "region": "North Coast", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Encuentro", "country": "Dominican Republic", "region": "North Coast", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "La Boca", "country": "Dominican Republic", "region": "North Coast", "continent": "Central America", "type": "River mouth", "direction": "Right and left", "level": "All surfers"}, {"name": "Ayampe", "country": "Ecuador", "region": "Pacific Coast", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Monta\u00f1ita", "country": "Ecuador", "region": "Pacific Coast", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ol\u00f3n", "country": "Ecuador", "region": "Pacific Coast", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "El Sunzal", "country": "El Salvador", "region": "Pacific", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "El Zonte", "country": "El Salvador", "region": "Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Las Flores", "country": "El Salvador", "region": "Pacific", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Punta Roca", "country": "El Salvador", "region": "Pacific", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Cloudbreak", "country": "Fiji", "region": "Cloudbreak", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "Frigates", "country": "Fiji", "region": "Coral Coast", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Restaurants", "country": "Fiji", "region": "Cloudbreak", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Swimming Pools", "country": "Fiji", "region": "Tavarua", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Anglet - Chambre d'Amour", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Anglet - La Barre", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Anglet - Le Furoncle", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Breakwater", "direction": "Left", "level": "Pros only"}, {"name": "Anglet - Les Cavaliers", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Sand-bar", "direction": "Right and left", "level": "All surfers"}, {"name": "Anglet - Les Sables d'Or", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Anglet - Marinella", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Barneville Carteret", "country": "France", "region": "Normandy", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Belharra", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "Pros only"}, {"name": "Biarritz - Cote des Basques", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Biarritz - Grande Plage", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Biarritz - Milady", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Sand-bar", "direction": "Right and left", "level": "All surfers"}, {"name": "Bidart - Pavillon Royal", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Bidart - Plage Centrale", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Capbreton", "country": "France", "region": "Landes", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Carcans", "country": "France", "region": "Gironde", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cenitz", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Hendaye", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Hossegor", "country": "France", "region": "Landes", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "IIbarritz", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "All surfers"}, {"name": "La Gravi\u00e8re", "country": "France", "region": "Landes", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Pros only"}, {"name": "La Palue", "country": "France", "region": "Brittany North", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "La Torche", "country": "France", "region": "Brittany North", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Lacanau", "country": "France", "region": "Gironde", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Lafitenia", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Right", "level": "Experienced surfers"}, {"name": "Le Porge", "country": "France", "region": "Gironde", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Les Alcyons Avalanche", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Left", "level": "Pros only"}, {"name": "Montalivet", "country": "France", "region": "Gironde", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Parlementia", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Penhors", "country": "France", "region": "Brittany North", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Sainte Barbe", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Breakwater", "direction": "Right", "level": "Experienced surfers"}, {"name": "Seignosse", "country": "France", "region": "Landes", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Siouville", "country": "France", "region": "Normandy", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Soulac", "country": "France", "region": "Gironde", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Vanthrax", "country": "France", "region": "Basque Country", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "Pros only"}, {"name": "Vieux Boucau", "country": "France", "region": "Landes", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Haapiti", "country": "French Polynesia", "region": "Moorea", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Papara", "country": "French Polynesia", "region": "Tahiti", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Taapuna", "country": "French Polynesia", "region": "Tahiti", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Teahupo'o", "country": "French Polynesia", "region": "Tahiti", "continent": "Australia & Pacific", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "El Pared\u00f3n", "country": "Guatemala", "region": "Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Sipacate", "country": "Guatemala", "region": "Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Gardur", "country": "Iceland", "region": "South West", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Sandvik", "country": "Iceland", "region": "South West", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Anjuna", "country": "India", "region": "Goa", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Kovalam", "country": "India", "region": "Kerala", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mulki", "country": "India", "region": "Karnataka", "continent": "Asia", "type": "River mouth", "direction": "Right", "level": "All surfers"}, {"name": "Vagator", "country": "India", "region": "Goa", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Varkala", "country": "India", "region": "Kerala", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Balangan", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Bingin", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Canggu Beach", "country": "Indonesia", "region": "Bali - Canggu", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Desert Point", "country": "Indonesia", "region": "Lombok", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "Dreamland", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "E-Bay", "country": "Indonesia", "region": "Mentawai Islands", "continent": "Asia", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Echo Beach", "country": "Indonesia", "region": "Bali - Canggu", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "G-Land (Grajagan)", "country": "Indonesia", "region": "Java", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "Gerupuk", "country": "Indonesia", "region": "Lombok", "continent": "Asia", "type": "Bay", "direction": "Right and left", "level": "All surfers"}, {"name": "Impossibles", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Keramas", "country": "Indonesia", "region": "Bali - East", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Kuta Beach", "country": "Indonesia", "region": "Bali - Kuta", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Kuta Lombok", "country": "Indonesia", "region": "Lombok", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Lakey Peak", "country": "Indonesia", "region": "Sumbawa", "continent": "Asia", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Lakey Pipe", "country": "Indonesia", "region": "Sumbawa", "continent": "Asia", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "Lance's Right", "country": "Indonesia", "region": "Mentawai Islands", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Lances Left", "country": "Indonesia", "region": "Mentawai Islands", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Legian", "country": "Indonesia", "region": "Bali - Kuta", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Macaroni (HT's)", "country": "Indonesia", "region": "Mentawai Islands", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Medewi", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Point-break", "direction": "Left", "level": "All surfers"}, {"name": "Old Man's Bali", "country": "Indonesia", "region": "Bali - Canggu", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Padang Padang", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "Plengkung", "country": "Indonesia", "region": "Java", "continent": "Asia", "type": "Reef", "direction": "Left", "level": "Pros only"}, {"name": "Rifles", "country": "Indonesia", "region": "Mentawai Islands", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "Sanur", "country": "Indonesia", "region": "Bali - East", "continent": "Asia", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Selong Belanak", "country": "Indonesia", "region": "Lombok", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "Beginners"}, {"name": "Seminyak", "country": "Indonesia", "region": "Bali - Kuta", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Telescopes", "country": "Indonesia", "region": "Mentawai Islands", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Pros only"}, {"name": "Uluwatu", "country": "Indonesia", "region": "Bali - Bukit", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Bundoran", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Doughmore", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Easkey Left", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "Easkey Right", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Lahinch", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mullaghmore Head", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Reef", "direction": "Left", "level": "Pros only"}, {"name": "Spanish Point", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Strandhill", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "The Peak", "country": "Ireland", "region": "West Coast", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Netanya", "country": "Israel", "region": "Mediterranean", "continent": "Middle East", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Tel Aviv", "country": "Israel", "region": "Mediterranean", "continent": "Middle East", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Capo Mannu", "country": "Italy", "region": "Sardinia", "continent": "Europe", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Is Arenas", "country": "Italy", "region": "Sardinia", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pischinas", "country": "Italy", "region": "Sardinia", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "San Vito Lo Capo", "country": "Italy", "region": "Sicily", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Boston Bay", "country": "Jamaica", "region": "East", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Long Bay", "country": "Jamaica", "region": "East", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Aoshima", "country": "Japan", "region": "Miyazaki", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ichinomiya", "country": "Japan", "region": "Chiba", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Kadena", "country": "Japan", "region": "Okinawa", "continent": "Asia", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Katase", "country": "Japan", "region": "Chiba", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Shonan", "country": "Japan", "region": "Kanagawa", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Antiques", "country": "Maldives", "region": "Ari Atoll", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Chickens", "country": "Maldives", "region": "North Male Atoll", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Cokes (Thari Villa)", "country": "Maldives", "region": "North Male Atoll", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Guru's", "country": "Maldives", "region": "South Male Atoll", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Pasta Point", "country": "Maldives", "region": "North Male Atoll", "continent": "Asia", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Carrizalillo", "country": "Mexico", "region": "Oaxaca", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "Beginners"}, {"name": "Cerritos", "country": "Mexico", "region": "Baja California Sur", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Chacala", "country": "Mexico", "region": "Nayarit", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Costa Azul", "country": "Mexico", "region": "Baja California Sur", "continent": "Central America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ensenada", "country": "Mexico", "region": "Baja California Norte", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "La Lancha", "country": "Mexico", "region": "Jalisco", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "La Punta", "country": "Mexico", "region": "Oaxaca", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Las Gaviotas", "country": "Mexico", "region": "Baja California Norte", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Maruata", "country": "Mexico", "region": "Michoacan", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Miramar Nayarit", "country": "Mexico", "region": "Nayarit", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Nexpa", "country": "Mexico", "region": "Michoacan", "continent": "Central America", "type": "River mouth", "direction": "Right", "level": "Experienced surfers"}, {"name": "Old Man's", "country": "Mexico", "region": "Baja California Sur", "continent": "Central America", "type": "Beach-break", "direction": "Right", "level": "Beginners"}, {"name": "Pie de la Cuesta", "country": "Mexico", "region": "Guerrero", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Punta de Mita", "country": "Mexico", "region": "Jalisco", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "San Miguel", "country": "Mexico", "region": "Baja California Norte", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "San Pancho", "country": "Mexico", "region": "Nayarit", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Sayulita", "country": "Mexico", "region": "Nayarit", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Scorpion Bay", "country": "Mexico", "region": "Baja California Sur", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Todos Santos", "country": "Mexico", "region": "Baja California Norte", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Zicatela - Puerto Escondido", "country": "Mexico", "region": "Oaxaca", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "Pros only"}, {"name": "Zipolite", "country": "Mexico", "region": "Oaxaca", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Zippers", "country": "Mexico", "region": "Baja California Sur", "continent": "Central America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Agadir", "country": "Morocco", "region": "Agadir Area", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Anchor Point", "country": "Morocco", "region": "Taghazout Area", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Boilers", "country": "Morocco", "region": "Taghazout Area", "continent": "Africa", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Dakhla", "country": "Morocco", "region": "South", "continent": "Africa", "type": "River mouth", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Hash Point", "country": "Morocco", "region": "Taghazout Area", "continent": "Africa", "type": "Reef", "direction": "Right", "level": "All surfers"}, {"name": "Imsouane", "country": "Morocco", "region": "Agadir Area", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Killer Point", "country": "Morocco", "region": "Taghazout Area", "continent": "Africa", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Mirleft", "country": "Morocco", "region": "Agadir Area", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mysteries", "country": "Morocco", "region": "Taghazout Area", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Sidi Ifni", "country": "Morocco", "region": "South", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Taghazout Village", "country": "Morocco", "region": "Taghazout Area", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Barra", "country": "Mozambique", "region": "South", "continent": "Africa", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Tofo Beach", "country": "Mozambique", "region": "South", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "All surfers"}, {"name": "L\u00fcderitz", "country": "Namibia", "region": "Atlantic Coast", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Skeleton Bay", "country": "Namibia", "region": "Atlantic Coast", "continent": "Africa", "type": "Sand-bar", "direction": "Left", "level": "Experienced surfers"}, {"name": "Scheveningen", "country": "Netherlands", "region": "North Sea", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Zandvoort", "country": "Netherlands", "region": "North Sea", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Kaikoura", "country": "New Zealand", "region": "South Island", "continent": "Australia & Pacific", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Mount Maunganui", "country": "New Zealand", "region": "North Island", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Muriwai", "country": "New Zealand", "region": "North Island", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Piha", "country": "New Zealand", "region": "North Island", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Raglan - Manu Bay", "country": "New Zealand", "region": "North Island", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Raglan - Whale Bay", "country": "New Zealand", "region": "North Island", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Taranaki - Stent Road", "country": "New Zealand", "region": "North Island", "continent": "Australia & Pacific", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Taylors Mistake", "country": "New Zealand", "region": "South Island", "continent": "Australia & Pacific", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa Maderas", "country": "Nicaragua", "region": "Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Popoyo", "country": "Nicaragua", "region": "Pacific", "continent": "Central America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Punta Pie de Gigante", "country": "Nicaragua", "region": "Pacific", "continent": "Central America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "San Juan del Sur", "country": "Nicaragua", "region": "Pacific", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Eggum", "country": "Norway", "region": "Lofoten", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Sola", "country": "Norway", "region": "Stavanger Area", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Unstad", "country": "Norway", "region": "Lofoten", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mirbat", "country": "Oman", "region": "Indian Ocean", "continent": "Middle East", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Muscat", "country": "Oman", "region": "Indian Ocean", "continent": "Middle East", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Salalah", "country": "Oman", "region": "Indian Ocean", "continent": "Middle East", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Bluff Beach", "country": "Panama", "region": "Caribbean", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Bocas del Toro", "country": "Panama", "region": "Caribbean", "continent": "Central America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Morro Negrito", "country": "Panama", "region": "Pacific", "continent": "Central America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Santa Catalina", "country": "Panama", "region": "Pacific", "continent": "Central America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Silverbacks", "country": "Panama", "region": "Caribbean", "continent": "Central America", "type": "Reef-coral", "direction": "Right", "level": "Pros only"}, {"name": "Chicama", "country": "Peru", "region": "Chicama", "continent": "South America", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Huanchaco", "country": "Peru", "region": "North", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Lobitos", "country": "Peru", "region": "North", "continent": "South America", "type": "Point-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Miraflores", "country": "Peru", "region": "Lima", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pico Alto", "country": "Peru", "region": "Lima", "continent": "South America", "type": "Reef", "direction": "Right", "level": "Pros only"}, {"name": "Punta Hermosa", "country": "Peru", "region": "Lima", "continent": "South America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cemetery", "country": "Philippines", "region": "Siargao", "continent": "Asia", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Cloud 9", "country": "Philippines", "region": "Siargao", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Jacking Horse", "country": "Philippines", "region": "Siargao", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "San Juan", "country": "Philippines", "region": "La Union", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Tuason Point", "country": "Philippines", "region": "Siargao", "continent": "Asia", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Aljezur", "country": "Portugal", "region": "Alentejo", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Amado", "country": "Portugal", "region": "Algarve", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Amoreira", "country": "Portugal", "region": "Algarve", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Arrifana", "country": "Portugal", "region": "Alentejo", "continent": "Europe", "type": "Cliff-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Baleal", "country": "Portugal", "region": "Peniche", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cantinho da Baia", "country": "Portugal", "region": "Peniche", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Castelejo", "country": "Portugal", "region": "Algarve", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Costa da Caparica", "country": "Portugal", "region": "Lisboa", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Coxos", "country": "Portugal", "region": "Ericeira", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Pros only"}, {"name": "Espinho", "country": "Portugal", "region": "Norte Porto", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Foz do Lizandro", "country": "Portugal", "region": "Ericeira", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Guincho", "country": "Portugal", "region": "Lisboa", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Lagide", "country": "Portugal", "region": "Peniche", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Matosinhos", "country": "Portugal", "region": "Norte Porto", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Monte Cl\u00e9rigo", "country": "Portugal", "region": "Alentejo", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Odeceixe", "country": "Portugal", "region": "Alentejo", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pedra Branca", "country": "Portugal", "region": "Ericeira", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Pros only"}, {"name": "Praia Grande", "country": "Portugal", "region": "Lisboa", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ribeira d'Ilhas", "country": "Portugal", "region": "Ericeira", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Supertubes", "country": "Portugal", "region": "Peniche", "continent": "Europe", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "S\u00e3o Lourenco", "country": "Portugal", "region": "Ericeira", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Tonel", "country": "Portugal", "region": "Algarve", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Viana do Castelo", "country": "Portugal", "region": "Norte Porto", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Zavial", "country": "Portugal", "region": "Algarve", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Mosteiros", "country": "Portugal (Azores)", "region": "S\u00e3o Miguel", "continent": "Europe", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ribeira Grande", "country": "Portugal (Azores)", "region": "S\u00e3o Miguel", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Jardim do Mar", "country": "Portugal (Madeira)", "region": "Madeira", "continent": "Europe", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "Paul do Mar", "country": "Portugal (Madeira)", "region": "Madeira", "continent": "Europe", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "Crash Boat", "country": "Puerto Rico", "region": "North Coast", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Domes", "country": "Puerto Rico", "region": "North Coast", "continent": "Central America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "La Pared", "country": "Puerto Rico", "region": "East", "continent": "Central America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Maria's", "country": "Puerto Rico", "region": "North Coast", "continent": "Central America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Rincon Puerto Rico", "country": "Puerto Rico", "region": "North Coast", "continent": "Central America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Sandy Beach", "country": "Puerto Rico", "region": "North Coast", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Surfer's Beach", "country": "Puerto Rico", "region": "East", "continent": "Central America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Tres Palmas", "country": "Puerto Rico", "region": "North Coast", "continent": "Central America", "type": "Reef-coral", "direction": "Right", "level": "Pros only"}, {"name": "La Gauche de St Leu", "country": "Reunion Island", "region": "West Coast", "continent": "Africa", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Roches Noires", "country": "Reunion Island", "region": "North", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "St Leu", "country": "Reunion Island", "region": "West Coast", "continent": "Africa", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Trois Bassin", "country": "Reunion Island", "region": "West Coast", "continent": "Africa", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Almadies", "country": "Senegal", "region": "Dakar", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "N'gor Left", "country": "Senegal", "region": "Dakar", "continent": "Africa", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "N'gor Right", "country": "Senegal", "region": "Dakar", "continent": "Africa", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Secret Spot", "country": "Senegal", "region": "Dakar", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Yoff", "country": "Senegal", "region": "Dakar", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ballito", "country": "South Africa", "region": "KwaZulu-Natal", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Big Bay", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Dungeons", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Pros only"}, {"name": "Durban - Bay of Plenty", "country": "South Africa", "region": "KwaZulu-Natal", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Durban - Cave Rock", "country": "South Africa", "region": "KwaZulu-Natal", "continent": "Africa", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "Durban - New Pier", "country": "South Africa", "region": "KwaZulu-Natal", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Elands Bay", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Hermanus", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Jeffreys Bay - Boneyards", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "Pros only"}, {"name": "Jeffreys Bay - Kitchen Windows", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Jeffreys Bay - Magna Tubes", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Jeffreys Bay - Supertubes", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Kalk Bay Reef", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Kommetjie", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Long Beach", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Muizenberg", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "Beginners"}, {"name": "Outer Kom", "country": "South Africa", "region": "Western Cape", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Shakas Rock", "country": "South Africa", "region": "KwaZulu-Natal", "continent": "Africa", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Umhlanga", "country": "South Africa", "region": "KwaZulu-Natal", "continent": "Africa", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "El Confital", "country": "Spain", "region": "Canary Islands - Gran Canaria", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "El Cotillo", "country": "Spain", "region": "Canary Islands - Fuerteventura", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "El Medano", "country": "Spain", "region": "Canary Islands - Tenerife", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "El Quemao", "country": "Spain", "region": "Canary Islands - Lanzarote", "continent": "Europe", "type": "Reef", "direction": "Left", "level": "Pros only"}, {"name": "Famara", "country": "Spain", "region": "Canary Islands - Lanzarote", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "La Santa", "country": "Spain", "region": "Canary Islands - Lanzarote", "continent": "Europe", "type": "Reef", "direction": "Left", "level": "Experienced surfers"}, {"name": "Las Palmas - La Cicer", "country": "Spain", "region": "Canary Islands - Gran Canaria", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Liencres", "country": "Spain", "region": "Cantabria", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Louro", "country": "Spain", "region": "Galicia", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Me\u00f1akoz", "country": "Spain", "region": "Basque Country", "continent": "Europe", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Mundaka", "country": "Spain", "region": "Basque Country", "continent": "Europe", "type": "River mouth", "direction": "Left", "level": "Pros only"}, {"name": "Pant\u00edn", "country": "Spain", "region": "Galicia", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa Blanca", "country": "Spain", "region": "Canary Islands - Fuerteventura", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa de Bakio", "country": "Spain", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa de Las Americas", "country": "Spain", "region": "Canary Islands - Tenerife", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Playa de Sopelana", "country": "Spain", "region": "Basque Country", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Punta Blanca", "country": "Spain", "region": "Canary Islands - Fuerteventura", "continent": "Europe", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Rodiles", "country": "Spain", "region": "Asturias", "continent": "Europe", "type": "River mouth", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Salinas", "country": "Spain", "region": "Asturias", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "San Lorenzo", "country": "Spain", "region": "Asturias", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Somo", "country": "Spain", "region": "Cantabria", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Arugam Bay", "country": "Sri Lanka", "region": "East Coast", "continent": "Asia", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Elephant Rock", "country": "Sri Lanka", "region": "East Coast", "continent": "Asia", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Hikkaduwa", "country": "Sri Lanka", "region": "South Coast", "continent": "Asia", "type": "Reef-coral", "direction": "Right", "level": "All surfers"}, {"name": "Mirissa", "country": "Sri Lanka", "region": "South Coast", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pottuvil Point", "country": "Sri Lanka", "region": "East Coast", "continent": "Asia", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Weligama", "country": "Sri Lanka", "region": "South Coast", "continent": "Asia", "type": "Beach-break", "direction": "Right and left", "level": "Beginners"}, {"name": "Whiskey Point", "country": "Sri Lanka", "region": "East Coast", "continent": "Asia", "type": "Reef", "direction": "Right and left", "level": "All surfers"}, {"name": "Abereiddy", "country": "UK", "region": "Wales", "continent": "Europe", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Brimms Ness", "country": "UK", "region": "Scotland", "continent": "Europe", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Bude", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Croyde", "country": "UK", "region": "Devon", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Dunnet Bay", "country": "UK", "region": "Scotland", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Fistral Beach", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Freshwater West", "country": "UK", "region": "Wales", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Gwithian", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Harlyn Bay", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Llangennith", "country": "UK", "region": "Wales", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Machrihanish", "country": "UK", "region": "Scotland", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Perranporth", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Polzeath", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Porthmeor", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Porthtowan", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Rest Bay", "country": "UK", "region": "Wales", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Saunton Sands", "country": "UK", "region": "Devon", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Sennen Cove", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Thurso East", "country": "UK", "region": "Scotland", "continent": "Europe", "type": "Reef-rocky", "direction": "Right", "level": "Experienced surfers"}, {"name": "Unstad (Lofoten style)", "country": "UK", "region": "Scotland", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Watergate Bay", "country": "UK", "region": "Cornwall", "continent": "Europe", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "26th Ave", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Reef", "direction": "Right", "level": "All surfers"}, {"name": "Abalolo Reef", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Acid Drop", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Agate Beach", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ala Moana Bowls", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ala Moana Courts", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Aliso Beach", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Alligator Rock", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Anahola Bay", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Sand-bar", "direction": "Right and left", "level": "Pros only"}, {"name": "Anini Beach - Wires", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Asbury Park", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Atlantic City", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Avalanche Oahu", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Avila Beach", "country": "USA", "region": "California - Central", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Baby Haleiwa's", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Baby Makapuu", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Left", "level": "All surfers"}, {"name": "Backdoor", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Banyans", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Reef-lava", "direction": "Right and left", "level": "All surfers"}, {"name": "Barber's Point", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Barnegat Inlet", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Bay Front", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Breakwater", "direction": "Right", "level": "All surfers"}, {"name": "Beach 69", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Bellows", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Sand-bar", "direction": "Right and left", "level": "Beginners"}, {"name": "Belmar", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Big Beach", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Blacks Beach", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Bobo's Haena", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-rocky", "direction": "Left", "level": "Pros only"}, {"name": "Bolinas", "country": "USA", "region": "California - North", "continent": "North America", "type": "Point-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Bolsa Chica", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Bomboras", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "C-Street", "country": "USA", "region": "California - Ventura", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Cabbage Heads", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "All surfers"}, {"name": "Campus Point", "country": "USA", "region": "California - Santa Barbara", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Cannon Beach", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cannons", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Canoe's", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Cape Hatteras", "country": "USA", "region": "Southeast - North Carolina", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Cape May", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Capitola", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cardiff Reef", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Reef", "direction": "Right", "level": "All surfers"}, {"name": "Cayucos", "country": "USA", "region": "California - Central", "continent": "North America", "type": "Pier/Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "China Walls", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Point-break", "direction": "Left", "level": "Pros only"}, {"name": "Chuns Reef", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Cliffs", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Coast Guard Beach", "country": "USA", "region": "Northeast - Massachusetts", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cocoa Beach", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Cowell's Beach", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Beginners"}, {"name": "Cromwells", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "All surfers"}, {"name": "DT Fleming Beach", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Daytona Beach", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Devereux", "country": "USA", "region": "California - Santa Barbara", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Dillon Beach", "country": "USA", "region": "California - North", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ditch Plains", "country": "USA", "region": "Northeast - New York", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Doheny", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Beginners"}, {"name": "Dumps", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ehukai", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Sand-bar", "direction": "Right and left", "level": "All surfers"}, {"name": "El Porto", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Emma Wood", "country": "USA", "region": "California - Ventura", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Family Housing", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Folly Beach", "country": "USA", "region": "Southeast - South Carolina", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Fort Hase's", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Fort Pierce", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Fort Point", "country": "USA", "region": "California - San Francisco Bay Area", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Galveston", "country": "USA", "region": "Gulf Coast - Texas", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Gillin's", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-rocky", "direction": "Right", "level": "All surfers"}, {"name": "Gold Beach", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Graveyards", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Haleiwa", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Half Moon Bay", "country": "USA", "region": "California - San Francisco Bay Area", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Hanalei Bay", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Hermosa Beach", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Himalayas", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Pros only"}, {"name": "Honolii", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "River mouth", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Honolua Bay", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef-rocky", "direction": "Right", "level": "Experienced surfers"}, {"name": "Hookipa", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Horners", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Huntington Beach Pier", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Imperial Beach", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "In Betweens", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "All surfers"}, {"name": "Indian Beach", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Isaac Hale", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Reef-lava", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Jacksonville Beach", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Jalama Beach", "country": "USA", "region": "California - Central", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Jaws (Pe'ahi)", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Pros only"}, {"name": "Kaisers", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Kalapaki Beach", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach", "direction": "Right and left", "level": "All surfers"}, {"name": "Kalihiwai Point", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Kammieland", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Kanaha Beach Park", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Kealia", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Point-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Kewalo's", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Kilauea Bay Beach", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ko Olina", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "La Jolla Cove", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "All surfers"}, {"name": "La Push", "country": "USA", "region": "Pacific Northwest - Washington", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Laguna Beach", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Lahaina Breakwall", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "All surfers"}, {"name": "Lahilahi Point", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Point-break", "direction": "Left", "level": "Experienced surfers"}, {"name": "Laniakea", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "All surfers"}, {"name": "Leadbetter Beach", "country": "USA", "region": "California - Santa Barbara", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Leftovers", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Left", "level": "Experienced surfers"}, {"name": "Leo Carillo", "country": "USA", "region": "California - Ventura", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Linda Mar", "country": "USA", "region": "California - San Francisco Bay Area", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Little Beach", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Log Cabins", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Long Beach NY", "country": "USA", "region": "Northeast - New York", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Lowers (Trestles)", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Lunada Bay", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Lymans", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Reef-lava", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Maalaea", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Magic Island", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Makaha", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Makapuu", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Makapuu Beach", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Malaekahana", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Malibu (First Point)", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Malibu (Second Point)", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Point-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Malibu (Third Point)", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Point-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Manasquan Inlet", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Manhattan Beach", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Marconi Beach", "country": "USA", "region": "Northeast - Massachusetts", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mavericks", "country": "USA", "region": "California - San Francisco Bay Area", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Pros only"}, {"name": "Miami Beach", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Miloli", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Mission Beach", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Mokuleia", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Mondos", "country": "USA", "region": "California - Ventura", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Montauk", "country": "USA", "region": "Northeast - New York", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Morro Bay", "country": "USA", "region": "California - Central", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Nantucket", "country": "USA", "region": "Northeast - Massachusetts", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Narragansett", "country": "USA", "region": "Northeast - Rhode Island", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Natural Bridges", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Nauset Beach", "country": "USA", "region": "Northeast - Massachusetts", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Neah Bay", "country": "USA", "region": "Pacific Northwest - Washington", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "New Smyrna Beach", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Newport", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Newport Beach Pier", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Niihau", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "North Beach Pyramid Rock", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Ocean Beach Pier", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ocean Beach SF", "country": "USA", "region": "California - San Francisco Bay Area", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ocean Beach SF North", "country": "USA", "region": "California - North", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Ocean Shores", "country": "USA", "region": "Pacific Northwest - Washington", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Off the Wall", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Oils", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Outer Log Cabins", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right", "level": "Pros only"}, {"name": "PK's", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "All surfers"}, {"name": "Pacific Beach", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pacifica", "country": "USA", "region": "California - San Francisco Bay Area", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pakala", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "All surfers"}, {"name": "Palos Verdes", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Pine Trees", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Reef-lava", "direction": "Right and left", "level": "All surfers"}, {"name": "Pipeline", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "Pros only"}, {"name": "Pismo Beach", "country": "USA", "region": "California - Central", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pleasure Point", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "Pohoiki", "country": "USA", "region": "Hawaii - Big Island", "continent": "North America", "type": "Reef-lava", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Point Panic", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "All surfers"}, {"name": "Poipu", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-rocky", "direction": "Left", "level": "Experienced surfers"}, {"name": "Polihale State Park", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Pounders", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Pu'u Poa", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Puaena Point", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Pupukea", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Beach-break", "direction": "Right", "level": "All surfers"}, {"name": "Queens", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Ranches", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Redondo Beach", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Rice Bowls", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Rincon", "country": "USA", "region": "California - Ventura", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "Experienced surfers"}, {"name": "Rockaway Beach", "country": "USA", "region": "Northeast - New York", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Rockpiles", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Rocky Lefts", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Ruggles", "country": "USA", "region": "Northeast - Rhode Island", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Salmon Creek", "country": "USA", "region": "California - North", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Salt Creek", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "San Onofre", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "All surfers"}, {"name": "Sand Island", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "All surfers"}, {"name": "Sandspit", "country": "USA", "region": "California - Santa Barbara", "continent": "North America", "type": "Sand-bar", "direction": "Right", "level": "Experienced surfers"}, {"name": "Sandy Beach", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Santa Monica", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Scott's Creek", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Seaside", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Seaside Heights", "country": "USA", "region": "Northeast - New Jersey", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Sebastian Inlet", "country": "USA", "region": "Southeast - Florida", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Secrets", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Shipwrecks - Hyatt Beach", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Short Sands", "country": "USA", "region": "Pacific Northwest - Oregon", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Slaughterhouse", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "South Padre Island", "country": "USA", "region": "Gulf Coast - Texas", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Steamer Lane", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Sunset Beach", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right", "level": "Experienced surfers"}, {"name": "Sunset Cliffs", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Swami's", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Reef", "direction": "Right", "level": "Experienced surfers"}, {"name": "The Cove", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Beginners"}, {"name": "The Wedge", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Beach-break", "direction": "Right", "level": "Pros only"}, {"name": "Thousand Peaks", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "All surfers"}, {"name": "Three's", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Tumbo Land", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "All surfers"}, {"name": "Tunnels", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Turtle Bay", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Ukumehame", "country": "USA", "region": "Hawaii - Maui", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "All surfers"}, {"name": "Uppers", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Uppers (Trestles)", "country": "USA", "region": "California - Orange County", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Velzy Land", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-rocky", "direction": "Right", "level": "Experienced surfers"}, {"name": "Venice Beach", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Virginia Beach", "country": "USA", "region": "Southeast - Virginia", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Waddell Creek", "country": "USA", "region": "California - Santa Cruz", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Waikokos", "country": "USA", "region": "Hawaii - Kauai", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Waimea Bay", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Point-break", "direction": "Right", "level": "Pros only"}, {"name": "Walls", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right", "level": "Experienced surfers"}, {"name": "Westport", "country": "USA", "region": "Pacific Northwest - Washington", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "White Plains Beach", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Right and left", "level": "All surfers"}, {"name": "Windansea", "country": "USA", "region": "California - San Diego", "continent": "North America", "type": "Reef", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Wrightsville Beach", "country": "USA", "region": "Southeast - North Carolina", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}, {"name": "Yokohama Bay", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "Experienced surfers"}, {"name": "Zombies", "country": "USA", "region": "Hawaii - Oahu", "continent": "North America", "type": "Reef-coral", "direction": "Left", "level": "Experienced surfers"}, {"name": "Zuma Beach", "country": "USA", "region": "California - Los Angeles", "continent": "North America", "type": "Beach-break", "direction": "Right and left", "level": "All surfers"}];
@@ -2489,6 +3150,7 @@ function showPhotogLoginMenu() {
 document.getElementById("f-date") && (document.getElementById("f-date").value = new Date().toISOString().split("T")[0]);
 document.getElementById("pu-date") && (document.getElementById("pu-date").value = new Date().toISOString().split("T")[0]);
 restorePhotogSession();
+restoreSurferSession();
 loadPublicGallery();
 </script>
 </body>
