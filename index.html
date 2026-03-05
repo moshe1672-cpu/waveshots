@@ -2404,15 +2404,19 @@ function showPhotogLogin() {
 }
 
 async function photogLogin() {
-  const email = document.getElementById("pl-email").value.trim();
+  const email = document.getElementById("pl-email").value.trim().toLowerCase();
   const pw = document.getElementById("pl-password").value;
   if (!email || !pw) { toast("Please enter email and password", "error"); return; }
 
   try {
-    const results = await sbFetch(`photographers?email=eq.${encodeURIComponent(email)}&select=*`, { headers: { "Prefer": "" } });
+    const results = await sbFetch(`photographers?email=ilike.${encodeURIComponent(email)}&select=*`, { headers: { "Prefer": "" } });
     if (!results.length) { toast("No account found with that email", "error"); return; }
     const photog = results[0];
-    if (photog.password_hash !== await simpleHash(pw)) { toast("Incorrect password", "error"); return; }
+    const enteredHash = await simpleHash(pw);
+    if (photog.password_hash !== enteredHash) { 
+      toast("Incorrect password", "error"); 
+      return; 
+    }
     if (photog.status === "pending") { toast("Your application is still under review. We'll notify you within 48 hours.", "info"); return; }
     if (photog.status === "rejected") { toast("Your application was not approved. Contact us for more info.", "error"); return; }
 
