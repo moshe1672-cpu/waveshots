@@ -639,6 +639,10 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .photog-header{padding:20px}
   .photographers-section{padding:60px 20px}
 }
+@media(max-width:768px){
+  .two-sided-grid{grid-template-columns:1fr !important}
+  .trust-grid{grid-template-columns:1fr !important}
+}
 </style>
 </head>
 <body>
@@ -731,6 +735,34 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   <div class="gallery-section" style="padding-top:40px">
     <div id="public-gallery-content">
       <div class="loading-state"><div class="loading-spinner"></div><p>Loading sessions...</p></div>
+    </div>
+  </div>
+
+  <!-- TRUST SECTION -->
+  <div style="padding:80px 48px;background:var(--deep);border-top:1px solid var(--border)">
+    <div style="max-width:1100px;margin:0 auto">
+      <div class="sec-header" style="margin-bottom:48px">
+        <div class="sec-tag">Why WaveShots</div>
+        <h2>Built for the beach.</h2>
+        <p>Everything you need — nothing you don't.</p>
+      </div>
+      <div class="trust-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px">
+          <div style="font-size:36px;margin-bottom:16px">🔒</div>
+          <h3 style="font-size:17px;font-weight:800;margin-bottom:10px">Preview Before You Buy</h3>
+          <p style="font-size:14px;color:var(--gray);line-height:1.7">Every session includes one free watermarked shot. See exactly what you're getting before spending a cent.</p>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px;border-color:rgba(6,182,212,0.25)">
+          <div style="font-size:36px;margin-bottom:16px">💰</div>
+          <h3 style="font-size:17px;font-weight:800;margin-bottom:10px">80% Goes to the Photographer</h3>
+          <p style="font-size:14px;color:var(--gray);line-height:1.7">We believe in fair pay for real work. The majority of every sale goes directly to the person who got up early and stood on that beach.</p>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px">
+          <div style="font-size:36px;margin-bottom:16px">⚡</div>
+          <h3 style="font-size:17px;font-weight:800;margin-bottom:10px">Instant Download</h3>
+          <p style="font-size:14px;color:var(--gray);line-height:1.7">No waiting for a USB. No emails three days later. Pay once and your full HD gallery downloads immediately.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1134,8 +1166,38 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
         </div>
         <div class="location-tags" id="a-location-tags"></div>
       </div>
-      <div class="apply-terms">
-        By applying you agree to WaveShots' terms: <strong>80% of each sale goes to you</strong>, 20% platform fee retained by WaveShots. You retain full copyright of your photos. WaveShots handles payment processing and customer support.
+      <!-- TERMS OF SERVICE -->
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:12px">📄 Photographer Terms of Service</div>
+        <div style="max-height:200px;overflow-y:auto;font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:16px;padding-right:8px" id="tos-scroll">
+          <strong style="color:var(--white)">WaveShots Photographer Terms of Service — Version 1.0 (March 2026)</strong><br/><br/>
+          <strong>1. Your Relationship with WaveShots</strong><br/>
+          You are an independent contractor, not an employee of WaveShots. You retain full responsibility for your own taxes, insurance, and equipment.<br/><br/>
+          <strong>2. Eligibility</strong><br/>
+          You must be at least 18 years old, provide accurate registration information, have legal right to sell your content, and comply with all applicable laws.<br/><br/>
+          <strong>3. Fee Structure</strong><br/>
+          Default split: WaveShots retains 20% of each sale; you keep 80%. WaveShots may negotiate custom fee arrangements, which will be communicated in writing via your dashboard.<br/><br/>
+          <strong>4. Payouts</strong><br/>
+          Payouts are processed via Stripe Connect. You must complete Stripe onboarding before receiving payments. WaveShots may withhold payment in cases of suspected fraud or buyer disputes.<br/><br/>
+          <strong>5. Copyright</strong><br/>
+          You retain full copyright of your photos. You grant WaveShots a non-exclusive license to display your work on the platform and in marketing materials.<br/><br/>
+          <strong>6. Prohibited Content</strong><br/>
+          You may not upload nudity, illegal content, exploitative imagery, or content that infringes third-party rights. WaveShots may remove any content at its discretion.<br/><br/>
+          <strong>7. Taxes</strong><br/>
+          You are solely responsible for your tax obligations. US photographers earning $600+ per year will receive a 1099-NEC.<br/><br/>
+          <strong>8. Termination</strong><br/>
+          WaveShots may terminate your account for violations of this Agreement. Unpaid earnings will be paid within 30 days of termination unless withheld due to fraud or dispute.<br/><br/>
+          <strong>9. Limitation of Liability</strong><br/>
+          WaveShots is not liable for indirect or consequential damages. Total liability is capped at fees paid to you in the prior 90 days.<br/><br/>
+          <strong>10. Governing Law</strong><br/>
+          This Agreement is governed by the laws of the State of New York, USA.
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <input type="checkbox" id="a-tos" style="width:auto;accent-color:var(--cyan);margin-top:3px;flex-shrink:0"/>
+          <label for="a-tos" style="font-size:13px;color:var(--gray);line-height:1.5;cursor:pointer">
+            I have read, understood, and agree to the <span style="color:var(--cyan);font-weight:600">WaveShots Photographer Terms of Service</span>. I understand I am an independent contractor and that WaveShots retains a platform fee on each sale. <strong style="color:var(--white)">80% of every sale goes directly to me.</strong>
+          </label>
+        </div>
       </div>
       <button class="submit-btn" id="apply-submit-btn" onclick="submitApplication()">
         <span id="apply-submit-text">🤙 Submit Application</span>
@@ -1701,6 +1763,11 @@ async function loadPublicGallery() {
     } catch(e) {
       if (stat) stat.textContent = publicSessions.length;
     }
+    try {
+      const photogs = await sbFetch("photographers?status=eq.approved&select=id", { headers: { "Prefer": "" } });
+      const pStat = document.getElementById("stat-photographers");
+      if (pStat) pStat.textContent = photogs.length;
+    } catch(e) {}
 
     populateFilterDropdowns();
     applyFilters();
@@ -2090,6 +2157,7 @@ async function submitApplication() {
   if (pw !== pw2) { toast("Passwords don't match", "error"); return; }
   if (pw.length < 8) { toast("Password must be at least 8 characters", "error"); return; }
   if (applyLocations.length === 0) { toast("Please add at least one location", "error"); return; }
+  if (!document.getElementById("a-tos").checked) { toast("Please read and agree to the Terms of Service to continue", "error"); return; }
 
   const btn = document.getElementById("apply-submit-btn");
   const txt = document.getElementById("apply-submit-text");
@@ -2121,7 +2189,10 @@ async function submitApplication() {
         bio: bio,
         locations: applyLocations,
         profile_photo_url: profilePhotoUrl,
-        status: "pending"
+        status: "pending",
+        tos_accepted: true,
+        tos_accepted_at: new Date().toISOString(),
+        tos_version: "1.0"
       })
     });
 
@@ -2470,6 +2541,11 @@ async function loadAdminApplications() {
           <div style="flex:1">
             <div class="app-meta-name">${a.full_name}</div>
             <div class="app-meta-info">${a.email} · Applied ${new Date(a.created_at).toLocaleDateString()}</div>
+            <div class="app-meta-info" style="margin-top:3px">
+              ${a.tos_accepted 
+                ? `<span style="color:#4ade80;font-size:11px;font-weight:600">✓ ToS v${a.tos_version || "1.0"} accepted ${new Date(a.tos_accepted_at).toLocaleDateString()}</span>`
+                : `<span style="color:#f87171;font-size:11px;font-weight:600">⚠ ToS not accepted</span>`}
+            </div>
           </div>
           <span class="badge-${a.status}">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span>
         </div>
