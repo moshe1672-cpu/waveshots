@@ -179,6 +179,11 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   border:none;color:white;width:34px;height:34px;border-radius:50%;font-size:17px;
   cursor:pointer;display:flex;align-items:center;justify-content:center}
 .modal-close:hover{background:rgba(255,255,255,0.15)}
+@media(max-width:768px){
+  #modal-back-btn{display:inline-flex !important;margin-bottom:16px}
+  .modal-close{display:none}
+  .modal{padding:24px 20px}
+}
 .modal-top{display:flex;gap:32px;flex-wrap:wrap;margin-bottom:32px}
 .modal-preview{flex:1;min-width:260px}
 .modal-preview-img-wrap{border-radius:14px;overflow:hidden;position:relative;margin-bottom:12px;height:240px;background:var(--deep)}
@@ -519,6 +524,16 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   color:var(--gray);transition:all .2s}
 .bcard-close-btn:hover{border-color:white;color:white}
 .bcard-tip{font-size:11px;color:var(--gray);text-align:center;margin-top:14px;line-height:1.6}
+
+
+/* ============ FORGOT PASSWORD ============ */
+.forgot-link{font-size:12px;color:var(--cyan);cursor:pointer;text-align:right;
+  margin-top:-6px;margin-bottom:14px;display:block;opacity:.8;transition:opacity .2s}
+.forgot-link:hover{opacity:1}
+.forgot-panel{display:none;animation:modalIn .25s ease}
+.reset-success{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);
+  border-radius:10px;padding:14px 16px;font-size:13px;color:#4ade80;text-align:center;
+  margin-bottom:16px;line-height:1.6}
 
 /* ============ QR CODE ============ */
 .qr-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;
@@ -1152,11 +1167,29 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
       <!-- LOGIN FORM -->
       <div id="surfer-login-form">
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome back</h2>
-        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to access your sessions</p>
-        <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-        <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferLogin()"/>
-        <button class="login-btn" onclick="surferLogin()">Sign In</button>
+        <div id="surfer-signin-panel">
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome back</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to access your sessions</p>
+          <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+          <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:6px" onkeydown="if(event.key==='Enter')surferLogin()"/>
+          <span class="forgot-link" onclick="showSurferForgot()">Forgot password?</span>
+          <button class="login-btn" onclick="surferLogin()">Sign In</button>
+        </div>
+        <!-- FORGOT PASSWORD PANEL -->
+        <div id="surfer-forgot-panel" class="forgot-panel">
+          <button onclick="hideSurferForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Reset Password</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email and we'll show you a reset code to use.</p>
+          <div id="surfer-reset-success" class="reset-success" style="display:none"></div>
+          <input type="email" id="sr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+          <div id="surfer-reset-code-wrap" style="display:none">
+            <input type="text" id="sr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
+            <input type="password" id="sr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
+            <input type="password" id="sr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
+            <button class="login-btn" onclick="surferResetConfirm()">Update Password</button>
+          </div>
+          <button id="surfer-send-reset-btn" class="login-btn" onclick="surferSendReset()" style="margin-bottom:0">Send Reset Code</button>
+        </div>
       </div>
 
       <!-- SIGNUP FORM -->
@@ -1535,6 +1568,11 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <div class="modal-overlay" id="modal" onclick="closeMO(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeMD()">✕</button>
+    <!-- Mobile back button -->
+    <button onclick="closeMD()" style="display:none" id="modal-back-btn"
+      class="back-btn" style="margin-bottom:16px;color:rgba(148,163,184,0.8);font-size:13px;
+      font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+      padding:8px 16px;border-radius:100px;display:none;align-items:center;gap:6px">← Back</button>
     <div class="modal-top">
       <div class="modal-preview">
         <div class="modal-preview-img-wrap" id="m-preview"></div>
@@ -3043,6 +3081,10 @@ function renderStarRating(rating) {
   return "★".repeat(full) + (half ? "⭐" : "") + "☆".repeat(empty);
 }
 
+function goBackToPhotographers() {
+  showPage('photographers');
+}
+
 async function openPhotographerProfile(photographerId) {
   showPage("photographer-profile");
   const cont = document.getElementById("photographer-profile-content");
@@ -3072,7 +3114,7 @@ async function openPhotographerProfile(photographerId) {
       <!-- HERO -->
       <div class="profile-hero">
         <div style="max-width:1100px;margin:0 auto;padding-bottom:16px">
-          <button class="back-btn" onclick="showPage('photographers')" style="color:rgba(148,163,184,0.8);font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:100px;margin-bottom:28px;display:inline-flex;align-items:center;gap:6px">← Back to Photographers</button>
+          <button class="back-btn" onclick="goBackToPhotographers()" style="color:rgba(148,163,184,0.8);font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:100px;margin-bottom:28px;display:inline-flex;align-items:center;gap:6px">← Back to Photographers</button>
         </div>
         <div class="profile-hero-inner">
           <div class="profile-big-avatar">
@@ -3194,6 +3236,122 @@ async function ratePhotographer(photographerId, rating) {
   } catch(e) { toast("Error: " + e.message, "error"); }
 }
 
+
+
+// ════════════════════════════════════════════════════════════════
+// FORGOT PASSWORD SYSTEM
+// ════════════════════════════════════════════════════════════════
+
+// Store reset codes temporarily in memory
+const resetCodes = {};
+
+function generateResetCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// ── SURFER FORGOT PASSWORD ────────────────────────────────────────
+function showSurferForgot() {
+  document.getElementById("surfer-signin-panel").style.display = "none";
+  const panel = document.getElementById("surfer-forgot-panel");
+  panel.style.display = "block";
+  document.getElementById("surfer-reset-success").style.display = "none";
+  document.getElementById("surfer-reset-code-wrap").style.display = "none";
+  document.getElementById("surfer-send-reset-btn").style.display = "block";
+  document.getElementById("sr-email").value = "";
+}
+
+function hideSurferForgot() {
+  document.getElementById("surfer-forgot-panel").style.display = "none";
+  document.getElementById("surfer-signin-panel").style.display = "block";
+}
+
+async function surferSendReset() {
+  const email = document.getElementById("sr-email").value.trim();
+  if (!email) { toast("Please enter your email", "error"); return; }
+  try {
+    const results = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=id,email`, { headers: { "Prefer": "" } });
+    if (!results.length) { toast("No account found with that email", "error"); return; }
+    const code = generateResetCode();
+    resetCodes[email] = { code, type: "surfer", id: results[0].id, expires: Date.now() + 600000 };
+    // Show code in UI (in production this would be emailed)
+    document.getElementById("surfer-reset-success").style.display = "block";
+    document.getElementById("surfer-reset-success").innerHTML = `✓ Your reset code is: <strong style="font-size:20px;letter-spacing:3px">${code}</strong><br/><span style="font-size:11px;opacity:.7">Valid for 10 minutes</span>`;
+    document.getElementById("surfer-reset-code-wrap").style.display = "block";
+    document.getElementById("surfer-send-reset-btn").style.display = "none";
+  } catch(e) { toast("Error: " + e.message, "error"); }
+}
+
+async function surferResetConfirm() {
+  const email = document.getElementById("sr-email").value.trim();
+  const code = document.getElementById("sr-code").value.trim();
+  const pw = document.getElementById("sr-newpw").value;
+  const pw2 = document.getElementById("sr-newpw2").value;
+  if (!code) { toast("Please enter the reset code", "error"); return; }
+  if (pw !== pw2) { toast("Passwords don't match", "error"); return; }
+  if (pw.length < 8) { toast("Password must be at least 8 characters", "error"); return; }
+  const stored = resetCodes[email];
+  if (!stored || stored.code !== code) { toast("Invalid reset code", "error"); return; }
+  if (Date.now() > stored.expires) { toast("Reset code has expired. Please request a new one.", "error"); return; }
+  try {
+    await sbFetch(`surfers?id=eq.${stored.id}`, { method: "PATCH", body: JSON.stringify({ password_hash: simpleHash(pw) }) });
+    delete resetCodes[email];
+    toast("Password updated! You can now sign in. ✅", "success");
+    hideSurferForgot();
+    document.getElementById("sl-email").value = email;
+  } catch(e) { toast("Error: " + e.message, "error"); }
+}
+
+// ── PHOTOGRAPHER FORGOT PASSWORD ──────────────────────────────────
+function showPhotogForgot() {
+  document.getElementById("photog-signin-panel").style.display = "none";
+  const panel = document.getElementById("photog-forgot-panel");
+  panel.style.display = "block";
+  document.getElementById("photog-reset-success").style.display = "none";
+  document.getElementById("photog-reset-code-wrap").style.display = "none";
+  document.getElementById("photog-send-reset-btn").style.display = "block";
+  document.getElementById("pr-email").value = "";
+}
+
+function hidePhotogForgot() {
+  document.getElementById("photog-forgot-panel").style.display = "none";
+  document.getElementById("photog-signin-panel").style.display = "block";
+}
+
+async function photogSendReset() {
+  const email = document.getElementById("pr-email").value.trim();
+  if (!email) { toast("Please enter your email", "error"); return; }
+  try {
+    const results = await sbFetch(`photographers?email=eq.${encodeURIComponent(email)}&select=id,email,status`, { headers: { "Prefer": "" } });
+    if (!results.length) { toast("No photographer account found with that email", "error"); return; }
+    const code = generateResetCode();
+    resetCodes[email] = { code, type: "photographer", id: results[0].id, expires: Date.now() + 600000 };
+    document.getElementById("photog-reset-success").style.display = "block";
+    document.getElementById("photog-reset-success").innerHTML = `✓ Your reset code is: <strong style="font-size:20px;letter-spacing:3px">${code}</strong><br/><span style="font-size:11px;opacity:.7">Valid for 10 minutes</span>`;
+    document.getElementById("photog-reset-code-wrap").style.display = "block";
+    document.getElementById("photog-send-reset-btn").style.display = "none";
+  } catch(e) { toast("Error: " + e.message, "error"); }
+}
+
+async function photogResetConfirm() {
+  const email = document.getElementById("pr-email").value.trim();
+  const code = document.getElementById("pr-code").value.trim();
+  const pw = document.getElementById("pr-newpw").value;
+  const pw2 = document.getElementById("pr-newpw2").value;
+  if (!code) { toast("Please enter the reset code", "error"); return; }
+  if (pw !== pw2) { toast("Passwords don't match", "error"); return; }
+  if (pw.length < 8) { toast("Password must be at least 8 characters", "error"); return; }
+  const stored = resetCodes[email];
+  if (!stored || stored.code !== code) { toast("Invalid reset code", "error"); return; }
+  if (Date.now() > stored.expires) { toast("Reset code has expired. Please request a new one.", "error"); return; }
+  try {
+    await sbFetch(`photographers?id=eq.${stored.id}`, { method: "PATCH", body: JSON.stringify({ password_hash: simpleHash(pw) }) });
+    delete resetCodes[email];
+    toast("Password updated! You can now sign in. ✅", "success");
+    hidePhotogForgot();
+    document.getElementById("photog-login-modal").classList.remove("open");
+    setTimeout(() => showPhotogLoginMenu(), 300);
+  } catch(e) { toast("Error: " + e.message, "error"); }
+}
 
 // ════════════════════════════════════════════════════════════════
 // BUSINESS CARD GENERATOR
