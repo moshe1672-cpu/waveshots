@@ -495,6 +495,28 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 .admin-wallet-label{font-size:12px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
 .admin-wallet-val{font-size:22px;font-weight:800;color:#4ade80}
 
+
+/* ============ BUSINESS CARD GENERATOR ============ */
+.bcard-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.bcard-modal{background:#0d1f3c;border:1px solid var(--border);border-radius:20px;
+  padding:36px;max-width:580px;width:100%;box-shadow:0 0 80px rgba(6,182,212,0.08)}
+.bcard-modal-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.bcard-modal-sub{font-size:13px;color:var(--gray);margin-bottom:28px}
+.bcard-preview-wrap{display:flex;justify-content:center;margin-bottom:28px}
+.bcard-canvas-wrap{border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.5);
+  border:1px solid rgba(6,182,212,0.2)}
+.bcard-actions{display:flex;gap:10px;flex-wrap:wrap}
+.bcard-dl-btn{flex:1;padding:13px;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;color:white;transition:opacity .2s}
+.bcard-dl-btn:hover{opacity:.9}
+.bcard-close-btn{padding:13px 20px;border-radius:10px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;background:transparent;border:1px solid var(--border);
+  color:var(--gray);transition:all .2s}
+.bcard-close-btn:hover{border-color:white;color:white}
+.bcard-tip{font-size:11px;color:var(--gray);text-align:center;margin-top:14px;line-height:1.6}
+
 /* ============ QR CODE ============ */
 .qr-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;
   padding:24px;text-align:center;margin-top:20px}
@@ -1320,6 +1342,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       </div>
       <div style="display:flex;gap:10px">
         <button class="nav-btn" onclick="showPage('photog-upload')">+ Upload Session</button>
+        <button class="nav-btn" onclick="openBusinessCardModal()" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">🪪 Business Card</button>
         <button class="nav-btn ghost" onclick="photogLogout()">Sign Out</button>
       </div>
     </div>
@@ -3167,6 +3190,219 @@ async function ratePhotographer(photographerId, rating) {
   } catch(e) { toast("Error: " + e.message, "error"); }
 }
 
+
+// ════════════════════════════════════════════════════════════════
+// BUSINESS CARD GENERATOR
+// ════════════════════════════════════════════════════════════════
+
+async function openBusinessCardModal() {
+  if (!currentPhotographer) return;
+  document.getElementById("bcard-modal").style.display = "flex";
+  await renderBusinessCard();
+}
+
+function closeBusinessCardModal() {
+  document.getElementById("bcard-modal").style.display = "none";
+}
+
+async function renderBusinessCard() {
+  const canvas = document.getElementById("bcard-canvas");
+  const ctx = canvas.getContext("2d");
+  const W = 1050, H = 600;
+  ctx.clearRect(0, 0, W, H);
+
+  // ── BACKGROUND ────────────────────────────────────────────────
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, "#08152a");
+  bg.addColorStop(0.5, "#0a2240");
+  bg.addColorStop(1, "#061828");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle wave pattern overlay
+  ctx.save();
+  ctx.globalAlpha = 0.04;
+  for (let i = 0; i < 6; i++) {
+    ctx.beginPath();
+    ctx.arc(W * 0.75, H * 0.5, 120 + i * 80, 0, Math.PI * 2);
+    ctx.strokeStyle = "#06b6d4";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+
+  // Cyan accent line top
+  const accentGrad = ctx.createLinearGradient(0, 0, W, 0);
+  accentGrad.addColorStop(0, "#06b6d4");
+  accentGrad.addColorStop(0.5, "#38bdf8");
+  accentGrad.addColorStop(1, "transparent");
+  ctx.fillStyle = accentGrad;
+  ctx.fillRect(0, 0, W, 4);
+
+  // Cyan accent line bottom
+  const accentGrad2 = ctx.createLinearGradient(0, 0, W, 0);
+  accentGrad2.addColorStop(0, "#06b6d4");
+  accentGrad2.addColorStop(0.5, "#38bdf8");
+  accentGrad2.addColorStop(1, "transparent");
+  ctx.fillStyle = accentGrad2;
+  ctx.fillRect(0, H - 4, W, 4);
+
+  const p = currentPhotographer;
+
+  // ── PROFILE PHOTO ────────────────────────────────────────────
+  const photoX = 72, photoY = H / 2, photoR = 90;
+  if (p.profile_photo_url) {
+    try {
+      const img = await loadImage(p.profile_photo_url);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(photoX, photoY, photoR, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, photoX - photoR, photoY - photoR, photoR * 2, photoR * 2);
+      ctx.restore();
+      // Cyan border
+      ctx.beginPath();
+      ctx.arc(photoX, photoY, photoR + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(6,182,212,0.6)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    } catch(e) {
+      drawAvatarPlaceholder(ctx, photoX, photoY, photoR);
+    }
+  } else {
+    drawAvatarPlaceholder(ctx, photoX, photoY, photoR);
+  }
+
+  // ── TEXT CONTENT ──────────────────────────────────────────────
+  const textX = 200;
+
+  // WaveShots logo text
+  ctx.font = "bold 28px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+  ctx.fillStyle = "#06b6d4";
+  ctx.fillText("WaveShots", textX, 90);
+
+  // Divider line
+  ctx.fillStyle = "rgba(6,182,212,0.25)";
+  ctx.fillRect(textX, 100, 320, 1);
+
+  // Photographer name
+  ctx.font = "bold 52px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+  ctx.fillStyle = "#ffffff";
+  const name = p.full_name || "Photographer";
+  // Scale font if name too long
+  if (name.length > 16) ctx.font = "bold 40px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+  ctx.fillText(name, textX, 168);
+
+  // Role label
+  ctx.font = "500 22px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+  ctx.fillStyle = "rgba(148,163,184,0.9)";
+  ctx.fillText("Surf Photographer", textX, 204);
+
+  // Locations
+  const locs = (p.locations || []).slice(0, 3);
+  if (locs.length) {
+    ctx.font = "500 19px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+    ctx.fillStyle = "#06b6d4";
+    ctx.fillText("📍 " + locs.join("  ·  "), textX, 248);
+  }
+
+  // Website
+  ctx.font = "500 18px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+  ctx.fillStyle = "rgba(148,163,184,0.7)";
+  ctx.fillText("waveshots.vercel.app", textX, H - 52);
+
+  // ── QR CODE ───────────────────────────────────────────────────
+  const qrSize = 170;
+  const qrX = W - qrSize - 60;
+  const qrY = (H - qrSize) / 2;
+
+  // White QR background box
+  ctx.fillStyle = "white";
+  roundRect(ctx, qrX - 12, qrY - 12, qrSize + 24, qrSize + 24, 10);
+  ctx.fill();
+
+  // Generate QR to temp canvas
+  const tempDiv = document.createElement("div");
+  tempDiv.style.position = "absolute";
+  tempDiv.style.opacity = "0";
+  tempDiv.style.pointerEvents = "none";
+  document.body.appendChild(tempDiv);
+  const profileUrl = `${window.location.origin}${window.location.pathname}#photographer/${p.id}`;
+  new QRCode(tempDiv, { text: profileUrl, width: qrSize, height: qrSize, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+
+  await new Promise(r => setTimeout(r, 300));
+  const qrCanvas = tempDiv.querySelector("canvas");
+  const qrImg = tempDiv.querySelector("img");
+  if (qrCanvas) {
+    ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+  } else if (qrImg) {
+    const qi = await loadImage(qrImg.src);
+    ctx.drawImage(qi, qrX, qrY, qrSize, qrSize);
+  }
+  document.body.removeChild(tempDiv);
+
+  // "Scan me" label under QR
+  ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
+  ctx.fillStyle = "rgba(148,163,184,0.7)";
+  ctx.textAlign = "center";
+  ctx.fillText("Scan to view sessions", qrX + qrSize / 2, qrY + qrSize + 30);
+  ctx.textAlign = "left";
+}
+
+function drawAvatarPlaceholder(ctx, x, y, r) {
+  const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+  grad.addColorStop(0, "#0e4a6e");
+  grad.addColorStop(1, "#071828");
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.strokeStyle = "rgba(6,182,212,0.4)";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.font = `${r}px serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("📸", x, y);
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+function downloadBusinessCard() {
+  const canvas = document.getElementById("bcard-canvas");
+  const name = (currentPhotographer?.full_name || "photographer").replace(/\s+/g, "-").toLowerCase();
+  const link = document.createElement("a");
+  link.download = `waveshots-card-${name}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+  toast("Business card downloaded! 🪪", "success");
+}
+
 // ════════════════════════════════════════════════════════════════
 // ACCOUNT DELETION SYSTEM
 // ════════════════════════════════════════════════════════════════
@@ -3557,6 +3793,24 @@ window.addEventListener('scroll', () => {
   bg.style.transform = `translateY(${scrollY * 0.35}px)`;
 }, { passive: true });
 </script>
+
+<!-- ========== BUSINESS CARD MODAL ========== -->
+<div id="bcard-modal" style="display:none" class="bcard-modal-overlay" onclick="if(event.target===this)closeBusinessCardModal()">
+  <div class="bcard-modal">
+    <div class="bcard-modal-title">🪪 Your Business Card</div>
+    <div class="bcard-modal-sub">Dark-branded card with your photo, QR code, and locations — ready to print or share.</div>
+    <div class="bcard-preview-wrap">
+      <div class="bcard-canvas-wrap">
+        <canvas id="bcard-canvas" width="1050" height="600" style="width:480px;height:auto;display:block"></canvas>
+      </div>
+    </div>
+    <div class="bcard-actions">
+      <button class="bcard-dl-btn" onclick="downloadBusinessCard()">⬇ Download PNG</button>
+      <button class="bcard-close-btn" onclick="closeBusinessCardModal()">Close</button>
+    </div>
+    <div class="bcard-tip">Standard business card size (3.5" × 2") at 300dpi — upload directly to Moo, Vistaprint, or any print service.</div>
+  </div>
+</div>
 
 <!-- ========== DELETE ACCOUNT MODAL ========== -->
 <div id="delete-modal" style="display:none" class="delete-modal-overlay" onclick="if(event.target===this)closeDeleteModal()">
