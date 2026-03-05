@@ -422,6 +422,9 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 /* ============ PHOTOGRAPHER PUBLIC PROFILE ============ */
 .profile-hero{background:linear-gradient(180deg,#0a1628 0%,#0a2540 100%);
   padding:80px 48px 60px;position:relative;overflow:hidden}
+@media(max-width:768px){
+  .profile-hero{padding:80px 20px 40px}
+}
 .profile-hero::before{content:"";position:absolute;inset:0;
   background:radial-gradient(ellipse 60% 80% at 30% 50%,rgba(6,182,212,0.08) 0%,transparent 70%)}
 .profile-hero-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:40px;
@@ -854,17 +857,17 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
         <p>Everything you need — nothing you don't.</p>
       </div>
       <div class="trust-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center">
           <div style="font-size:36px;margin-bottom:16px">🔒</div>
           <h3 style="font-size:17px;font-weight:800;margin-bottom:10px">Preview Before You Buy</h3>
           <p style="font-size:14px;color:var(--gray);line-height:1.7">Every session includes one free watermarked shot. See exactly what you're getting before spending a cent.</p>
         </div>
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px;border-color:rgba(6,182,212,0.25)">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px;border-color:rgba(6,182,212,0.25);text-align:center">
           <div style="font-size:36px;margin-bottom:16px">💰</div>
           <h3 style="font-size:17px;font-weight:800;margin-bottom:10px">80% Goes to the Photographer</h3>
           <p style="font-size:14px;color:var(--gray);line-height:1.7">We believe in fair pay for real work. The majority of every sale goes directly to the person who got up early and stood on that beach.</p>
         </div>
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center">
           <div style="font-size:36px;margin-bottom:16px">⚡</div>
           <h3 style="font-size:17px;font-weight:800;margin-bottom:10px">Instant Download</h3>
           <p style="font-size:14px;color:var(--gray);line-height:1.7">No waiting for a USB. No emails three days later. Pay once and your full HD gallery downloads immediately.</p>
@@ -3066,10 +3069,11 @@ async function openPhotographerProfile(photographerId) {
     const myRating = currentSurfer ? ratings.find(r => r.surfer_id === currentSurfer.id) : null;
 
     cont.innerHTML = `
-      <button class="back-btn" onclick="showPage('photographers')" style="position:relative;top:0;left:0;z-index:10;display:inline-flex;margin-bottom:24px">← Back to Photographers</button>
-
       <!-- HERO -->
       <div class="profile-hero">
+        <div style="max-width:1100px;margin:0 auto;padding-bottom:16px">
+          <button class="back-btn" onclick="showPage('photographers')" style="color:rgba(148,163,184,0.8);font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:100px;margin-bottom:28px;display:inline-flex;align-items:center;gap:6px">← Back to Photographers</button>
+        </div>
         <div class="profile-hero-inner">
           <div class="profile-big-avatar">
             ${p.profile_photo_url ? `<img src="${p.profile_photo_url}" alt="${p.full_name}"/>` : "📸"}
