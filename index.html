@@ -227,7 +227,13 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   appearance:none;-webkit-appearance:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 12px center;
-  min-width:140px}
+  min-width:140px;flex:1}
+@media(max-width:768px){
+  .search-filter-inner{flex-direction:column}
+  .pub-search-wrap{width:100%;min-width:unset}
+  .filter-select{width:100%;min-width:unset;flex:none}
+  .filter-clear{width:100%;text-align:center}
+}
 .filter-select:focus{border-color:rgba(6,182,212,0.5)}
 .filter-select option{background:#0d2240;color:white}
 .filter-clear{background:transparent;border:1px solid var(--border);color:var(--gray);
@@ -415,7 +421,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
 /* ============ PHOTOGRAPHER PUBLIC PROFILE ============ */
 .profile-hero{background:linear-gradient(180deg,#0a1628 0%,#0a2540 100%);
-  padding:100px 48px 60px;position:relative;overflow:hidden}
+  padding:80px 48px 60px;position:relative;overflow:hidden}
 .profile-hero::before{content:"";position:absolute;inset:0;
   background:radial-gradient(ellipse 60% 80% at 30% 50%,rgba(6,182,212,0.08) 0%,transparent 70%)}
 .profile-hero-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:40px;
@@ -458,6 +464,18 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .ph-stat-val{font-size:22px}
   .profile-body{padding:24px 16px}
 }
+
+/* ============ QR CODE ============ */
+.qr-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;
+  padding:24px;text-align:center;margin-top:20px}
+.qr-card-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px}
+.qr-card-sub{font-size:11px;color:var(--gray);margin-bottom:16px;line-height:1.5}
+.qr-box{background:white;border-radius:10px;padding:12px;display:inline-block;margin-bottom:16px}
+.qr-box canvas,.qr-box img{display:block}
+.qr-download-btn{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);
+  color:var(--cyan);font-size:12px;font-weight:600;padding:8px 18px;border-radius:8px;
+  cursor:pointer;font-family:inherit;transition:all .2s;width:100%}
+.qr-download-btn:hover{background:rgba(6,182,212,0.2)}
 
 /* ============ SURFER PORTAL ============ */
 .surfer-dash{min-height:100vh;background:var(--ocean);padding-top:52px}
@@ -650,6 +668,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .trust-grid{grid-template-columns:1fr !important}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -708,24 +727,24 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <div style="padding:52px 48px;border-right:1px solid var(--border)">
         <div style="font-size:32px;margin-bottom:16px">🏄</div>
         <div class="sec-tag" style="margin-bottom:12px">For Surfers</div>
-        <h3 style="font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:20px">Find your session.<br/>Take it home.</h3>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <div style="display:flex;gap:14px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">🔍</span><div><div style="font-size:14px;font-weight:700;margin-bottom:2px">Search by date, spot, or name</div><div style="font-size:13px;color:var(--gray)">Find your session from hundreds of uploaded galleries</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">👁️</span><div><div style="font-size:14px;font-weight:700;margin-bottom:2px">Preview one shot for free</div><div style="font-size:13px;color:var(--gray)">See what you're buying before you commit — no surprises</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">⚡</span><div><div style="font-size:14px;font-weight:700;margin-bottom:2px">Pay once, download everything</div><div style="font-size:13px;color:var(--gray)">Full HD bundle, no watermark, yours forever</div></div></div>
+        <h3 style="font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:24px">Find your session.<br/>Take it home.</h3>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Search by date, spot, or name</div><div style="font-size:13px;color:var(--gray);line-height:1.6">Find your session from hundreds of uploaded galleries</div></div>
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Preview one shot for free</div><div style="font-size:13px;color:var(--gray);line-height:1.6">See what you're buying before you commit — no surprises</div></div>
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Pay once, download everything</div><div style="font-size:13px;color:var(--gray);line-height:1.6">Full HD bundle, no watermark, yours forever</div></div>
         </div>
-        <button class="btn-primary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})" style="margin-top:28px;width:100%">Browse Sessions →</button>
+        <button class="btn-primary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})" style="margin-top:32px;width:100%">Browse Sessions →</button>
       </div>
       <div style="padding:52px 48px;background:rgba(6,182,212,0.03)">
         <div style="font-size:32px;margin-bottom:16px">📸</div>
         <div class="sec-tag" style="margin-bottom:12px">For Photographers</div>
-        <h3 style="font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:20px">Shoot the surf.<br/>Earn from every sale.</h3>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <div style="display:flex;gap:14px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">✅</span><div><div style="font-size:14px;font-weight:700;margin-bottom:2px">Apply and get approved</div><div style="font-size:13px;color:var(--gray)">We review every application within 48 hours</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">📁</span><div><div style="font-size:14px;font-weight:700;margin-bottom:2px">Upload sessions and set your price</div><div style="font-size:13px;color:var(--gray)">You control what you charge — no minimum, no cap</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">💰</span><div><div style="font-size:14px;font-weight:700;margin-bottom:2px">Keep 80% of every sale</div><div style="font-size:13px;color:var(--gray)">WaveShots takes 20% — you keep the rest, always</div></div></div>
+        <h3 style="font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:24px">Shoot the surf.<br/>Earn from every sale.</h3>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Apply and get approved</div><div style="font-size:13px;color:var(--gray);line-height:1.6">We review every application within 48 hours</div></div>
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Upload sessions and set your price</div><div style="font-size:13px;color:var(--gray);line-height:1.6">You control what you charge — no minimum, no cap</div></div>
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Keep 80% of every sale</div><div style="font-size:13px;color:var(--gray);line-height:1.6">WaveShots takes 20% — you keep the rest, always</div></div>
         </div>
-        <button class="btn-primary" onclick="showPage('apply')" style="margin-top:28px;width:100%;background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(14,116,144,0.15));border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">Join as Photographer →</button>
+        <button class="btn-primary" onclick="showPage('apply')" style="margin-top:32px;width:100%;background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(14,116,144,0.15));border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">Join as Photographer →</button>
       </div>
     </div>
   </div>
@@ -1332,6 +1351,13 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
             <div class="fee-info">
               <div class="fee-info-val">80%</div>
               <div class="fee-info-label">Your share of every sale</div>
+            </div>
+            <!-- QR CODE -->
+            <div class="qr-card">
+              <div class="qr-card-title">Your QR Code</div>
+              <div class="qr-card-sub">Surfers scan this to find your profile and sessions instantly</div>
+              <div class="qr-box"><div id="pd-qr-code"></div></div>
+              <button class="qr-download-btn" onclick="downloadQR('pd-qr-code', pdPhotographerName)">⬇ Download QR Code</button>
             </div>
           </div>
         </div>
@@ -2971,6 +2997,10 @@ async function openPhotographerProfile(photographerId) {
     // Load their sessions
     const sessions = await sbFetch(`sessions?photographer_id=eq.${photographerId}&is_published=eq.true&order=session_date.desc&select=*`, { headers: { "Prefer": "" } });
 
+    // Generate QR for public profile
+    const profileUrl = `${window.location.origin}${window.location.pathname}#photographer/${photographerId}`;
+    setTimeout(() => generateQR(`public-qr-${photographerId}`, profileUrl, 128), 300);
+
     // Load ratings
     const ratings = await sbFetch(`photographer_ratings?photographer_id=eq.${photographerId}&select=*`, { headers: { "Prefer": "" } }).catch(() => []);
     const avgRating = ratings.length ? ratings.reduce((a,b) => a + b.rating, 0) / ratings.length : 0;
@@ -2980,7 +3010,7 @@ async function openPhotographerProfile(photographerId) {
     const myRating = currentSurfer ? ratings.find(r => r.surfer_id === currentSurfer.id) : null;
 
     cont.innerHTML = `
-      <button class="back-btn" onclick="showPage('photographers')" style="position:absolute;top:70px;left:48px;z-index:10">← Back to Photographers</button>
+      <button class="back-btn" onclick="showPage('photographers')" style="position:relative;top:0;left:0;z-index:10;display:inline-flex;margin-bottom:24px">← Back to Photographers</button>
 
       <!-- HERO -->
       <div class="profile-hero">
@@ -3010,10 +3040,18 @@ async function openPhotographerProfile(photographerId) {
                 }
               </div>` : `<div style="font-size:12px;color:var(--gray);margin-top:10px"><a href="#" onclick="navTo('surfer-auth')" style="color:var(--cyan)">Sign in</a> to rate this photographer</div>`}
           </div>
-          <div class="profile-hero-stats">
-            <div class="ph-stat"><div class="ph-stat-val">${sessions.length}</div><div class="ph-stat-label">Sessions</div></div>
-            <div class="ph-stat"><div class="ph-stat-val">${avgRating ? avgRating.toFixed(1) : "—"}</div><div class="ph-stat-label">Rating</div></div>
-            <div class="ph-stat"><div class="ph-stat-val">${ratings.length}</div><div class="ph-stat-label">Reviews</div></div>
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:280px">
+            <div class="profile-hero-stats">
+              <div class="ph-stat"><div class="ph-stat-val">${sessions.length}</div><div class="ph-stat-label">Sessions</div></div>
+              <div class="ph-stat"><div class="ph-stat-val">${avgRating ? avgRating.toFixed(1) : "—"}</div><div class="ph-stat-label">Rating</div></div>
+              <div class="ph-stat"><div class="ph-stat-val">${ratings.length}</div><div class="ph-stat-label">Reviews</div></div>
+            </div>
+            <div class="qr-card" style="margin-top:0">
+              <div class="qr-card-title">Scan to find this photographer</div>
+              <div class="qr-card-sub">Share or print to help surfers find your sessions</div>
+              <div class="qr-box"><div id="public-qr-${p.id}"></div></div>
+              <button class="qr-download-btn" onclick="downloadQR('public-qr-${p.id}','${p.full_name.replace(/'/g,"\\'")}')">⬇ Download QR Code</button>
+            </div>
           </div>
         </div>
       </div>
@@ -3094,6 +3132,55 @@ async function ratePhotographer(photographerId, rating) {
     toast(`Rated ${rating}/5 stars ⭐`, "success");
     openPhotographerProfile(photographerId);
   } catch(e) { toast("Error: " + e.message, "error"); }
+}
+
+// ════════════════════════════════════════════════════════════════
+// QR CODE SYSTEM
+// ════════════════════════════════════════════════════════════════
+
+let pdPhotographerName = "photographer";
+
+function generateQR(elementId, url, size = 128) {
+  const el = document.getElementById(elementId);
+  if (!el || !window.QRCode) return;
+  el.innerHTML = "";
+  new QRCode(el, {
+    text: url,
+    width: size,
+    height: size,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+
+function downloadQR(elementId, name) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const canvas = el.querySelector("canvas");
+  const img = el.querySelector("img");
+  
+  if (canvas) {
+    // Add padding/border to canvas for a clean download
+    const padded = document.createElement("canvas");
+    const size = canvas.width + 32;
+    padded.width = size;
+    padded.height = size;
+    const ctx = padded.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, size, size);
+    ctx.drawImage(canvas, 16, 16);
+    const link = document.createElement("a");
+    link.download = `waveshots-qr-${name.replace(/\s+/g,"-").toLowerCase()}.png`;
+    link.href = padded.toDataURL("image/png");
+    link.click();
+  } else if (img) {
+    const link = document.createElement("a");
+    link.download = `waveshots-qr-${name.replace(/\s+/g,"-").toLowerCase()}.png`;
+    link.href = img.src;
+    link.click();
+  }
+  toast("QR code downloaded! 📸", "success");
 }
 
 // ── SURF SPOTS DATA ───────────────────────────────────────────────────────
@@ -3264,6 +3351,13 @@ document.getElementById("pu-date") && (document.getElementById("pu-date").value 
 restorePhotogSession();
 restoreSurferSession();
 loadPublicGallery();
+
+// Handle direct QR code links
+const hash = window.location.hash;
+if (hash && hash.startsWith("#photographer/")) {
+  const pid = hash.replace("#photographer/", "");
+  if (pid) setTimeout(() => openPhotographerProfile(pid), 500);
+}
 
 // Parallax scroll effect on hero
 window.addEventListener('scroll', () => {
