@@ -2281,13 +2281,11 @@ function formatTimeRange(start, end) {
 // ════════════════════════════════════════════════════════════════
 
 // ── SIMPLE PASSWORD HASH (not cryptographic, just obfuscation) ──
-function simpleHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return hash.toString(36);
+async function simpleHash(str) {
+  const msgBuffer = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // ── APPLICATION ──────────────────────────────────────────────────
@@ -2365,7 +2363,7 @@ async function submitApplication() {
       body: JSON.stringify({
         full_name: name,
         email: email,
-        password_hash: simpleHash(pw),
+        password_hash: await simpleHash(pw),
         bio: bio,
         locations: applyLocations,
         profile_photo_url: profilePhotoUrl,
@@ -2414,7 +2412,7 @@ async function photogLogin() {
     const results = await sbFetch(`photographers?email=eq.${encodeURIComponent(email)}&select=*`, { headers: { "Prefer": "" } });
     if (!results.length) { toast("No account found with that email", "error"); return; }
     const photog = results[0];
-    if (photog.password_hash !== simpleHash(pw)) { toast("Incorrect password", "error"); return; }
+    if (photog.password_hash !== await simpleHash(pw)) { toast("Incorrect password", "error"); return; }
     if (photog.status === "pending") { toast("Your application is still under review. We'll notify you within 48 hours.", "info"); return; }
     if (photog.status === "rejected") { toast("Your application was not approved. Contact us for more info.", "error"); return; }
 
@@ -2860,7 +2858,7 @@ async function surferSignup() {
 
     const [surfer] = await sbFetch('surfers', {
       method: 'POST',
-      body: JSON.stringify({ full_name: name, email, password_hash: simpleHash(pw) })
+      body: JSON.stringify({ full_name: name, email, password_hash: await simpleHash(pw) })
     });
 
     currentSurfer = surfer;
@@ -2881,7 +2879,7 @@ async function surferLogin() {
     const results = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=*`, { headers: { 'Prefer': '' } });
     if (!results.length) { toast('No account found with that email', 'error'); return; }
     const surfer = results[0];
-    if (surfer.password_hash !== simpleHash(pw)) { toast('Incorrect password', 'error'); return; }
+    if (surfer.password_hash !== await simpleHash(pw)) { toast('Incorrect password', 'error'); return; }
 
     currentSurfer = surfer;
     sessionStorage.setItem('ws_surfer', JSON.stringify(surfer));
@@ -3330,7 +3328,7 @@ async function surferResetConfirm() {
   if (!stored || stored.code !== code) { toast("Invalid reset code", "error"); return; }
   if (Date.now() > stored.expires) { toast("Reset code has expired. Please request a new one.", "error"); return; }
   try {
-    await sbFetch(`surfers?id=eq.${stored.id}`, { method: "PATCH", body: JSON.stringify({ password_hash: simpleHash(pw) }) });
+    await sbFetch(`surfers?id=eq.${stored.id}`, { method: "PATCH", body: JSON.stringify({ password_hash: await simpleHash(pw) }) });
     delete resetCodes[email];
     toast("Password updated! You can now sign in. ✅", "success");
     hideSurferForgot();
@@ -3381,7 +3379,7 @@ async function photogResetConfirm() {
   if (!stored || stored.code !== code) { toast("Invalid reset code", "error"); return; }
   if (Date.now() > stored.expires) { toast("Reset code has expired. Please request a new one.", "error"); return; }
   try {
-    await sbFetch(`photographers?id=eq.${stored.id}`, { method: "PATCH", body: JSON.stringify({ password_hash: simpleHash(pw) }) });
+    await sbFetch(`photographers?id=eq.${stored.id}`, { method: "PATCH", body: JSON.stringify({ password_hash: await simpleHash(pw) }) });
     delete resetCodes[email];
     toast("Password updated! You can now sign in. ✅", "success");
     hidePhotogForgot();
