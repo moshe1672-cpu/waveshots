@@ -425,6 +425,11 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
 
 /* ============ PHOTOGRAPHER PUBLIC PROFILE ============ */
+#page-photographer-profile{position:relative}
+#profile-back-btn{position:absolute;top:72px;left:48px;z-index:20}
+@media(max-width:768px){
+  #profile-back-btn{top:72px;left:16px}
+}
 .profile-hero{background:linear-gradient(180deg,#0a1628 0%,#0a2540 100%);
   padding:80px 48px 60px;position:relative;overflow:hidden}
 @media(max-width:768px){
@@ -1549,18 +1554,37 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">Photographer Login</h2>
       <p style="font-size:14px;color:var(--gray)">Sign in to your WaveShots photographer account</p>
     </div>
-    <div class="form-row">
-      <label>Email</label>
-      <input type="email" id="pl-email" class="login-input" placeholder="you@example.com" style="margin-bottom:0"/>
+    <!-- SIGN IN PANEL -->
+    <div id="photog-signin-panel">
+      <div class="form-row">
+        <label>Email</label>
+        <input type="email" id="pl-email" class="login-input" placeholder="you@example.com" style="margin-bottom:0"/>
+      </div>
+      <div class="form-row">
+        <label>Password</label>
+        <input type="password" id="pl-password" class="login-input" placeholder="Your password" style="margin-bottom:4px" onkeydown="if(event.key==='Enter')photogLogin()"/>
+      </div>
+      <span class="forgot-link" onclick="showPhotogForgot()">Forgot password?</span>
+      <button class="submit-btn" onclick="photogLogin()" style="margin-top:8px">Sign In</button>
+      <p style="text-align:center;font-size:13px;color:var(--gray);margin-top:16px">
+        Not a photographer yet? <span style="color:var(--cyan);cursor:pointer;font-weight:600" onclick="document.getElementById('photog-login-modal').classList.remove('open');showPage('apply')">Apply here →</span>
+      </p>
     </div>
-    <div class="form-row">
-      <label>Password</label>
-      <input type="password" id="pl-password" class="login-input" placeholder="Your password" style="margin-bottom:0" onkeydown="if(event.key==='Enter')photogLogin()"/>
+    <!-- FORGOT PASSWORD PANEL -->
+    <div id="photog-forgot-panel" class="forgot-panel">
+      <button onclick="hidePhotogForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
+      <h2 style="font-size:18px;font-weight:800;margin-bottom:6px">Reset Password</h2>
+      <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email to get a reset code.</p>
+      <div id="photog-reset-success" class="reset-success" style="display:none"></div>
+      <input type="email" id="pr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+      <div id="photog-reset-code-wrap" style="display:none">
+        <input type="text" id="pr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
+        <input type="password" id="pr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
+        <input type="password" id="pr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
+        <button class="login-btn" onclick="photogResetConfirm()">Update Password</button>
+      </div>
+      <button id="photog-send-reset-btn" class="login-btn" onclick="photogSendReset()">Send Reset Code</button>
     </div>
-    <button class="submit-btn" onclick="photogLogin()" style="margin-top:8px">Sign In</button>
-    <p style="text-align:center;font-size:13px;color:var(--gray);margin-top:16px">
-      Not a photographer yet? <span style="color:var(--cyan);cursor:pointer;font-weight:600" onclick="document.getElementById('photog-login-modal').classList.remove('open');showPage('apply')">Apply here →</span>
-    </p>
   </div>
 </div>
 
@@ -3088,6 +3112,20 @@ function goBackToPhotographers() {
 async function openPhotographerProfile(photographerId) {
   showPage("photographer-profile");
   const cont = document.getElementById("photographer-profile-content");
+  // Set loading state first
+  cont.innerHTML = `<div class="loading-state" style="padding:80px 0"><div class="loading-spinner"></div><p>Loading profile...</p></div>`;
+  // Show static back button immediately
+  let backBtn = document.getElementById("profile-back-btn");
+  if (!backBtn) {
+    backBtn = document.createElement("button");
+    backBtn.id = "profile-back-btn";
+    backBtn.className = "back-btn";
+    backBtn.innerHTML = "← Back to Photographers";
+    backBtn.style.cssText = "color:rgba(148,163,184,0.8);font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:100px;margin-bottom:0;display:inline-flex;align-items:center;gap:6px;position:relative;z-index:10";
+    backBtn.onclick = () => showPage('photographers');
+    document.getElementById("page-photographer-profile").prepend(backBtn);
+  }
+  backBtn.style.display = "inline-flex";
   cont.innerHTML = `<div class="loading-state" style="padding-top:120px"><div class="loading-spinner"></div><p>Loading profile...</p></div>`;
 
   try {
@@ -3114,7 +3152,6 @@ async function openPhotographerProfile(photographerId) {
       <!-- HERO -->
       <div class="profile-hero">
         <div style="max-width:1100px;margin:0 auto;padding-bottom:16px">
-          <button class="back-btn" onclick="goBackToPhotographers()" style="color:rgba(148,163,184,0.8);font-size:13px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:100px;margin-bottom:28px;display:inline-flex;align-items:center;gap:6px">← Back to Photographers</button>
         </div>
         <div class="profile-hero-inner">
           <div class="profile-big-avatar">
