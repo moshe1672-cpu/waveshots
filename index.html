@@ -465,6 +465,36 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .profile-body{padding:24px 16px}
 }
 
+
+/* ============ ACCOUNT DELETION ============ */
+.delete-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.delete-modal{background:#0d1f3c;border:1px solid rgba(239,68,68,0.3);border-radius:20px;
+  padding:36px;max-width:460px;width:100%;box-shadow:0 0 60px rgba(239,68,68,0.1)}
+.delete-modal-icon{font-size:40px;margin-bottom:16px;text-align:center}
+.delete-modal-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:8px;color:var(--white)}
+.delete-modal-sub{font-size:13px;color:var(--gray);text-align:center;line-height:1.6;margin-bottom:24px}
+.delete-balance-notice{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);
+  border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24;text-align:center}
+.delete-confirm-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(239,68,68,0.3);
+  border-radius:10px;padding:12px 14px;color:white;font-size:14px;outline:none;
+  font-family:inherit;margin-bottom:8px;transition:border-color .2s}
+.delete-confirm-input:focus{border-color:rgba(239,68,68,0.6)}
+.delete-confirm-hint{font-size:11px;color:var(--gray);margin-bottom:20px;text-align:center}
+.delete-modal-actions{display:flex;gap:10px}
+.delete-cancel-btn{flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;background:transparent;border:1px solid var(--border);color:var(--gray);transition:all .2s}
+.delete-cancel-btn:hover{border-color:white;color:white}
+.delete-confirm-btn{flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:inherit;background:rgba(239,68,68,0.15);
+  border:1px solid rgba(239,68,68,0.4);color:#f87171;transition:all .2s}
+.delete-confirm-btn:hover{background:rgba(239,68,68,0.25);color:white}
+.delete-confirm-btn:disabled{opacity:.4;cursor:not-allowed}
+.admin-wallet-card{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);
+  border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.admin-wallet-label{font-size:12px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.admin-wallet-val{font-size:22px;font-weight:800;color:#4ade80}
+
 /* ============ QR CODE ============ */
 .qr-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;
   padding:24px;text-align:center;margin-top:20px}
@@ -712,7 +742,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-badge">🌊 The Surf Photography Marketplace</div>
-      <h1>Find your session.<br/><em>Own it forever.</em></h1>
+      <h1>The marketplace connecting<br/><em>surfers with photographers.</em></h1>
       <p>Shoot the surf. Earn from every sale.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">Browse Sessions</button>
@@ -3135,6 +3165,156 @@ async function ratePhotographer(photographerId, rating) {
 }
 
 // ════════════════════════════════════════════════════════════════
+// ACCOUNT DELETION SYSTEM
+// ════════════════════════════════════════════════════════════════
+
+let deleteTarget = null; // { type, id, name, balance }
+const ADMIN_PASSWORD = "waveshots2026";
+
+function initiateDeleteAccount(type, id, name, balance) {
+  deleteTarget = { type, id, name, balance: parseFloat(balance) || 0 };
+  const modal = document.getElementById("delete-modal");
+  document.getElementById("dm-title").textContent = `Delete ${type === "photographer" ? "Photographer" : "Surfer"} Account`;
+  document.getElementById("dm-sub").textContent = `You are about to permanently delete ${name}'s account. All their data will be removed. This cannot be undone.`;
+  document.getElementById("dm-password").value = "";
+
+  const balDiv = document.getElementById("dm-balance");
+  if (deleteTarget.balance > 0) {
+    balDiv.style.display = "block";
+    balDiv.textContent = `⚠️ This account has a $${deleteTarget.balance.toFixed(2)} pending balance. It will be transferred to the admin wallet upon deletion.`;
+  } else {
+    balDiv.style.display = "none";
+  }
+  modal.style.display = "flex";
+  setTimeout(() => document.getElementById("dm-password").focus(), 100);
+}
+
+function closeDeleteModal() {
+  document.getElementById("delete-modal").style.display = "none";
+  deleteTarget = null;
+}
+
+async function executeDeleteAccount() {
+  if (!deleteTarget) return;
+  const pw = document.getElementById("dm-password").value;
+  if (pw !== ADMIN_PASSWORD) { toast("Incorrect admin password", "error"); return; }
+
+  const btn = document.getElementById("dm-confirm-btn");
+  btn.disabled = true;
+  btn.textContent = "Deleting...";
+
+  try {
+    // Transfer balance to admin wallet if any
+    if (deleteTarget.balance > 0) {
+      const [wallet] = await sbFetch("admin_wallet?select=*", { headers: { "Prefer": "" } });
+      if (wallet) {
+        const newBal = (parseFloat(wallet.balance) || 0) + deleteTarget.balance;
+        await sbFetch(`admin_wallet?id=eq.${wallet.id}`, { method: "PATCH", body: JSON.stringify({ balance: newBal }) });
+        await sbFetch("admin_wallet_transactions", {
+          method: "POST",
+          body: JSON.stringify({
+            amount: deleteTarget.balance,
+            reason: `Transferred from deleted ${deleteTarget.type} account`,
+            source_type: deleteTarget.type,
+            source_name: deleteTarget.name
+          })
+        });
+      }
+    }
+
+    if (deleteTarget.type === "photographer") {
+      // Delete their photos from storage first
+      const sessions = await sbFetch(`sessions?photographer_id=eq.${deleteTarget.id}&select=id`, { headers: { "Prefer": "" } }).catch(() => []);
+      for (const s of sessions) {
+        const photos = await sbFetch(`photos?session_id=eq.${s.id}&select=storage_path`, { headers: { "Prefer": "" } }).catch(() => []);
+        for (const ph of photos) {
+          await supabase.storage.from("Photos").remove([ph.storage_path]).catch(() => {});
+        }
+        await sbFetch(`photos?session_id=eq.${s.id}`, { method: "DELETE", headers: { "Prefer": "" } }).catch(() => {});
+        await sbFetch(`sessions?id=eq.${s.id}`, { method: "DELETE", headers: { "Prefer": "" } }).catch(() => {});
+      }
+      await sbFetch(`photographers?id=eq.${deleteTarget.id}`, { method: "DELETE", headers: { "Prefer": "" } });
+      toast(`${deleteTarget.name}'s photographer account deleted`, "success");
+      loadAdminApplications();
+    } else {
+      // Delete surfer - remove favourites first
+      await sbFetch(`favourites?surfer_id=eq.${deleteTarget.id}`, { method: "DELETE", headers: { "Prefer": "" } }).catch(() => {});
+      await sbFetch(`surfers?id=eq.${deleteTarget.id}`, { method: "DELETE", headers: { "Prefer": "" } });
+      toast(`${deleteTarget.name}'s surfer account deleted`, "success");
+      loadAdminSurfers();
+    }
+
+    if (deleteTarget.balance > 0) toast(`$${deleteTarget.balance.toFixed(2)} transferred to admin wallet`, "success");
+    closeDeleteModal();
+    loadAdminWallet();
+  } catch(e) {
+    toast("Error: " + e.message, "error");
+    btn.disabled = false;
+    btn.textContent = "Delete Account";
+  }
+}
+
+// ── SURFER MANAGEMENT ─────────────────────────────────────────────
+async function loadAdminSurfers() {
+  const cont = document.getElementById("admin-surfers-list");
+  if (!cont) return;
+  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading surfers...</p></div>`;
+  try {
+    const surfers = await sbFetch("surfers?order=created_at.desc&select=*", { headers: { "Prefer": "" } });
+    if (!surfers.length) {
+      cont.innerHTML = `<div class="empty-state"><div class="empty-icon">🏄</div><h3>No surfer accounts yet</h3></div>`;
+      return;
+    }
+    cont.innerHTML = `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;padding:12px 16px;border-bottom:1px solid var(--border)">Name</th>
+          <th style="text-align:left;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;padding:12px 16px;border-bottom:1px solid var(--border)">Email</th>
+          <th style="text-align:left;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;padding:12px 16px;border-bottom:1px solid var(--border)">Joined</th>
+          <th style="text-align:left;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;padding:12px 16px;border-bottom:1px solid var(--border)">Actions</th>
+        </tr></thead>
+        <tbody>${surfers.map(s => `<tr>
+          <td style="padding:12px 16px;font-size:13px;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.03)">${s.full_name}</td>
+          <td style="padding:12px 16px;font-size:13px;color:var(--gray);border-bottom:1px solid rgba(255,255,255,0.03)">${s.email}</td>
+          <td style="padding:12px 16px;font-size:13px;color:var(--gray);border-bottom:1px solid rgba(255,255,255,0.03)">${new Date(s.created_at).toLocaleDateString()}</td>
+          <td style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03)">
+            <button class="reject-btn" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#f87171;padding:6px 14px;font-size:12px" onclick="initiateDeleteAccount('surfer','${s.id}','${s.full_name}',0)">🗑 Delete</button>
+          </td>
+        </tr>`).join("")}</tbody>
+      </table>
+    </div>`;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+// ── ADMIN WALLET ──────────────────────────────────────────────────
+async function loadAdminWallet() {
+  const cont = document.getElementById("admin-wallet-content");
+  if (!cont) return;
+  try {
+    const [wallet] = await sbFetch("admin_wallet?select=*", { headers: { "Prefer": "" } });
+    const txns = await sbFetch("admin_wallet_transactions?order=created_at.desc&limit=10&select=*", { headers: { "Prefer": "" } });
+    const balance = wallet ? parseFloat(wallet.balance) : 0;
+    cont.innerHTML = `
+      <div class="admin-wallet-card">
+        <div><div class="admin-wallet-label">Total Admin Balance</div><div style="font-size:11px;color:var(--gray);margin-top:2px">From platform fees & transferred balances</div></div>
+        <div class="admin-wallet-val">$${balance.toFixed(2)}</div>
+      </div>
+      ${txns.length ? `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="padding:12px 16px;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)">Recent Transactions</div>
+        ${txns.map(t => `<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:13px;font-weight:600">${t.reason}</div><div style="font-size:11px;color:var(--gray);margin-top:2px">${t.source_name} · ${new Date(t.created_at).toLocaleDateString()}</div></div>
+          <div style="color:#4ade80;font-weight:700;font-size:14px">+$${parseFloat(t.amount).toFixed(2)}</div>
+        </div>`).join("")}
+      </div>` : `<div style="font-size:13px;color:var(--gray);text-align:center;padding:20px">No transactions yet</div>`}
+    `;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
 // QR CODE SYSTEM
 // ════════════════════════════════════════════════════════════════
 
@@ -3367,5 +3547,22 @@ window.addEventListener('scroll', () => {
   bg.style.transform = `translateY(${scrollY * 0.35}px)`;
 }, { passive: true });
 </script>
+
+<!-- ========== DELETE ACCOUNT MODAL ========== -->
+<div id="delete-modal" style="display:none" class="delete-modal-overlay" onclick="if(event.target===this)closeDeleteModal()">
+  <div class="delete-modal">
+    <div class="delete-modal-icon">⚠️</div>
+    <div class="delete-modal-title" id="dm-title">Delete Account</div>
+    <div class="delete-modal-sub" id="dm-sub">This action is permanent and cannot be undone.</div>
+    <div class="delete-balance-notice" id="dm-balance" style="display:none"></div>
+    <div style="margin-bottom:8px;font-size:13px;color:var(--gray);text-align:center">Enter your admin password to confirm:</div>
+    <input type="password" id="dm-password" class="delete-confirm-input" placeholder="Admin password"/>
+    <div class="delete-confirm-hint" id="dm-hint">Type your admin password to enable deletion</div>
+    <div class="delete-modal-actions">
+      <button class="delete-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+      <button class="delete-confirm-btn" id="dm-confirm-btn" onclick="executeDeleteAccount()">Delete Account</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
