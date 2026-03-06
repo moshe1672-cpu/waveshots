@@ -60,6 +60,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;
 .nav-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--white)}
 .nav-btn.ghost:hover{border-color:rgba(255,255,255,0.3)}
 
+/* Nav login icon buttons */
+.nav-login-btn{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:6px 14px 6px 8px;
+  cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.75);font-size:12px;font-weight:600;
+  font-family:inherit;letter-spacing:.01em}
+.nav-login-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:#fff}
+.nav-login-btn svg{flex-shrink:0;opacity:.85}
+.nav-login-btn.photog-btn:hover{border-color:rgba(6,182,212,0.4);background:rgba(6,182,212,0.08)}
+@media(max-width:480px){.nav-login-btn span{display:none}.nav-login-btn{padding:7px}}
+
 /* HERO */
 .hero{min-height:55vh;background:#0a1628;
   display:flex;align-items:center;justify-content:center;text-align:center;
@@ -750,27 +760,63 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <!-- NAV -->
 <nav>
     <div class="logo" onclick="showPage('public')" style="cursor:pointer">WaveShots</div>
-  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
-    <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Top wave -->
-      <path d="M2 3 Q7 1 14 3 Q21 5 26 3" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-      <!-- Middle wave -->
-      <path d="M2 10 Q7 8 14 10 Q21 12 26 10" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-      <!-- Bottom wave -->
-      <path d="M2 17 Q7 15 14 17 Q21 19 26 17" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-    </svg>
-  </button>
+  <div style="display:flex;align-items:center;gap:10px">
+    <!-- Surfer login button -->
+    <button class="nav-login-btn" id="nav-surfer-login-btn" onclick="showPage('surfer-auth')" title="Surfer Login">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="7" r="4"/>
+        <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>Surfer</span>
+    </button>
+    <!-- Surfer dash button (shown when logged in) -->
+    <button class="nav-login-btn" id="nav-surfer-dash-btn" onclick="showPage('surfer-dash')" title="My Sessions" style="display:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="7" r="4"/>
+        <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>My Sessions</span>
+    </button>
+    <!-- Photographer login button -->
+    <button class="nav-login-btn photog-btn" id="nav-photog-login-btn" onclick="showPage('surfer-auth');switchRole('photographer')" title="Photographer Login">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="7" r="4"/>
+        <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
+        <circle cx="18" cy="8" r="2.5" fill="currentColor" stroke="none"/>
+        <path d="M16 6h4M18 4v4" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <span>Photographer</span>
+    </button>
+    <!-- Photographer dash button (shown when logged in) -->
+    <button class="nav-login-btn photog-btn" id="nav-photog-dash-btn" onclick="showPage('photog-dash')" title="My Dashboard" style="display:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="7" r="4"/>
+        <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Top wave -->
+        <path d="M2 3 Q7 1 14 3 Q21 5 26 3" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <!-- Middle wave -->
+        <path d="M2 10 Q7 8 14 10 Q21 12 26 10" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <!-- Bottom wave -->
+        <path d="M2 17 Q7 15 14 17 Q21 19 26 17" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </button>
+  </div>
 </nav>
 
 <!-- DROPDOWN MENU -->
 <div class="dropdown-menu" id="dropdown-menu">
-  <button class="dropdown-item" onclick="navTo('public')"><span class="item-icon">🌊</span>Gallery</button>
-  <button class="dropdown-item" onclick="navTo('photographers')"><span class="item-icon">📸</span>Our Photographers</button>
-  <button class="dropdown-item" onclick="navTo('apply')"><span class="item-icon">🤙</span>Join as Photographer</button>
+  <button class="dropdown-item" onclick="navTo('public')">Gallery</button>
+  <button class="dropdown-item" onclick="navTo('photographers')">Our Photographers</button>
+  <button class="dropdown-item" onclick="navTo('apply')">Join as Photographer</button>
   <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')"><span class="item-icon">📊</span>My Dashboard</button>
   <div class="dropdown-divider"></div>
-  <button class="dropdown-item" id="surfer-login-menu-btn" onclick="navTo('surfer-auth')"><span class="item-icon">🏄</span>Surfer Login / Sign Up</button>
-  <button class="dropdown-item" id="surfer-dash-menu-btn" style="display:none" onclick="navTo('surfer-dash')"><span class="item-icon">🏄</span>My Sessions</button>
+  <button class="dropdown-item" id="surfer-login-menu-btn" onclick="navTo('surfer-auth')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>Surfer Login / Sign Up</button>
+  <button class="dropdown-item" id="surfer-dash-menu-btn" style="display:none" onclick="navTo('surfer-dash')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>My Sessions</button>
   <button class="dropdown-item" onclick="showPhotogLoginMenu()" id="photog-login-btn"><span class="item-icon">🔑</span>Photographer Login</button>
   <button class="dropdown-item" onclick="navTo('admin')"><span class="item-icon">⚙️</span>Admin</button>
 </div>
@@ -786,7 +832,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     <div class="hero-bg" id="hero-bg"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <div class="hero-badge">🌊 The Surf Photography Marketplace</div>
+      <div class="hero-badge">The Surf Photography Marketplace</div>
       <h1>The marketplace connecting<br/><em>surfers with photographers.</em></h1>
       <p>Shoot the surf. Earn from every sale.</p>
       <div class="hero-actions">
@@ -1155,12 +1201,28 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <!-- ========== SURFER LOGIN/SIGNUP PAGE ========== -->
 <div id="page-surfer-auth" class="page">
   <div class="login-wrap" style="min-height:100vh;padding-top:80px">
-    <div class="login-card" style="max-width:420px">
-      <div style="font-size:40px;margin-bottom:16px">🏄</div>
-      
-      <!-- TAB SWITCHER -->
-      <div style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px">
-        <button id="auth-login-tab" onclick="switchAuthTab('login')" 
+    <div class="login-card" style="max-width:460px">
+
+      <!-- ROLE TOGGLE -->
+      <div style="margin-bottom:28px;text-align:center">
+        <p style="font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--gray);text-transform:uppercase;margin-bottom:14px">I am a</p>
+        <div style="display:inline-flex;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;padding:4px;gap:4px">
+          <button id="role-surfer-btn" onclick="switchRole('surfer')"
+            style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;display:flex;align-items:center;gap:8px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg>
+            Surfer
+          </button>
+          <button id="role-photog-btn" onclick="switchRole('photographer')"
+            style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:transparent;color:var(--gray);display:flex;align-items:center;gap:8px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg>
+            Photographer
+          </button>
+        </div>
+      </div>
+
+      <!-- SIGN IN / CREATE ACCOUNT TABS (surfer only) -->
+      <div id="auth-tab-row" style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px">
+        <button id="auth-login-tab" onclick="switchAuthTab('login')"
           style="flex:1;padding:8px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;transition:all .2s">
           Sign In
         </button>
@@ -1170,43 +1232,78 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
         </button>
       </div>
 
-      <!-- LOGIN FORM -->
-      <div id="surfer-login-form">
-        <div id="surfer-signin-panel">
-          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome back</h2>
-          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to access your sessions</p>
-          <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-          <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:6px" onkeydown="if(event.key==='Enter')surferLogin()"/>
-          <span class="forgot-link" onclick="showSurferForgot()">Forgot password?</span>
-          <button class="login-btn" onclick="surferLogin()">Sign In</button>
-        </div>
-        <!-- FORGOT PASSWORD PANEL -->
-        <div id="surfer-forgot-panel" class="forgot-panel">
-          <button onclick="hideSurferForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
-          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Reset Password</h2>
-          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email and we'll show you a reset code to use.</p>
-          <div id="surfer-reset-success" class="reset-success" style="display:none"></div>
-          <input type="email" id="sr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-          <div id="surfer-reset-code-wrap" style="display:none">
-            <input type="text" id="sr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
-            <input type="password" id="sr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
-            <input type="password" id="sr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
-            <button class="login-btn" onclick="surferResetConfirm()">Update Password</button>
+      <!-- SURFER PANEL -->
+      <div id="unified-surfer-panel">
+        <!-- LOGIN FORM -->
+        <div id="surfer-login-form">
+          <div id="surfer-signin-panel">
+            <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome back</h2>
+            <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to access your sessions</p>
+            <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+            <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:6px" onkeydown="if(event.key==='Enter')surferLogin()"/>
+            <span class="forgot-link" onclick="showSurferForgot()">Forgot password?</span>
+            <button class="login-btn" onclick="surferLogin()">Sign In</button>
           </div>
-          <button id="surfer-send-reset-btn" class="login-btn" onclick="surferSendReset()" style="margin-bottom:0">Send Reset Code</button>
+          <div id="surfer-forgot-panel" class="forgot-panel">
+            <button onclick="hideSurferForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
+            <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Reset Password</h2>
+            <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email and we'll show you a reset code to use.</p>
+            <div id="surfer-reset-success" class="reset-success" style="display:none"></div>
+            <input type="email" id="sr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+            <div id="surfer-reset-code-wrap" style="display:none">
+              <input type="text" id="sr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
+              <input type="password" id="sr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
+              <input type="password" id="sr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
+              <button class="login-btn" onclick="surferResetConfirm()">Update Password</button>
+            </div>
+            <button id="surfer-send-reset-btn" class="login-btn" onclick="surferSendReset()" style="margin-bottom:0">Send Reset Code</button>
+          </div>
+        </div>
+        <!-- SIGNUP FORM -->
+        <div id="surfer-signup-form" style="display:none">
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Create account</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Join WaveShots to save and download your sessions</p>
+          <input type="text" id="ss-name" class="login-input" placeholder="Full name" style="margin-bottom:10px"/>
+          <input type="email" id="ss-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+          <input type="password" id="ss-password" class="login-input" placeholder="Password (min 8 chars)" style="margin-bottom:10px"/>
+          <input type="password" id="ss-password2" class="login-input" placeholder="Confirm password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferSignup()"/>
+          <button class="login-btn" onclick="surferSignup()">Create Account</button>
         </div>
       </div>
 
-      <!-- SIGNUP FORM -->
-      <div id="surfer-signup-form" style="display:none">
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Create account</h2>
-        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Join WaveShots to save and download your sessions</p>
-        <input type="text" id="ss-name" class="login-input" placeholder="Full name" style="margin-bottom:10px"/>
-        <input type="email" id="ss-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-        <input type="password" id="ss-password" class="login-input" placeholder="Password (min 8 chars)" style="margin-bottom:10px"/>
-        <input type="password" id="ss-password2" class="login-input" placeholder="Confirm password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferSignup()"/>
-        <button class="login-btn" onclick="surferSignup()">Create Account</button>
+      <!-- PHOTOGRAPHER PANEL -->
+      <div id="unified-photog-panel" style="display:none">
+        <div id="photog-unified-signin-panel">
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Photographer Login</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to your WaveShots photographer account</p>
+          <div class="form-row"><label>Email</label>
+            <input type="email" id="pl-email" class="login-input" placeholder="you@example.com" style="margin-bottom:0"/>
+          </div>
+          <div class="form-row"><label>Password</label>
+            <input type="password" id="pl-password" class="login-input" placeholder="Your password" style="margin-bottom:4px" onkeydown="if(event.key==='Enter')photogLogin()"/>
+          </div>
+          <span class="forgot-link" onclick="showPhotogForgot()">Forgot password?</span>
+          <button class="login-btn" onclick="photogLogin()" style="margin-top:8px">Sign In</button>
+          <p style="text-align:center;font-size:13px;color:var(--gray);margin-top:20px">
+            Not a photographer yet? <span style="color:var(--cyan);cursor:pointer;font-weight:600" onclick="showPage('apply')">Apply here →</span>
+          </p>
+        </div>
+        <div id="photog-forgot-panel" class="forgot-panel">
+          <button onclick="hidePhotogForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
+          <h2 style="font-size:18px;font-weight:800;margin-bottom:6px">Reset Password</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email to get a reset code.</p>
+          <div id="photog-reset-success" class="reset-success" style="display:none"></div>
+          <input type="email" id="pr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+          <div id="photog-reset-code-wrap" style="display:none">
+            <input type="text" id="pr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
+            <input type="password" id="pr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
+            <input type="password" id="pr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
+            <button class="login-btn" onclick="photogResetConfirm()">Update Password</button>
+          </div>
+          <button id="photog-send-reset-btn" class="login-btn" onclick="photogSendReset()">Send Reset Code</button>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -2425,6 +2522,8 @@ async function photogLogin() {
     document.getElementById("photog-login-modal").classList.remove("open");
     document.getElementById("photog-login-btn").style.display = "none";
     document.getElementById("photog-dash-link").style.display = "inline";
+    document.getElementById("nav-photog-login-btn").style.display = "none";
+    document.getElementById("nav-photog-dash-btn").style.display = "flex";
     toast(`Welcome back, ${photog.full_name}! 🤙`, "success");
     showPage("photog-dash");
   } catch(e) {
@@ -2437,6 +2536,8 @@ function photogLogout() {
   sessionStorage.removeItem("ws_photographer");
   document.getElementById("photog-login-btn").style.display = "inline";
   document.getElementById("photog-dash-link").style.display = "none";
+  document.getElementById("nav-photog-login-btn").style.display = "flex";
+  document.getElementById("nav-photog-dash-btn").style.display = "none";
   showPage("public");
   toast("Signed out", "info");
 }
@@ -2447,6 +2548,8 @@ function restorePhotogSession() {
     currentPhotographer = JSON.parse(stored);
     document.getElementById("photog-login-btn").style.display = "none";
     document.getElementById("photog-dash-link").style.display = "inline";
+    document.getElementById("nav-photog-login-btn").style.display = "none";
+    document.getElementById("nav-photog-dash-btn").style.display = "flex";
   }
 }
 
@@ -2914,12 +3017,18 @@ function restoreSurferSession() {
 function updateSurferNav() {
   const loginBtn = document.getElementById('surfer-login-menu-btn');
   const dashBtn = document.getElementById('surfer-dash-menu-btn');
+  const navLoginBtn = document.getElementById('nav-surfer-login-btn');
+  const navDashBtn = document.getElementById('nav-surfer-dash-btn');
   if (currentSurfer) {
     if (loginBtn) loginBtn.style.display = 'none';
     if (dashBtn) dashBtn.style.display = 'flex';
+    if (navLoginBtn) navLoginBtn.style.display = 'none';
+    if (navDashBtn) navDashBtn.style.display = 'flex';
   } else {
     if (loginBtn) loginBtn.style.display = 'flex';
     if (dashBtn) dashBtn.style.display = 'none';
+    if (navLoginBtn) navLoginBtn.style.display = 'flex';
+    if (navDashBtn) navDashBtn.style.display = 'none';
   }
 }
 
@@ -3109,6 +3218,25 @@ function renderStarRating(rating) {
 
 function goBackToPhotographers() {
   showPage('photographers');
+}
+
+function switchRole(role) {
+  const isSurfer = role === 'surfer';
+  // Toggle panels
+  document.getElementById('unified-surfer-panel').style.display = isSurfer ? 'block' : 'none';
+  document.getElementById('unified-photog-panel').style.display = isSurfer ? 'none' : 'block';
+  // Toggle sign in/create tabs row (only for surfer)
+  document.getElementById('auth-tab-row').style.display = isSurfer ? 'flex' : 'none';
+  // Style role buttons
+  const surferBtn = document.getElementById('role-surfer-btn');
+  const photogBtn = document.getElementById('role-photog-btn');
+  if (surferBtn && photogBtn) {
+    surferBtn.style.background = isSurfer ? 'linear-gradient(135deg,var(--accent),var(--accent2))' : 'transparent';
+    surferBtn.style.color = isSurfer ? 'white' : 'var(--gray)';
+    photogBtn.style.background = isSurfer ? 'transparent' : 'linear-gradient(135deg,rgba(6,182,212,0.3),rgba(14,116,144,0.3))';
+    photogBtn.style.color = isSurfer ? 'var(--gray)' : 'var(--cyan)';
+    photogBtn.style.border = isSurfer ? 'none' : '1px solid rgba(6,182,212,0.4)';
+  }
 }
 
 async function openPhotographerProfile(photographerId) {
@@ -3342,7 +3470,7 @@ async function surferResetConfirm() {
 
 // ── PHOTOGRAPHER FORGOT PASSWORD ──────────────────────────────────
 function showPhotogForgot() {
-  document.getElementById("photog-signin-panel").style.display = "none";
+  document.getElementById("photog-unified-signin-panel").style.display = "none";
   const panel = document.getElementById("photog-forgot-panel");
   panel.style.display = "block";
   document.getElementById("photog-reset-success").style.display = "none";
@@ -3353,7 +3481,7 @@ function showPhotogForgot() {
 
 function hidePhotogForgot() {
   document.getElementById("photog-forgot-panel").style.display = "none";
-  document.getElementById("photog-signin-panel").style.display = "block";
+  document.getElementById("photog-unified-signin-panel").style.display = "block";
 }
 
 async function photogSendReset() {
@@ -3410,118 +3538,152 @@ async function renderBusinessCard() {
   const canvas = document.getElementById("bcard-canvas");
   const ctx = canvas.getContext("2d");
   const W = 1050, H = 600;
+  const M = 48; // margin
   ctx.clearRect(0, 0, W, H);
 
-  // ── BACKGROUND ────────────────────────────────────────────────
+  // ── BACKGROUND ───────────────────────────────────────────────
   const bg = ctx.createLinearGradient(0, 0, W, H);
-  bg.addColorStop(0, "#08152a");
-  bg.addColorStop(0.5, "#0a2240");
-  bg.addColorStop(1, "#061828");
+  bg.addColorStop(0, "#060f1e");
+  bg.addColorStop(0.6, "#091830");
+  bg.addColorStop(1, "#040d1a");
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
 
-  // Subtle wave pattern overlay
+  // Decorative wave rings (right side atmosphere)
   ctx.save();
-  ctx.globalAlpha = 0.04;
-  for (let i = 0; i < 6; i++) {
+  ctx.globalAlpha = 0.055;
+  for (let i = 0; i < 8; i++) {
     ctx.beginPath();
-    ctx.arc(W * 0.75, H * 0.5, 120 + i * 80, 0, Math.PI * 2);
+    ctx.arc(W - 40, H * 0.5, 90 + i * 75, 0, Math.PI * 2);
     ctx.strokeStyle = "#06b6d4";
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1;
     ctx.stroke();
   }
   ctx.globalAlpha = 1;
   ctx.restore();
 
-  // Cyan accent line top
-  const accentGrad = ctx.createLinearGradient(0, 0, W, 0);
-  accentGrad.addColorStop(0, "#06b6d4");
-  accentGrad.addColorStop(0.5, "#38bdf8");
-  accentGrad.addColorStop(1, "transparent");
-  ctx.fillStyle = accentGrad;
-  ctx.fillRect(0, 0, W, 4);
+  // Subtle noise grain feel via stippling
+  ctx.save();
+  ctx.globalAlpha = 0.018;
+  for (let i = 0; i < 1800; i++) {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
 
-  // Cyan accent line bottom
-  const accentGrad2 = ctx.createLinearGradient(0, 0, W, 0);
-  accentGrad2.addColorStop(0, "#06b6d4");
-  accentGrad2.addColorStop(0.5, "#38bdf8");
-  accentGrad2.addColorStop(1, "transparent");
-  ctx.fillStyle = accentGrad2;
-  ctx.fillRect(0, H - 4, W, 4);
 
   const p = currentPhotographer;
 
-  // ── PROFILE PHOTO ────────────────────────────────────────────
-  const photoX = 72, photoY = H / 2, photoR = 90;
+  // ── LOGO — top left, large ───────────────────────────────────
+  const logoX = M + 20;
+  const logoY = M + 48;
+
+  // Wave tilde symbol before logo
+  ctx.font = "300 24px Georgia, serif";
+  ctx.fillStyle = "rgba(6,182,212,0.6)";
+  ctx.fillText("〜", logoX, logoY - 4);
+
+  ctx.font = "bold 40px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "#06b6d4";
+  ctx.fillText("WaveShots", logoX + 38, logoY);
+
+  // Tagline under logo
+  ctx.font = "300 15px Georgia, serif";
+  ctx.fillStyle = "rgba(148,163,184,0.6)";
+  ctx.letterSpacing = "0.1em";
+  ctx.fillText("SURF PHOTOGRAPHY MARKETPLACE", logoX + 38, logoY + 20);
+
+  // ── PROFILE PHOTO — left center ─────────────────────────────
+  const photoX = M + 76, photoY = H * 0.46 - 25, photoR = 82;
   if (p.profile_photo_url) {
     try {
       const img = await loadImage(p.profile_photo_url);
+      // Glow behind photo
+      ctx.save();
+      ctx.shadowColor = "rgba(6,182,212,0.35)";
+      ctx.shadowBlur = 24;
+      ctx.beginPath();
+      ctx.arc(photoX, photoY, photoR + 2, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(6,182,212,0.5)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+      // Clip and draw photo
       ctx.save();
       ctx.beginPath();
       ctx.arc(photoX, photoY, photoR, 0, Math.PI * 2);
       ctx.clip();
       ctx.drawImage(img, photoX - photoR, photoY - photoR, photoR * 2, photoR * 2);
       ctx.restore();
-      // Cyan border
-      ctx.beginPath();
-      ctx.arc(photoX, photoY, photoR + 3, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(6,182,212,0.6)";
-      ctx.lineWidth = 3;
-      ctx.stroke();
-    } catch(e) {
-      drawAvatarPlaceholder(ctx, photoX, photoY, photoR);
-    }
-  } else {
-    drawAvatarPlaceholder(ctx, photoX, photoY, photoR);
-  }
+    } catch(e) { drawAvatarPlaceholder(ctx, photoX, photoY, photoR); }
+  } else { drawAvatarPlaceholder(ctx, photoX, photoY, photoR); }
 
-  // ── TEXT CONTENT ──────────────────────────────────────────────
-  const textX = 200;
+  // ── PHOTOGRAPHER INFO — center ───────────────────────────────
+  const textX = photoX + photoR + 36;
+  const nameY = photoY - 52;
 
-  // WaveShots logo text
-  ctx.font = "bold 28px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-  ctx.fillStyle = "#06b6d4";
-  ctx.fillText("WaveShots", textX, 90);
-
-  // Divider line
-  ctx.fillStyle = "rgba(6,182,212,0.25)";
-  ctx.fillRect(textX, 100, 320, 1);
-
-  // Photographer name
-  ctx.font = "bold 52px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-  ctx.fillStyle = "#ffffff";
+  // Name
   const name = p.full_name || "Photographer";
-  // Scale font if name too long
-  if (name.length > 16) ctx.font = "bold 40px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-  ctx.fillText(name, textX, 168);
+  ctx.font = name.length > 16
+    ? "bold 36px Georgia, 'Times New Roman', serif"
+    : "bold 44px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(name, textX, nameY);
 
-  // Role label
-  ctx.font = "500 22px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-  ctx.fillStyle = "rgba(148,163,184,0.9)";
-  ctx.fillText("Surf Photographer", textX, 204);
+  // Role
+  ctx.font = "300 20px Georgia, serif";
+  ctx.fillStyle = "rgba(148,163,184,0.75)";
+  ctx.fillText("Surf Photographer", textX, nameY + 30);
 
-  // Locations
-  const locs = (p.locations || []).slice(0, 3);
+  // Thin divider
+  ctx.fillStyle = "rgba(6,182,212,0.2)";
+  ctx.fillRect(textX, nameY + 44, 260, 1);
+
+  // Location
+  const locs = (p.locations || []).slice(0, 2);
   if (locs.length) {
-    ctx.font = "500 19px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-    ctx.fillStyle = "#06b6d4";
-    ctx.fillText("📍 " + locs.join("  ·  "), textX, 248);
+    ctx.font = "500 18px -apple-system, sans-serif";
+    ctx.fillStyle = "#38bdf8";
+    ctx.fillText("📍 " + locs.join("  ·  "), textX, nameY + 72);
   }
 
-  // Website
-  ctx.font = "500 18px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-  ctx.fillStyle = "rgba(148,163,184,0.7)";
-  ctx.fillText("waveshots.vercel.app", textX, H - 52);
+  // Website bottom left
+  ctx.font = "400 15px -apple-system, sans-serif";
+  ctx.fillStyle = "rgba(148,163,184,0.45)";
+  ctx.fillText("waveshots.vercel.app", M + 20, H - M - 6);
 
-  // ── QR CODE ───────────────────────────────────────────────────
-  const qrSize = 170;
-  const qrX = W - qrSize - 60;
-  const qrY = (H - qrSize) / 2;
+  // Bio under name/location
+  if (p.bio) {
+    ctx.font = "300 16px Georgia, serif";
+    ctx.fillStyle = "rgba(148,163,184,0.55)";
+    const bioText = p.bio.length > 52 ? p.bio.slice(0, 52) + "…" : p.bio;
+    ctx.fillText(bioText, textX, nameY + 100);
+  }
 
-  // White QR background box
+  // ── QR CODE — right side ────────────────────────────────────
+  const qrSize = 220;
+  const qrX = W - qrSize - M - 95;
+  const qrBlockH = qrSize + 28 + 20 + 36;
+  const qrTopY = Math.round((H - qrBlockH) / 2) + 14;
+
+  // QR shadow/glow
+  ctx.save();
+  ctx.shadowColor = "rgba(6,182,212,0.25)";
+  ctx.shadowBlur = 24;
   ctx.fillStyle = "white";
-  roundRect(ctx, qrX - 12, qrY - 12, qrSize + 24, qrSize + 24, 10);
+  roundRect(ctx, qrX - 14, qrTopY - 14, qrSize + 28, qrSize + 28, 20);
   ctx.fill();
+  ctx.restore();
+
+  // White QR background box with rounded corners
+  ctx.fillStyle = "white";
+  roundRect(ctx, qrX - 14, qrTopY - 14, qrSize + 28, qrSize + 28, 20);
+  ctx.fill();
+
+  // Draw QR image inside rounded clip
+  // (drawn after QR gen below)
+  const qrY = qrTopY;
 
   // Generate QR to temp canvas
   const tempDiv = document.createElement("div");
@@ -3544,10 +3706,26 @@ async function renderBusinessCard() {
   document.body.removeChild(tempDiv);
 
   // "Scan me" label under QR
-  ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, Arial, sans-serif";
-  ctx.fillStyle = "rgba(148,163,184,0.7)";
+  // CTA pill under QR
+  const ctaPillW = qrSize + 28;
+  const ctaPillH = 36;
+  const ctaPillX = qrX - 14;
+  const ctaPillY = qrY + qrSize + 20;
+  const ctaGrad = ctx.createLinearGradient(ctaPillX, 0, ctaPillX + ctaPillW, 0);
+  ctaGrad.addColorStop(0, "rgba(6,182,212,0.2)");
+  ctaGrad.addColorStop(1, "rgba(6,182,212,0.06)");
+  ctx.fillStyle = ctaGrad;
+  roundRect(ctx, ctaPillX, ctaPillY, ctaPillW, ctaPillH, 18);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(6,182,212,0.28)";
+  ctx.lineWidth = 1;
+  roundRect(ctx, ctaPillX, ctaPillY, ctaPillW, ctaPillH, 18);
+  ctx.stroke();
+
+  ctx.font = "600 14px -apple-system, sans-serif";
+  ctx.fillStyle = "#e2f8ff";
   ctx.textAlign = "center";
-  ctx.fillText("Scan to view sessions", qrX + qrSize / 2, qrY + qrSize + 30);
+  ctx.fillText("Scan & find your session", qrX + qrSize / 2, ctaPillY + 24);
   ctx.textAlign = "left";
 }
 
@@ -3969,7 +4147,8 @@ function navTo(page) {
 
 function showPhotogLoginMenu() {
   closeMenu();
-  showPhotogLogin();
+  showPage('surfer-auth');
+  switchRole('photographer');
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────
