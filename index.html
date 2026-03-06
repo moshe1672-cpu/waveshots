@@ -1580,6 +1580,14 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
               <div class="fee-info-val">80%</div>
               <div class="fee-info-label">Your share of every sale</div>
             </div>
+            <!-- STRIPE CONNECT -->
+            <div class="qr-card" id="pd-stripe-connect-card">
+              <div class="qr-card-title">💳 Payout Account</div>
+              <div class="qr-card-sub" id="pd-stripe-status">Connect your bank account to receive payouts automatically.</div>
+              <button id="pd-stripe-btn" class="qr-download-btn" style="background:linear-gradient(135deg,#635bff,#7c3aed);border:none;color:white;font-weight:700;width:100%;margin-top:8px" onclick="connectStripe()">
+                Connect Bank Account →
+              </button>
+            </div>
             <!-- QR CODE -->
             <div class="qr-card">
               <div class="qr-card-title">Your QR Code</div>
@@ -2263,8 +2271,56 @@ async function openModal(sessionId) {
 function closeMO(e) { if(e.target===document.getElementById("modal")) closeMD(); }
 function closeMD() { document.getElementById("modal").classList.remove("open"); document.body.style.overflow=""; }
 
-function handlePurchase(id, name, price) {
-  alert(`Stripe checkout for ${name}'s bundle — $${price}\n\nConnect Stripe here to complete payment integration!`);
+function handlePurchase(sessionId, name, price) {
+  if (!currentSurfer) {
+    toast("Sign in to purchase this session", "info");
+    closeMD();
+    showPage("surfer-auth");
+    return;
+  }
+  startStripeCheckout(sessionId, name, price);
+}
+
+async function startStripeCheckout(sessionId, sessionTitle, price) {
+  try {
+    toast("Redirecting to secure checkout…", "info");
+
+    // Fetch the session to get photographer_id
+    const sessions = await sbFetch(`sessions?id=eq.${sessionId}&select=photographer_id,price,surfer_name`, { headers: { "Prefer": "" } });
+    const s = sessions[0];
+    if (!s) throw new Error("Session not found");
+
+    // Fetch photographer's Stripe account ID
+    const photographers = await sbFetch(`photographers?id=eq.${s.photographer_id}&select=stripe_account_id`, { headers: { "Prefer": "" } });
+    const photographerStripeId = photographers[0]?.stripe_account_id;
+
+    if (!photographerStripeId) {
+      toast("This photographer hasn't connected their payout account yet.", "error");
+      return;
+    }
+
+    const res = await fetch("/api/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId,
+        sessionTitle: sessionTitle || "WaveShots Session",
+        price: price || s.price,
+        photographerStripeId,
+        surferEmail: currentSurfer?.email || "",
+      }),
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || "Failed to create checkout session");
+    }
+  } catch (err) {
+    console.error("Checkout error:", err);
+    toast("Checkout failed: " + err.message, "error");
+  }
 }
 
 // ── TOAST ───────────────────────────────────────────────────────────────
@@ -2607,6 +2663,7 @@ async function loadPhotogDash() {
 
   // Header
   document.getElementById("pd-name").textContent = p.full_name;
+  updateStripeConnectUI();
   const avatarEl = document.getElementById("pd-avatar");
   avatarEl.innerHTML = p.profile_photo_url ? `<img src="${p.profile_photo_url}" alt=""/>` : "📸";
   const profileAvatarEl = document.getElementById("pd-profile-avatar");
@@ -3291,6 +3348,90 @@ function renderStarRating(rating) {
 
 function goBackToPhotographers() {
   showPage('photographers');
+}
+
+// ── STRIPE CONNECT ONBOARDING ─────────────────────────────────────
+async function connectStripe() {
+  if (!currentPhotographer) return;
+  try {
+    const btn = document.getElementById("pd-stripe-btn");
+    if (btn) { btn.textContent = "Connecting…"; btn.disabled = true; }
+
+    const res = await fetch("/api/connect-onboard", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        photographerId: currentPhotographer.id,
+        email: currentPhotographer.email,
+        name: currentPhotographer.full_name,
+      }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || "Could not start onboarding");
+    }
+  } catch (err) {
+    toast("Connect error: " + err.message, "error");
+    const btn = document.getElementById("pd-stripe-btn");
+    if (btn) { btn.textContent = "Connect Bank Account →"; btn.disabled = false; }
+  }
+}
+
+function updateStripeConnectUI() {
+  const hasStripe = !!currentPhotographer?.stripe_account_id;
+  const statusEl = document.getElementById("pd-stripe-status");
+  const btn = document.getElementById("pd-stripe-btn");
+  if (!statusEl || !btn) return;
+  if (hasStripe) {
+    statusEl.textContent = "✅ Payout account connected — you'll receive 80% of every sale automatically.";
+    btn.textContent = "Update Payout Account";
+    btn.style.background = "rgba(6,182,212,0.15)";
+    btn.style.border = "1px solid rgba(6,182,212,0.3)";
+    btn.style.color = "var(--cyan)";
+  }
+}
+
+// ── HANDLE PAYMENT RETURN FROM STRIPE ────────────────────────────
+function handlePaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const payment = params.get("payment");
+  const stripeStatus = params.get("stripe");
+  const photographerId = params.get("photographer_id");
+
+  if (payment === "success") {
+    toast("🎉 Payment successful! Your session is now unlocked.", "success");
+    // Reload purchases if surfer is logged in
+    if (currentSurfer) {
+      showPage("surfer-dash");
+      loadSurferDash();
+    }
+    // Clear URL params
+    window.history.replaceState({}, "", window.location.pathname);
+  } else if (payment === "cancelled") {
+    toast("Payment cancelled.", "info");
+    window.history.replaceState({}, "", window.location.pathname);
+  }
+
+  if (stripeStatus === "success" && photographerId) {
+    toast("🎉 Payout account connected! You're ready to receive payments.", "success");
+    // Reload photographer session to get updated stripe_account_id
+    if (currentPhotographer && currentPhotographer.id === photographerId) {
+      sbFetch(`photographers?id=eq.${photographerId}&select=*`, { headers: { "Prefer": "" } })
+        .then(data => {
+          if (data[0]) {
+            currentPhotographer = data[0];
+            sessionStorage.setItem("ws_photographer", JSON.stringify(currentPhotographer));
+            updateStripeConnectUI();
+          }
+        }).catch(() => {});
+    }
+    window.history.replaceState({}, "", window.location.pathname);
+  } else if (stripeStatus === "refresh" && photographerId) {
+    toast("Connect session expired — please try again.", "info");
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 }
 
 function switchRole(role) {
@@ -4308,6 +4449,9 @@ document.getElementById("pu-date") && (document.getElementById("pu-date").value 
 restorePhotogSession();
 restoreSurferSession();
 loadPublicGallery();
+handlePaymentReturn();
+// Update Stripe Connect UI if photographer is already logged in
+if (currentPhotographer) updateStripeConnectUI();
 
 // Handle direct QR code links
 const hash = window.location.hash;

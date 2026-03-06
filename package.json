@@ -1,0 +1,8 @@
+{
+  "name": "waveshots",
+  "version": "1.0.0",
+  "description": "WaveShots surf photography marketplace",
+  "dependencies": {
+    "stripe": "^14.0.0"
+  }
+}
