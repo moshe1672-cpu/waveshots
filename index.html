@@ -385,10 +385,15 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
 @media(max-width:768px){
   .login-wrap{padding:80px 16px 32px;align-items:flex-start}
-  .login-card{width:100%}
+  .login-card{width:100%;padding:28px 20px}
+  /* Center the role toggle */
+  #page-surfer-auth .login-card > div:first-child{text-align:center;display:flex;flex-direction:column;align-items:center}
+  /* Fix form-row label spacing inside login card on mobile */
+  .login-card .form-row{margin-bottom:12px}
+  .login-card .form-row label{margin-bottom:4px}
 }
 .login-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;
-  padding:40px;max-width:380px;width:100%;text-align:center}
+  padding:40px;max-width:460px;width:100%;text-align:center}
 .login-card h2{font-size:24px;font-weight:800;margin-bottom:8px}
 .login-card p{color:var(--gray);font-size:14px;margin-bottom:28px}
 .login-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);
@@ -436,6 +441,15 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .locked-grid{grid-template-columns:repeat(3,1fr)}
 }
 
+@media(max-width:768px){
+  /* Admin portal form spacing */
+  .admin-body .form-row{margin-bottom:14px}
+  .admin-body .form-row-2{grid-template-columns:1fr;gap:14px}
+  .admin-body .upload-zone{padding:24px 16px}
+  #page-admin .login-card{padding:28px 20px}
+  #page-admin .login-card p{margin-bottom:16px}
+}
+
 
 
 /* ============ PHOTOGRAPHER PUBLIC PROFILE ============ */
@@ -465,7 +479,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 .profile-stars{color:#fbbf24;font-size:20px;letter-spacing:2px}
 .profile-rating-val{font-size:18px;font-weight:800;color:var(--white)}
 .profile-rating-count{font-size:13px;color:var(--gray)}
-.profile-hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+.profile-hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
   background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:16px;
   padding:24px;min-width:280px}
 .ph-stat{text-align:center}
@@ -1200,7 +1214,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     <div class="login-card" style="max-width:460px">
 
       <!-- ROLE TOGGLE -->
-      <div style="margin-bottom:28px;text-align:center">
+      <div style="margin-bottom:28px;text-align:center;display:flex;flex-direction:column;align-items:center">
         <p style="font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--gray);text-transform:uppercase;margin-bottom:14px">I am a</p>
         <div style="display:inline-flex;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;padding:4px;gap:4px">
           <button id="role-surfer-btn" onclick="switchRole('surfer')"
@@ -2141,7 +2155,7 @@ function renderPublicCards(sessions, filtered) {
         ${s.preview_url
           ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>`
           : `<div class="preview-placeholder">🏄</div>`}
-        <div class="wm-overlay"><div class="wm-text">WaveShots</div></div>
+        <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>
         <button class="fav-btn" id="fav-${s.id}" onclick="event.stopPropagation();toggleFavourite('${s.id}')" title="Save to favourites">♡</button>
         <div class="locked-strip">
           <div class="lock-thumbs">
@@ -2177,9 +2191,9 @@ async function openModal(sessionId) {
 
   document.getElementById("m-preview").innerHTML = s.preview_url
     ? `<img src="${s.preview_url}" alt="${s.surfer_name}" style="width:100%;height:100%;object-fit:cover"/>
-       <div class="wm-overlay"><div class="wm-text">WaveShots</div></div>`
+       <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>`
     : `<div class="modal-preview-placeholder">🏄</div>
-       <div class="wm-overlay"><div class="wm-text">WaveShots</div></div>`;
+       <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>`;
 
   document.getElementById("m-info").innerHTML = `
     <h2>${s.surfer_name}</h2>
@@ -3262,18 +3276,24 @@ async function openPhotographerProfile(photographerId) {
     // Load their sessions
     const sessions = await sbFetch(`sessions?photographer_id=eq.${photographerId}&is_published=eq.true&order=session_date.desc&select=*`, { headers: { "Prefer": "" } });
 
-    // Generate QR for public profile
-    const profileUrl = `${window.location.origin}${window.location.pathname}#photographer/${photographerId}`;
-    setTimeout(() => generateQR(`public-qr-${photographerId}`, profileUrl, 128), 300);
-
     // Load ratings
     const ratings = await sbFetch(`photographer_ratings?photographer_id=eq.${photographerId}&select=*`, { headers: { "Prefer": "" } }).catch(() => []);
     const avgRating = ratings.length ? ratings.reduce((a,b) => a + b.rating, 0) / ratings.length : 0;
-    const totalSales = await sbFetch(`sessions?photographer_id=eq.${photographerId}&select=id`, { headers: { "Prefer": "" } }).catch(() => []);
+
+    // Load sessions sold count (from purchases joined to sessions)
+    const sessionIds = sessions.map(s => s.id);
+    let sessionsSold = 0;
+    if (sessionIds.length) {
+      const purchases = await sbFetch(`purchases?session_id=in.(${sessionIds.join(",")})&select=id`, { headers: { "Prefer": "" } }).catch(() => []);
+      sessionsSold = purchases.length;
+    }
+
+    const profileUrl = `${window.location.origin}${window.location.pathname}#photographer/${photographerId}`;
 
     // Has current surfer already rated?
     const myRating = currentSurfer ? ratings.find(r => r.surfer_id === currentSurfer.id) : null;
 
+    const qrElemId = `public-qr-${photographerId}`;
     cont.innerHTML = `
       <!-- HERO -->
       <div class="profile-hero">
@@ -3308,6 +3328,7 @@ async function openPhotographerProfile(photographerId) {
           <div style="display:flex;flex-direction:column;gap:16px;min-width:280px">
             <div class="profile-hero-stats">
               <div class="ph-stat"><div class="ph-stat-val">${sessions.length}</div><div class="ph-stat-label">Sessions</div></div>
+              <div class="ph-stat"><div class="ph-stat-val">${sessionsSold}</div><div class="ph-stat-label">Sold</div></div>
               <div class="ph-stat"><div class="ph-stat-val">${avgRating ? avgRating.toFixed(1) : "—"}</div><div class="ph-stat-label">Rating</div></div>
               <div class="ph-stat"><div class="ph-stat-val">${ratings.length}</div><div class="ph-stat-label">Reviews</div></div>
             </div>
@@ -3335,7 +3356,7 @@ async function openPhotographerProfile(photographerId) {
               return `<div class="surfer-card" onclick="openModal('${s.id}')">
                 <div class="photo-stack">
                   ${s.preview_url ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>` : `<div class="preview-placeholder">🏄</div>`}
-                  <div class="wm-overlay"><div class="wm-text">WaveShots</div></div>
+                  <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>
                   <div class="locked-strip">
                     <div class="lock-thumbs">${Array(Math.min(4,locked)).fill(0).map(()=>`<div class="lock-thumb">🔒</div>`).join("")}</div>
                     ${locked > 0 ? `<div class="more-badge">+${locked} locked</div>` : ""}
@@ -3358,6 +3379,8 @@ async function openPhotographerProfile(photographerId) {
         }
       </div>
     `;
+    // Generate QR after DOM is ready
+    setTimeout(() => generateQR(qrElemId, profileUrl, 128), 500);
   } catch(e) {
     cont.innerHTML = `<div class="empty-state" style="padding-top:120px"><div class="empty-icon">⚠️</div><h3>Error loading profile</h3><p>${e.message}</p></div>`;
   }
