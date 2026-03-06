@@ -383,6 +383,10 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
 /* ADMIN LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+@media(max-width:768px){
+  .login-wrap{padding:80px 16px 32px;align-items:flex-start}
+  .login-card{width:100%}
+}
 .login-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;
   padding:40px;max-width:380px;width:100%;text-align:center}
 .login-card h2{font-size:24px;font-weight:800;margin-bottom:8px}
@@ -761,15 +765,15 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <nav>
     <div class="logo" onclick="showPage('public')" style="cursor:pointer">WaveShots</div>
   <div style="display:flex;align-items:center;gap:10px">
-    <!-- Surfer login button -->
-    <button class="nav-login-btn" id="nav-surfer-login-btn" onclick="showPage('surfer-auth')" title="Surfer Login">
+    <!-- Single login button -->
+    <button class="nav-login-btn" id="nav-login-btn" onclick="showPage('surfer-auth')" title="Login">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="7" r="4"/>
         <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
       </svg>
-      <span>Surfer</span>
+      <span>Login</span>
     </button>
-    <!-- Surfer dash button (shown when logged in) -->
+    <!-- Surfer dash (shown when surfer logged in) -->
     <button class="nav-login-btn" id="nav-surfer-dash-btn" onclick="showPage('surfer-dash')" title="My Sessions" style="display:none">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="7" r="4"/>
@@ -777,17 +781,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       </svg>
       <span>My Sessions</span>
     </button>
-    <!-- Photographer login button -->
-    <button class="nav-login-btn photog-btn" id="nav-photog-login-btn" onclick="showPage('surfer-auth');switchRole('photographer')" title="Photographer Login">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="7" r="4"/>
-        <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
-        <circle cx="18" cy="8" r="2.5" fill="currentColor" stroke="none"/>
-        <path d="M16 6h4M18 4v4" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-      <span>Photographer</span>
-    </button>
-    <!-- Photographer dash button (shown when logged in) -->
+    <!-- Photographer dash (shown when photographer logged in) -->
     <button class="nav-login-btn photog-btn" id="nav-photog-dash-btn" onclick="showPage('photog-dash')" title="My Dashboard" style="display:none">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="7" r="4"/>
@@ -810,14 +804,14 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
 <!-- DROPDOWN MENU -->
 <div class="dropdown-menu" id="dropdown-menu">
-  <button class="dropdown-item" onclick="navTo('public')">Gallery</button>
+  <button class="dropdown-item" onclick="navTo('public')">Sessions</button>
   <button class="dropdown-item" onclick="navTo('photographers')">Our Photographers</button>
   <button class="dropdown-item" onclick="navTo('apply')">Join as Photographer</button>
   <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')"><span class="item-icon">📊</span>My Dashboard</button>
   <div class="dropdown-divider"></div>
   <button class="dropdown-item" id="surfer-login-menu-btn" onclick="navTo('surfer-auth')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>Surfer Login / Sign Up</button>
   <button class="dropdown-item" id="surfer-dash-menu-btn" style="display:none" onclick="navTo('surfer-dash')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>My Sessions</button>
-  <button class="dropdown-item" onclick="showPhotogLoginMenu()" id="photog-login-btn"><span class="item-icon">🔑</span>Photographer Login</button>
+  <button class="dropdown-item" onclick="showPhotogLoginMenu()" id="photog-login-btn"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>Photographer Login</button>
   <button class="dropdown-item" onclick="navTo('admin')"><span class="item-icon">⚙️</span>Admin</button>
 </div>
 <div id="menu-backdrop" onclick="closeMenu()" style="display:none;position:fixed;inset:0;z-index:98"></div>
@@ -914,6 +908,16 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     </div>
   </div>
 
+  <!-- MISSION STATEMENT -->
+  <div style="padding:80px 48px;background:var(--deep);border-top:1px solid var(--border)">
+    <div style="max-width:1060px;margin:0 auto;text-align:center">
+      <div class="sec-tag" style="margin-bottom:14px">Our Mission</div>
+      <p style="font-size:20px;font-weight:400;line-height:1.75;color:var(--gray);max-width:640px;margin:0 auto">
+        Connecting surfers and the photographers who captured their waves — connections that would have never happened otherwise. <span style="color:var(--white);font-weight:500">Empowering anyone to turn waves into income.</span>
+      </p>
+    </div>
+  </div>
+
   <!-- TRUST SECTION -->
   <div style="padding:80px 48px;background:var(--deep);border-top:1px solid var(--border)">
     <div style="max-width:1100px;margin:0 auto">
@@ -945,14 +949,6 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   <!-- HOW IT WORKS -->
   <div class="how-section" id="how">
     <div style="max-width:1060px;margin:0 auto">
-      <!-- MISSION STATEMENT -->
-      <div style="text-align:center;margin-bottom:64px">
-        <div class="sec-tag" style="margin-bottom:14px">Our Mission</div>
-        <p style="font-size:18px;font-weight:400;line-height:1.7;color:var(--gray);max-width:580px;margin:0 auto">
-          Connecting surfers with the photographers who capture their waves — one session at a time. <span style="color:var(--white)">Empowering anyone to turn waves into income.</span>
-        </p>
-      </div>
-
       <!-- STEPS -->
       <div class="sec-header" style="margin-bottom:40px">
         <div class="sec-tag">Process</div>
@@ -2522,7 +2518,7 @@ async function photogLogin() {
     document.getElementById("photog-login-modal").classList.remove("open");
     document.getElementById("photog-login-btn").style.display = "none";
     document.getElementById("photog-dash-link").style.display = "inline";
-    document.getElementById("nav-photog-login-btn").style.display = "none";
+    document.getElementById("nav-login-btn").style.display = "none";
     document.getElementById("nav-photog-dash-btn").style.display = "flex";
     toast(`Welcome back, ${photog.full_name}! 🤙`, "success");
     showPage("photog-dash");
@@ -2536,7 +2532,7 @@ function photogLogout() {
   sessionStorage.removeItem("ws_photographer");
   document.getElementById("photog-login-btn").style.display = "inline";
   document.getElementById("photog-dash-link").style.display = "none";
-  document.getElementById("nav-photog-login-btn").style.display = "flex";
+  document.getElementById("nav-login-btn").style.display = "flex";
   document.getElementById("nav-photog-dash-btn").style.display = "none";
   showPage("public");
   toast("Signed out", "info");
@@ -2548,7 +2544,7 @@ function restorePhotogSession() {
     currentPhotographer = JSON.parse(stored);
     document.getElementById("photog-login-btn").style.display = "none";
     document.getElementById("photog-dash-link").style.display = "inline";
-    document.getElementById("nav-photog-login-btn").style.display = "none";
+    document.getElementById("nav-login-btn").style.display = "none";
     document.getElementById("nav-photog-dash-btn").style.display = "flex";
   }
 }
@@ -3017,7 +3013,7 @@ function restoreSurferSession() {
 function updateSurferNav() {
   const loginBtn = document.getElementById('surfer-login-menu-btn');
   const dashBtn = document.getElementById('surfer-dash-menu-btn');
-  const navLoginBtn = document.getElementById('nav-surfer-login-btn');
+  const navLoginBtn = document.getElementById('nav-login-btn');
   const navDashBtn = document.getElementById('nav-surfer-dash-btn');
   if (currentSurfer) {
     if (loginBtn) loginBtn.style.display = 'none';
@@ -3027,7 +3023,7 @@ function updateSurferNav() {
   } else {
     if (loginBtn) loginBtn.style.display = 'flex';
     if (dashBtn) dashBtn.style.display = 'none';
-    if (navLoginBtn) navLoginBtn.style.display = 'flex';
+    if (navLoginBtn && !document.getElementById('nav-photog-dash-btn')?.style.display !== 'flex') navLoginBtn.style.display = 'flex';
     if (navDashBtn) navDashBtn.style.display = 'none';
   }
 }
