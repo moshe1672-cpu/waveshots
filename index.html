@@ -135,6 +135,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;
 .surfer-card:hover .preview-img{transform:scale(1.04)}
 .preview-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px}
 .wm-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.wm-sold{color:rgba(220,38,38,0.45) !important}
 .wm-text{color:rgba(255,255,255,0.35);font-size:18px;font-weight:800;letter-spacing:5px;
   text-transform:uppercase;transform:rotate(-30deg);
   border:2px solid rgba(255,255,255,0.2);padding:7px 18px;border-radius:4px}
@@ -544,7 +545,8 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   padding:36px;max-width:580px;width:100%;box-shadow:0 0 80px rgba(6,182,212,0.08)}
 .bcard-modal-title{font-size:20px;font-weight:800;margin-bottom:4px}
 .bcard-modal-sub{font-size:13px;color:var(--gray);margin-bottom:28px}
-.bcard-preview-wrap{display:flex;justify-content:center;margin-bottom:28px}
+.bcard-preview-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;margin-bottom:28px}
+.bcard-side-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:8px;text-align:center}
 .bcard-canvas-wrap{border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.5);
   border:1px solid rgba(6,182,212,0.2)}
 .bcard-actions{display:flex;gap:10px;flex-wrap:wrap}
@@ -769,6 +771,17 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 @media(max-width:768px){
   .two-sided-grid{grid-template-columns:1fr !important}
   .trust-grid{grid-template-columns:1fr !important}
+
+  /* Photographer dashboard mobile */
+  .photog-header{padding:0 !important;flex-direction:column;align-items:stretch !important;width:100vw;margin-left:0;box-sizing:border-box}
+  .photog-header-left{flex-direction:column;align-items:center;text-align:center;padding:24px 20px 16px;width:100%;box-sizing:border-box;background:var(--deep)}
+  .photog-header > div:last-child{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px 16px 16px;background:var(--deep);border-top:1px solid var(--border)}
+  .photog-header > div:last-child .nav-btn{flex:1;min-width:110px;text-align:center}
+  .photog-stats{grid-template-columns:repeat(2,1fr) !important}
+  .photog-stat{text-align:center}
+  .photog-body{padding:20px 16px !important}
+  .photog-section-header{text-align:center}
+  .photog-section-header h3{text-align:center}
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -1471,6 +1484,20 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     </div>
   </div>
   <div class="photographers-section">
+    <div style="max-width:900px;margin:0 auto 32px;padding:0 24px">
+      <div style="position:relative">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.6)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="photographer-search" placeholder="Search by name or location…"
+          oninput="filterPhotographers()"
+          onfocus="this.style.borderColor='rgba(6,182,212,0.5)'"
+          onblur="this.style.borderColor='var(--border)'"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;
+          padding:12px 18px 12px 44px;color:white;font-size:14px;outline:none;font-family:inherit;
+          transition:border-color .2s"/>
+      </div>
+    </div>
     <div id="photographers-grid">
       <div class="loading-state"><div class="loading-spinner"></div><p>Loading photographers...</p></div>
     </div>
@@ -2034,6 +2061,7 @@ async function deleteSession(id, name) {
 
 // ── PUBLIC GALLERY ──────────────────────────────────────────────────────
 let publicSessions = [];
+let purchasedSessionIds = new Set();
 
 async function loadPublicGallery() {
   const cont = document.getElementById("public-gallery-content");
@@ -2055,6 +2083,15 @@ async function loadPublicGallery() {
       const pStat = document.getElementById("stat-photographers");
       if (pStat) pStat.textContent = photogs.length;
     } catch(e) {}
+
+    // Fetch purchased sessions for current surfer to show SOLDSHOTS watermark
+    purchasedSessionIds = new Set();
+    if (currentSurfer) {
+      try {
+        const purch = await sbFetch(`purchases?surfer_id=eq.${currentSurfer.id}&select=session_id`, { headers: { "Prefer": "" } });
+        purch.forEach(p => purchasedSessionIds.add(p.session_id));
+      } catch(e) {}
+    }
 
     populateFilterDropdowns();
     applyFilters();
@@ -2155,7 +2192,7 @@ function renderPublicCards(sessions, filtered) {
         ${s.preview_url
           ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>`
           : `<div class="preview-placeholder">🏄</div>`}
-        <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>
+        <div class="wm-overlay"><div class="${purchasedSessionIds.has(s.id) ? 'wm-text wm-sold' : 'wm-text wm-default'}">${purchasedSessionIds.has(s.id) ? 'SOLDSHOTS' : 'WaveShots'}</div></div>
         <button class="fav-btn" id="fav-${s.id}" onclick="event.stopPropagation();toggleFavourite('${s.id}')" title="Save to favourites">♡</button>
         <div class="locked-strip">
           <div class="lock-thumbs">
@@ -2191,9 +2228,9 @@ async function openModal(sessionId) {
 
   document.getElementById("m-preview").innerHTML = s.preview_url
     ? `<img src="${s.preview_url}" alt="${s.surfer_name}" style="width:100%;height:100%;object-fit:cover"/>
-       <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>`
+       <div class="wm-overlay"><div class="${purchasedSessionIds.has(s.id) ? 'wm-text wm-sold' : 'wm-text wm-default'}">${purchasedSessionIds.has(s.id) ? 'SOLDSHOTS' : 'WaveShots'}</div></div>`
     : `<div class="modal-preview-placeholder">🏄</div>
-       <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>`;
+       <div class="wm-overlay"><div class="${purchasedSessionIds.has(s.id) ? 'wm-text wm-sold' : 'wm-text wm-default'}">${purchasedSessionIds.has(s.id) ? 'SOLDSHOTS' : 'WaveShots'}</div></div>`;
 
   document.getElementById("m-info").innerHTML = `
     <h2>${s.surfer_name}</h2>
@@ -2903,9 +2940,47 @@ async function updatePhotographerFee(id, name) {
 }
 
 // ── PUBLIC PHOTOGRAPHERS PAGE ─────────────────────────────────────
+let allPhotographers = [];
+let photographerSessionCounts = {};
+
+function filterPhotographers() {
+  const q = (document.getElementById("photographer-search")?.value || "").toLowerCase().trim();
+  const filtered = q
+    ? allPhotographers.filter(p =>
+        p.full_name.toLowerCase().includes(q) ||
+        (p.locations || []).some(l => l.toLowerCase().includes(q)) ||
+        (p.bio || "").toLowerCase().includes(q)
+      )
+    : allPhotographers;
+  renderPhotographerGrid(filtered);
+}
+
+function renderPhotographerGrid(photographers) {
+  const grid = document.getElementById("photographers-grid");
+  if (!grid) return;
+  if (!photographers.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><h3>No photographers found</h3><p>Try a different search term.</p></div>`;
+    return;
+  }
+  grid.innerHTML = `<div class="photographer-grid">${photographers.map(p => `
+    <div class="photographer-card" onclick="openPhotographerProfile('${p.id}')">
+      <div class="pc-avatar">${p.profile_photo_url ? `<img src="${p.profile_photo_url}" alt=""/>` : "📸"}</div>
+      <div class="pc-name">${p.full_name}</div>
+      <div class="pc-bio">${p.bio || ""}</div>
+      <div class="pc-locs">${(p.locations || []).map(l => `<span class="photog-loc-tag">📍 ${l}</span>`).join("")}</div>
+      <div class="pc-stats">
+        <div class="pc-stat"><div class="pc-stat-val">${photographerSessionCounts[p.id] || 0}</div><div class="pc-stat-label">Sessions</div></div>
+        <div class="pc-stat"><div class="pc-stat-val" style="font-size:16px">${renderStarRating(p.avg_rating || 0)}</div><div class="pc-stat-label">${p.avg_rating ? parseFloat(p.avg_rating).toFixed(1) + " rating" : "No ratings"}</div></div>
+      </div>
+    </div>`).join("")}</div>`;
+}
+
 async function loadPhotographersPage() {
   const grid = document.getElementById("photographers-grid");
   if (!grid) return;
+  // Clear search
+  const searchInput = document.getElementById("photographer-search");
+  if (searchInput) searchInput.value = "";
   try {
     const photographers = await sbFetch("photographers?status=eq.approved&select=*", { headers: { "Prefer": "" } });
     if (!photographers.length) {
@@ -2914,25 +2989,15 @@ async function loadPhotographersPage() {
     }
 
     // Get session counts per photographer
-    const sessionCounts = {};
     for (const p of photographers) {
       try {
         const sessions = await sbFetch(`sessions?photographer_id=eq.${p.id}&is_published=eq.true&select=id`, { headers: { "Prefer": "" } });
-        sessionCounts[p.id] = sessions.length;
-      } catch(e) { sessionCounts[p.id] = 0; }
+        photographerSessionCounts[p.id] = sessions.length;
+      } catch(e) { photographerSessionCounts[p.id] = 0; }
     }
 
-    grid.innerHTML = `<div class="photographer-grid">${photographers.map(p => `
-      <div class="photographer-card" onclick="openPhotographerProfile('${p.id}')">
-        <div class="pc-avatar">${p.profile_photo_url ? `<img src="${p.profile_photo_url}" alt=""/>` : "📸"}</div>
-        <div class="pc-name">${p.full_name}</div>
-        <div class="pc-bio">${p.bio || ""}</div>
-        <div class="pc-locs">${(p.locations || []).map(l => `<span class="photog-loc-tag">📍 ${l}</span>`).join("")}</div>
-        <div class="pc-stats">
-          <div class="pc-stat"><div class="pc-stat-val">${sessionCounts[p.id] || 0}</div><div class="pc-stat-label">Sessions</div></div>
-          <div class="pc-stat"><div class="pc-stat-val" style="font-size:16px">${renderStarRating(p.avg_rating || 0)}</div><div class="pc-stat-label">${p.avg_rating ? parseFloat(p.avg_rating).toFixed(1) + " rating" : "No ratings"}</div></div>
-        </div>
-      </div>`).join("")}</div>`;
+    allPhotographers = photographers;
+    renderPhotographerGrid(photographers);
   } catch(e) {
     grid.innerHTML = `<p style="color:var(--gray)">Could not load photographers.</p>`;
   }
@@ -3216,8 +3281,6 @@ async function loadSurferHistory() {
 // PHOTOGRAPHER PUBLIC PROFILES
 // ════════════════════════════════════════════════════════════════
 
-let allPhotographers = [];
-
 function renderStarRating(rating) {
   if (!rating) return "☆☆☆☆☆";
   const full = Math.floor(rating);
@@ -3356,7 +3419,7 @@ async function openPhotographerProfile(photographerId) {
               return `<div class="surfer-card" onclick="openModal('${s.id}')">
                 <div class="photo-stack">
                   ${s.preview_url ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>` : `<div class="preview-placeholder">🏄</div>`}
-                  <div class="wm-overlay"><div class="wm-text">SOLDSHOTS</div></div>
+                  <div class="wm-overlay"><div class="wm-text wm-default">WaveShots</div></div>
                   <div class="locked-strip">
                     <div class="lock-thumbs">${Array(Math.min(4,locked)).fill(0).map(()=>`<div class="lock-thumb">🔒</div>`).join("")}</div>
                     ${locked > 0 ? `<div class="more-badge">+${locked} locked</div>` : ""}
@@ -3547,6 +3610,7 @@ async function openBusinessCardModal() {
   if (!currentPhotographer) return;
   document.getElementById("bcard-modal").style.display = "flex";
   await renderBusinessCard();
+  await renderBusinessCardBack();
 }
 
 function closeBusinessCardModal() {
@@ -3791,14 +3855,82 @@ function loadImage(src) {
   });
 }
 
-function downloadBusinessCard() {
-  const canvas = document.getElementById("bcard-canvas");
+function downloadBusinessCard(side = 'front') {
+  const canvasId = side === 'back' ? 'bcard-canvas-back' : 'bcard-canvas';
+  const canvas = document.getElementById(canvasId);
   const name = (currentPhotographer?.full_name || "photographer").replace(/\s+/g, "-").toLowerCase();
   const link = document.createElement("a");
-  link.download = `waveshots-card-${name}.png`;
+  link.download = `waveshots-card-${name}-${side}.png`;
   link.href = canvas.toDataURL("image/png");
   link.click();
-  toast("Business card downloaded! 🪪", "success");
+  toast(`Business card ${side} downloaded! 🪪`, "success");
+}
+
+async function renderBusinessCardBack() {
+  const canvas = document.getElementById("bcard-canvas-back");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const W = 1050, H = 600;
+  ctx.clearRect(0, 0, W, H);
+
+  // ── GRADIENT BACKGROUND (purple → teal, inspired by reference card) ──
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, "#7c3aed");   // vivid purple
+  bg.addColorStop(0.45, "#06b6d4"); // cyan
+  bg.addColorStop(1, "#14b8a6");   // teal
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // ── SUBTLE GRAIN ──────────────────────────────────────────────
+  ctx.save();
+  for (let i = 0; i < 2200; i++) {
+    const x = Math.random() * W;
+    const y = Math.random() * H;
+    ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.04})`;
+    ctx.fillRect(x, y, 1, 1);
+  }
+  ctx.restore();
+
+  // ── BIG BOLD "WAVE" TEXT IN BACK (like ULTRA on reference) ───
+  // Large black slab behind the script
+  ctx.save();
+  ctx.font = "bold 280px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "rgba(0,0,0,0.18)";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("WAVE", W / 2, H / 2 - 40);
+  ctx.restore();
+
+  // ── SCRIPT "Shots" OVERLAY ────────────────────────────────────
+  ctx.save();
+  ctx.font = "italic bold 160px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  // Drop shadow
+  ctx.shadowColor = "rgba(0,0,0,0.4)";
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 4;
+  ctx.fillText("Shots", W / 2, H / 2 + 60);
+  ctx.restore();
+
+  // ── TAGLINE AT BOTTOM ─────────────────────────────────────────
+  ctx.save();
+  ctx.font = "600 22px sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.7)";
+  ctx.textAlign = "center";
+  ctx.letterSpacing = "0.15em";
+  ctx.fillText("SURF PHOTOGRAPHY MARKETPLACE", W / 2, H - 44);
+  ctx.restore();
+
+  // ── URL AT BOTTOM ─────────────────────────────────────────────
+  ctx.save();
+  ctx.font = "500 18px sans-serif";
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.textAlign = "center";
+  ctx.fillText("waveshots.vercel.app", W / 2, H - 18);
+  ctx.restore();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -4197,16 +4329,26 @@ window.addEventListener('scroll', () => {
 <div id="bcard-modal" style="display:none" class="bcard-modal-overlay" onclick="if(event.target===this)closeBusinessCardModal()">
   <div class="bcard-modal">
     <div class="bcard-modal-title">🪪 Your Business Card</div>
-    <div class="bcard-modal-sub">Dark-branded card with your photo, QR code, and locations — ready to print or share.</div>
+    <div class="bcard-modal-sub">Front + back — ready to print or share.</div>
     <div class="bcard-preview-wrap">
-      <div class="bcard-canvas-wrap">
-        <canvas id="bcard-canvas" width="1050" height="600" style="width:480px;height:auto;display:block"></canvas>
+      <div>
+        <div class="bcard-side-label">Front</div>
+        <div class="bcard-canvas-wrap">
+          <canvas id="bcard-canvas" width="1050" height="600" style="width:480px;height:auto;display:block"></canvas>
+        </div>
+      </div>
+      <div>
+        <div class="bcard-side-label">Back</div>
+        <div class="bcard-canvas-wrap">
+          <canvas id="bcard-canvas-back" width="1050" height="600" style="width:480px;height:auto;display:block"></canvas>
+        </div>
       </div>
     </div>
     <div class="bcard-actions">
-      <button class="bcard-dl-btn" onclick="downloadBusinessCard()">⬇ Download PNG</button>
-      <button class="bcard-close-btn" onclick="closeBusinessCardModal()">Close</button>
+      <button class="bcard-dl-btn" onclick="downloadBusinessCard('front')">⬇ Download Front</button>
+      <button class="bcard-dl-btn" onclick="downloadBusinessCard('back')">⬇ Download Back</button>
     </div>
+    <button class="bcard-close-btn" style="width:100%;margin-top:10px" onclick="closeBusinessCardModal()">Close</button>
     <div class="bcard-tip">Standard business card size (3.5" × 2") at 300dpi — upload directly to Moo, Vistaprint, or any print service.</div>
   </div>
 </div>
