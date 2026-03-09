@@ -13,12 +13,19 @@ module.exports = async (req, res) => {
   try {
     const { sessionId, sessionTitle, price, photographerStripeId, surferEmail } = req.body;
 
-    if (!sessionId || !price || !photographerStripeId) {
+    if (!sessionId || !price) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     const priceInCents = Math.round(parseFloat(price) * 100);
-    const platformFee = Math.round(priceInCents * 0.20); // WaveShots keeps 20%
+
+    // Only add transfer split if photographer has a connected Stripe account
+    const paymentIntentData = {};
+    if (photographerStripeId) {
+      const platformFee = Math.round(priceInCents * 0.20);
+      paymentIntentData.application_fee_amount = platformFee;
+      paymentIntentData.transfer_data = { destination: photographerStripeId };
+    }
 
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -38,7 +45,7 @@ module.exports = async (req, res) => {
           quantity: 1,
         },
       ],
-      payment_intent_data: {},
+      payment_intent_data: paymentIntentData,
       metadata: {
         sessionId,
         surferEmail: surferEmail || "",
