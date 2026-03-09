@@ -38,12 +38,7 @@ module.exports = async (req, res) => {
           quantity: 1,
         },
       ],
-      payment_intent_data: {
-        application_fee_amount: platformFee,
-        transfer_data: {
-          destination: photographerStripeId,
-        },
-      },
+      payment_intent_data: {},
       metadata: {
         sessionId,
         surferEmail: surferEmail || "",
