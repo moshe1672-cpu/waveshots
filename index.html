@@ -852,12 +852,11 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   <button class="dropdown-item" onclick="navTo('sessions')">Sessions</button>
   <button class="dropdown-item" onclick="navTo('photographers')">Our Photographers</button>
   <button class="dropdown-item" onclick="navTo('apply')">Join as Photographer</button>
-  <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')"><span class="item-icon">📊</span>My Dashboard</button>
+  <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')">My Dashboard</button>
   <div class="dropdown-divider"></div>
   <button class="dropdown-item" id="surfer-login-menu-btn" onclick="navTo('surfer-auth')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>Surfer Login / Sign Up</button>
   <button class="dropdown-item" id="surfer-dash-menu-btn" style="display:none" onclick="navTo('surfer-dash')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>My Sessions</button>
   <button class="dropdown-item" onclick="showPhotogLoginMenu()" id="photog-login-btn"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>Photographer Login</button>
-  <button class="dropdown-item" onclick="navTo('admin')"><span class="item-icon">⚙️</span>Admin</button>
 </div>
 <div id="menu-backdrop" onclick="closeMenu()" style="display:none;position:fixed;inset:0;z-index:98"></div>
 <nav style="display:none">
@@ -4879,6 +4878,11 @@ const hash = window.location.hash;
 if (hash && hash.startsWith("#photographer/")) {
   const pid = hash.replace("#photographer/", "");
   if (pid) setTimeout(() => openPhotographerProfile(pid), 500);
+}
+
+// Secret admin access via ?admin in URL
+if (new URLSearchParams(window.location.search).has("admin")) {
+  setTimeout(() => showPage("admin"), 100);
 }
 
 // Parallax scroll effect on hero
