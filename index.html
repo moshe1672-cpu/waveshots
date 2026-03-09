@@ -2294,11 +2294,6 @@ async function startStripeCheckout(sessionId, sessionTitle, price) {
     const photographers = await sbFetch(`photographers?id=eq.${s.photographer_id}&select=stripe_account_id`, { headers: { "Prefer": "" } });
     const photographerStripeId = photographers[0]?.stripe_account_id;
 
-    if (!photographerStripeId) {
-      toast("This photographer hasn't connected their payout account yet.", "error");
-      return;
-    }
-
     const res = await fetch("/api/create-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
