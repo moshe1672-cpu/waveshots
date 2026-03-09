@@ -20,7 +20,6 @@ async function supabase(path, method = "GET", body = null) {
   try { return JSON.parse(text); } catch { return null; }
 }
 
-// Collect raw body as buffer
 async function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -73,17 +72,16 @@ module.exports = async (req, res) => {
         }
       }
 
-      // Record purchase in Supabase
+      // Record purchase — column names match your actual Supabase table
       const purchase = await supabase("purchases", "POST", {
         session_id: sessionId,
         surfer_id: surferId,
-        surfer_email: surferEmail || session.customer_email || null,
-        stripe_payment_intent: session.payment_intent,
-        amount_paid: session.amount_total / 100,
+        customer_email: surferEmail || session.customer_email || null,
+        stripe_payment_id: session.payment_intent,
         purchased_at: new Date().toISOString(),
       });
 
-      console.log("✅ Purchase recorded:", purchase);
+      console.log("✅ Purchase recorded:", JSON.stringify(purchase));
     } catch (err) {
       console.error("Failed to record purchase:", err.message);
     }
@@ -92,7 +90,6 @@ module.exports = async (req, res) => {
   res.status(200).json({ received: true });
 };
 
-// Disable body parser so we get raw body for Stripe signature verification
 module.exports.config = {
   api: {
     bodyParser: false,
