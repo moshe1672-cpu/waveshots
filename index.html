@@ -457,7 +457,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 #page-photographer-profile{position:relative}
 #profile-back-btn{position:absolute;top:72px;left:48px;z-index:20}
 @media(max-width:768px){
-  #profile-back-btn{top:72px;left:16px}
+  #profile-back-btn{position:relative;top:auto;left:auto;margin:72px 0 0 16px;display:inline-flex !important}
 }
 .profile-hero{background:linear-gradient(180deg,#0a1628 0%,#0a2540 100%);
   padding:80px 48px 60px;position:relative;overflow:hidden}
@@ -1662,7 +1662,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       </div>
       <div style="display:flex;gap:10px">
         <button class="nav-btn" onclick="showPage('photog-upload')">+ Upload Session</button>
-        <button class="nav-btn" onclick="openBusinessCardModal()" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">🪪 Business Card</button>
+        <button class="nav-btn" onclick="openBusinessCardModal()" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">🪪 Generate Business Card</button>
         <button class="nav-btn ghost" onclick="photogLogout()">Sign Out</button>
       </div>
     </div>
