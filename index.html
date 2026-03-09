@@ -783,6 +783,13 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .photog-section-header{text-align:center}
   .photog-section-header h3{text-align:center}
 }
+@media(max-width:768px){
+  #page-sessions [style*="padding:48px 48px"]{padding:32px 16px 20px !important}
+  #page-sessions [style*="padding:20px 48px"]{padding:16px !important}
+  #page-sessions [style*="padding:24px 48px"]{padding:16px !important}
+  #page-sessions [style*="padding:16px 48px"]{padding:12px 16px !important}
+  #page-sessions [style*="flex:1;min-width:200px"]{min-width:100% !important}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -831,7 +838,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
 <!-- DROPDOWN MENU -->
 <div class="dropdown-menu" id="dropdown-menu">
-  <button class="dropdown-item" onclick="navTo('public')">Sessions</button>
+  <button class="dropdown-item" onclick="navTo('sessions')">Sessions</button>
   <button class="dropdown-item" onclick="navTo('photographers')">Our Photographers</button>
   <button class="dropdown-item" onclick="navTo('apply')">Join as Photographer</button>
   <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')"><span class="item-icon">📊</span>My Dashboard</button>
@@ -857,7 +864,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <h1>The marketplace connecting<br/><em>surfers with photographers.</em></h1>
       <p>Shoot the surf. Earn from every sale.</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">Browse Sessions</button>
+        <button class="btn-primary" onclick="navTo('sessions')">Browse Sessions</button>
         <button class="btn-ghost" onclick="showPage('apply')">Become a Photographer</button>
       </div>
     </div>
@@ -875,7 +882,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
           <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Preview one shot for free</div><div style="font-size:13px;color:var(--gray);line-height:1.6">See what you're buying before you commit — no surprises</div></div>
           <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Pay once, download everything</div><div style="font-size:13px;color:var(--gray);line-height:1.6">Full HD bundle, no watermark, yours forever</div></div>
         </div>
-        <button class="btn-primary" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})" style="margin-top:32px;width:100%">Browse Sessions →</button>
+        <button class="btn-primary" onclick="navTo('sessions')" style="margin-top:32px;width:100%">Browse Sessions →</button>
       </div>
       <div style="padding:52px 48px;background:rgba(6,182,212,0.03);text-align:center">
         <div style="font-size:32px;margin-bottom:16px">📸</div>
@@ -1475,6 +1482,96 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 </div>
 
 <!-- ========== PHOTOGRAPHERS PAGE ========== -->
+<!-- ========== SESSIONS PAGE ========== -->
+<div id="page-sessions" class="page">
+  <div style="min-height:100vh;padding-top:52px">
+    <!-- PAGE HEADER -->
+    <div style="background:linear-gradient(180deg,rgba(6,182,212,0.08) 0%,transparent 100%);border-bottom:1px solid var(--border);padding:48px 48px 32px">
+      <div style="max-width:1200px;margin:0 auto">
+        <div class="sec-tag" style="margin-bottom:10px">Browse</div>
+        <h1 style="font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px">All Sessions</h1>
+        <p id="sessions-page-count" style="color:var(--gray);font-size:15px">Loading sessions...</p>
+      </div>
+    </div>
+
+    <!-- SEARCH & FILTERS -->
+    <div style="background:var(--deep);border-bottom:1px solid var(--border);padding:20px 48px;position:sticky;top:52px;z-index:50">
+      <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <!-- Search -->
+        <div style="position:relative;flex:1;min-width:200px">
+          <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.4" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="sp-search" placeholder="Search surfer name, spot..." oninput="applySessionsFilters()"
+            style="width:100%;padding:10px 14px 10px 40px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none"/>
+        </div>
+        <!-- Spot filter -->
+        <select id="sp-spot" onchange="applySessionsFilters()"
+          style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer">
+          <option value="">📍 All Spots</option>
+        </select>
+        <!-- Date filter -->
+        <select id="sp-date" onchange="applySessionsFilters()"
+          style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer">
+          <option value="">📅 All Dates</option>
+        </select>
+        <!-- Time filter -->
+        <select id="sp-time" onchange="applySessionsFilters()"
+          style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer">
+          <option value="">🕐 Any Time</option>
+          <option value="morning">Morning (before 12pm)</option>
+          <option value="afternoon">Afternoon (12–5pm)</option>
+          <option value="evening">Evening (after 5pm)</option>
+        </select>
+        <!-- Price filter -->
+        <select id="sp-price" onchange="applySessionsFilters()"
+          style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer">
+          <option value="">💰 Any Price</option>
+          <option value="under25">Under $25</option>
+          <option value="25to50">$25 – $50</option>
+          <option value="over50">Over $50</option>
+        </select>
+        <!-- Sort -->
+        <select id="sp-sort" onchange="applySessionsFilters()"
+          style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
+        <!-- Clear -->
+        <button onclick="clearSessionsFilters()"
+          style="padding:10px 18px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:100px;color:var(--gray);font-size:13px;cursor:pointer;white-space:nowrap">
+          ✕ Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTS INFO -->
+    <div style="max-width:1200px;margin:0 auto;padding:16px 48px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div id="sp-results-info" style="font-size:13px;color:var(--gray)"></div>
+      <!-- Per-page selector -->
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray)">
+        Show
+        <select id="sp-perpage" onchange="applySessionsFilters()"
+          style="padding:4px 10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:white;font-size:13px;outline:none;cursor:pointer">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        per page
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div style="max-width:1200px;margin:0 auto;padding:24px 48px 48px">
+      <div id="sp-grid" class="surfers-grid">
+        <div class="loading-state"><div class="loading-spinner"></div><p>Loading sessions...</p></div>
+      </div>
+      <!-- PAGINATION -->
+      <div id="sp-pagination" style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:48px;flex-wrap:wrap"></div>
+    </div>
+  </div>
+</div>
+
 <div id="page-photographers" class="page">
   <div class="pg-hero">
     <div class="pg-hero-content">
@@ -1483,21 +1580,43 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <p>Every WaveShots photographer is verified and passionate about surf culture. Find who shoots at your break.</p>
     </div>
   </div>
-  <div class="photographers-section">
-    <div style="max-width:900px;margin:0 auto 32px;padding:0 24px">
-      <div style="position:relative">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.6)" stroke-width="2" stroke-linecap="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input type="text" id="photographer-search" placeholder="Search by name or location…"
+  <!-- FILTER BAR -->
+  <div style="background:var(--deep);border-bottom:1px solid var(--border);padding:20px 48px;position:sticky;top:52px;z-index:50">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <!-- Search -->
+      <div style="position:relative;flex:1;min-width:200px">
+        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="photographer-search" placeholder="Search by name, location, or bio…"
           oninput="filterPhotographers()"
           onfocus="this.style.borderColor='rgba(6,182,212,0.5)'"
           onblur="this.style.borderColor='var(--border)'"
-          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;
-          padding:12px 18px 12px 44px;color:white;font-size:14px;outline:none;font-family:inherit;
-          transition:border-color .2s"/>
+          style="width:100%;padding:10px 14px 10px 40px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s"/>
       </div>
+      <!-- Surf Spot filter -->
+      <select id="photographer-spot-filter" onchange="filterPhotographers()"
+        style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer;font-family:inherit">
+        <option value="">🌊 All Surf Spots</option>
+      </select>
+      <!-- Sort -->
+      <select id="photographer-sort" onchange="filterPhotographers()"
+        style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer;font-family:inherit">
+        <option value="sessions">Most Sessions</option>
+        <option value="rating">Top Rated</option>
+        <option value="name">Name A–Z</option>
+      </select>
+      <!-- Clear -->
+      <button onclick="clearPhotographerFilters()"
+        style="padding:10px 18px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:100px;color:var(--gray);font-size:13px;cursor:pointer;white-space:nowrap;font-family:inherit">
+        ✕ Clear
+      </button>
     </div>
+    <!-- Results count -->
+    <div style="max-width:1100px;margin:8px auto 0;padding:0 4px">
+      <div id="photographer-results-count" style="font-size:13px;color:var(--gray)"></div>
+    </div>
+  </div>
+
+  <div class="photographers-section">
     <div id="photographers-grid">
       <div class="loading-state"><div class="loading-spinner"></div><p>Loading photographers...</p></div>
     </div>
@@ -1812,6 +1931,7 @@ function showPage(name) {
   if (!page) return;
   page.classList.add("active");
   if (name === "public") loadPublicGallery();
+  if (name === "sessions") loadSessionsPage();
   if (name === "photographers") loadPhotographersPage();
   if (name === "photog-dash") loadPhotogDash();
   if (name === "surfer-dash") loadSurferDash();
@@ -2182,6 +2302,200 @@ function clearFilters() {
   document.getElementById("filter-time").value = "";
   applyFilters();
 }
+
+// ── DEDICATED SESSIONS PAGE ────────────────────────────────────────────────
+let sessionsPageData = [];
+let sessionsPageCurrent = 1;
+
+async function loadSessionsPage() {
+  const grid = document.getElementById("sp-grid");
+  if (!grid) return;
+  grid.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading sessions...</p></div>`;
+
+  try {
+    // Reuse publicSessions if already loaded, otherwise fetch
+    if (!publicSessions || publicSessions.length === 0) {
+      publicSessions = await sbFetch("sessions?is_published=eq.true&order=session_date.desc&select=*", { headers: { "Prefer": "" } });
+    }
+
+    // Fetch purchased sessions for watermark
+    purchasedSessionIds = new Set();
+    if (currentSurfer) {
+      try {
+        const purch = await sbFetch(`purchases?surfer_id=eq.${currentSurfer.id}&select=session_id`, { headers: { "Prefer": "" } });
+        purch.forEach(p => purchasedSessionIds.add(p.session_id));
+      } catch(e) {}
+    }
+
+    // Populate filter dropdowns
+    const spots = [...new Set(publicSessions.map(s => s.spot).filter(Boolean))].sort();
+    const spotSel = document.getElementById("sp-spot");
+    if (spotSel) spotSel.innerHTML = `<option value="">📍 All Spots</option>` + spots.map(sp => `<option value="${sp}">${sp}</option>`).join("");
+
+    const dates = [...new Set(publicSessions.map(s => s.session_date).filter(Boolean))].sort().reverse();
+    const dateSel = document.getElementById("sp-date");
+    if (dateSel) dateSel.innerHTML = `<option value="">📅 All Dates</option>` + dates.map(d => {
+      const label = new Date(d + "T12:00:00").toLocaleDateString("en-US", {weekday:"short",month:"short",day:"numeric"});
+      return `<option value="${d}">${label}</option>`;
+    }).join("");
+
+    sessionsPageCurrent = 1;
+    applySessionsFilters();
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load sessions</h3><p>${e.message}</p></div>`;
+  }
+}
+
+function applySessionsFilters() {
+  const query = (document.getElementById("sp-search")?.value || "").toLowerCase().trim();
+  const spot = document.getElementById("sp-spot")?.value || "";
+  const date = document.getElementById("sp-date")?.value || "";
+  const time = document.getElementById("sp-time")?.value || "";
+  const price = document.getElementById("sp-price")?.value || "";
+  const sort = document.getElementById("sp-sort")?.value || "newest";
+  const perPage = parseInt(document.getElementById("sp-perpage")?.value || "25");
+
+  let filtered = (publicSessions || []).filter(s => {
+    if (query && !(s.surfer_name||"").toLowerCase().includes(query) && !(s.spot||"").toLowerCase().includes(query)) return false;
+    if (spot && s.spot !== spot) return false;
+    if (date && s.session_date !== date) return false;
+    if (time && s.time_start) {
+      const hour = parseInt(s.time_start.split(":")[0]);
+      if (time === "morning" && hour >= 12) return false;
+      if (time === "afternoon" && (hour < 12 || hour >= 17)) return false;
+      if (time === "evening" && hour < 17) return false;
+    }
+    if (price) {
+      const p = parseFloat(s.price);
+      if (price === "under25" && p >= 25) return false;
+      if (price === "25to50" && (p < 25 || p > 50)) return false;
+      if (price === "over50" && p <= 50) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    if (sort === "newest") return new Date(b.session_date) - new Date(a.session_date);
+    if (sort === "oldest") return new Date(a.session_date) - new Date(b.session_date);
+    if (sort === "price-asc") return parseFloat(a.price) - parseFloat(b.price);
+    if (sort === "price-desc") return parseFloat(b.price) - parseFloat(a.price);
+    return 0;
+  });
+
+  sessionsPageData = filtered;
+  const totalPages = Math.ceil(filtered.length / perPage) || 1;
+  if (sessionsPageCurrent > totalPages) sessionsPageCurrent = 1;
+
+  const start = (sessionsPageCurrent - 1) * perPage;
+  const paginated = filtered.slice(start, start + perPage);
+
+  // Results info
+  const info = document.getElementById("sp-results-info");
+  if (info) {
+    const hasFilters = query || spot || date || time || price;
+    info.innerHTML = hasFilters
+      ? `Showing <strong>${start + 1}–${Math.min(start + perPage, filtered.length)}</strong> of <strong>${filtered.length}</strong> matching sessions`
+      : `Showing <strong>${start + 1}–${Math.min(start + perPage, filtered.length)}</strong> of <strong>${filtered.length}</strong> sessions`;
+  }
+
+  // Page header count
+  const countEl = document.getElementById("sessions-page-count");
+  if (countEl) countEl.textContent = `${publicSessions.length} sessions available`;
+
+  renderSessionsGrid(paginated, filtered.length === 0);
+  renderSessionsPagination(totalPages, perPage);
+}
+
+function renderSessionsGrid(sessions, isEmpty) {
+  const grid = document.getElementById("sp-grid");
+  if (!grid) return;
+
+  if (isEmpty) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><h3>No sessions found</h3><p>Try adjusting your filters.</p><button class="btn-ghost" onclick="clearSessionsFilters()" style="margin-top:16px;padding:10px 24px;font-size:14px">Clear Filters</button></div>`;
+    return;
+  }
+
+  grid.innerHTML = sessions.map(s => {
+    const locked = Math.max(0, s.total_photos - 1);
+    const sold = purchasedSessionIds.has(s.id);
+    return `<div class="surfer-card" onclick="openModal('${s.id}')">
+      <div class="photo-stack">
+        ${s.preview_url ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>` : `<div class="preview-placeholder">🏄</div>`}
+        <div class="wm-overlay"><div class="${sold ? 'wm-text wm-sold' : 'wm-text wm-default'}">${sold ? 'SOLDSHOTS' : 'WaveShots'}</div></div>
+        <button class="fav-btn" id="fav-${s.id}" onclick="event.stopPropagation();toggleFavourite('${s.id}')" title="Save to favourites">♡</button>
+        <div class="locked-strip">
+          <div class="lock-thumbs">${Array(Math.min(4,locked)).fill(0).map(()=>`<div class="lock-thumb">🔒</div>`).join("")}</div>
+          ${locked > 0 ? `<div class="more-badge">+${locked} locked</div>` : ""}
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top"><div class="surfer-name">${s.surfer_name}</div><div class="session-date">${new Date(s.session_date + "T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</div></div>
+        <div class="card-pills">
+          <span class="pill">📍 ${s.spot}</span>
+          <span class="pill wave">🌊 ${s.wave_height}</span>
+          ${formatTimeRange(s.time_start, s.time_end) ? `<span class="pill">🕐 ${formatTimeRange(s.time_start, s.time_end)}</span>` : ""}
+        </div>
+        <div class="card-footer">
+          <div><div class="price-label">Full Bundle</div><div class="price">$${parseFloat(s.price).toFixed(2)} <span>/ ${s.total_photos} photo${s.total_photos !== 1 ? "s" : ""}</span></div></div>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('${s.id}')">View Bundle</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderSessionsPagination(totalPages, perPage) {
+  const el = document.getElementById("sp-pagination");
+  if (!el || totalPages <= 1) { if (el) el.innerHTML = ""; return; }
+
+  const btnStyle = (active) => `padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid ${active ? "var(--cyan)" : "var(--border)"};background:${active ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.04)"};color:${active ? "var(--cyan)" : "var(--gray)"};`;
+
+  let html = `<button style="${btnStyle(false)}opacity:${sessionsPageCurrent===1?.4:1}" onclick="sessionsGoPage(${sessionsPageCurrent-1})" ${sessionsPageCurrent===1?"disabled":""}>← Prev</button>`;
+
+  // Show page numbers with ellipsis
+  const pages = [];
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= sessionsPageCurrent - 2 && i <= sessionsPageCurrent + 2)) {
+      pages.push(i);
+    } else if (pages[pages.length-1] !== "...") {
+      pages.push("...");
+    }
+  }
+
+  pages.forEach(p => {
+    if (p === "...") {
+      html += `<span style="color:var(--gray);padding:0 4px">…</span>`;
+    } else {
+      html += `<button style="${btnStyle(p === sessionsPageCurrent)}" onclick="sessionsGoPage(${p})">${p}</button>`;
+    }
+  });
+
+  html += `<button style="${btnStyle(false)}opacity:${sessionsPageCurrent===totalPages?.4:1}" onclick="sessionsGoPage(${sessionsPageCurrent+1})" ${sessionsPageCurrent===totalPages?"disabled":""}>Next →</button>`;
+  el.innerHTML = html;
+}
+
+function sessionsGoPage(page) {
+  const perPage = parseInt(document.getElementById("sp-perpage")?.value || "25");
+  const totalPages = Math.ceil(sessionsPageData.length / perPage) || 1;
+  if (page < 1 || page > totalPages) return;
+  sessionsPageCurrent = page;
+  applySessionsFilters();
+  document.getElementById("page-sessions").scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function clearSessionsFilters() {
+  document.getElementById("sp-search").value = "";
+  document.getElementById("sp-spot").value = "";
+  document.getElementById("sp-date").value = "";
+  document.getElementById("sp-time").value = "";
+  document.getElementById("sp-price").value = "";
+  document.getElementById("sp-sort").value = "newest";
+  sessionsPageCurrent = 1;
+  applySessionsFilters();
+}
+
 
 function renderPublicCards(sessions, filtered) {
   const cont = document.getElementById("public-gallery-content");
@@ -2997,15 +3311,49 @@ let photographerSessionCounts = {};
 
 function filterPhotographers() {
   const q = (document.getElementById("photographer-search")?.value || "").toLowerCase().trim();
-  const filtered = q
-    ? allPhotographers.filter(p =>
-        p.full_name.toLowerCase().includes(q) ||
-        (p.locations || []).some(l => l.toLowerCase().includes(q)) ||
-        (p.bio || "").toLowerCase().includes(q)
-      )
-    : allPhotographers;
+  const spot = document.getElementById("photographer-spot-filter")?.value || "";
+  const sort = document.getElementById("photographer-sort")?.value || "sessions";
+
+  let filtered = allPhotographers.filter(p => {
+    if (q && !(
+      p.full_name.toLowerCase().includes(q) ||
+      (p.locations || []).some(l => l.toLowerCase().includes(q)) ||
+      (p.bio || "").toLowerCase().includes(q)
+    )) return false;
+    if (spot && !(p.locations || []).some(l => l.toLowerCase().includes(spot.toLowerCase()))) return false;
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    if (sort === "sessions") return (photographerSessionCounts[b.id] || 0) - (photographerSessionCounts[a.id] || 0);
+    if (sort === "rating") return (parseFloat(b.avg_rating) || 0) - (parseFloat(a.avg_rating) || 0);
+    if (sort === "name") return a.full_name.localeCompare(b.full_name);
+    return 0;
+  });
+
+  // Results count
+  const countEl = document.getElementById("photographer-results-count");
+  if (countEl) {
+    const hasFilters = q || spot;
+    countEl.innerHTML = hasFilters
+      ? `<strong>${filtered.length}</strong> of ${allPhotographers.length} photographers`
+      : `${allPhotographers.length} photographer${allPhotographers.length !== 1 ? "s" : ""}`;
+  }
+
   renderPhotographerGrid(filtered);
 }
+
+function clearPhotographerFilters() {
+  const s = document.getElementById("photographer-search");
+  const sp = document.getElementById("photographer-spot-filter");
+  const so = document.getElementById("photographer-sort");
+  if (s) s.value = "";
+  if (sp) sp.value = "";
+  if (so) so.value = "sessions";
+  filterPhotographers();
+}
+
 
 function renderPhotographerGrid(photographers) {
   const grid = document.getElementById("photographers-grid");
@@ -3030,9 +3378,14 @@ function renderPhotographerGrid(photographers) {
 async function loadPhotographersPage() {
   const grid = document.getElementById("photographers-grid");
   if (!grid) return;
-  // Clear search
+  // Clear all filters
   const searchInput = document.getElementById("photographer-search");
   if (searchInput) searchInput.value = "";
+  const spotFilter = document.getElementById("photographer-spot-filter");
+  if (spotFilter) spotFilter.value = "";
+  const sortFilter = document.getElementById("photographer-sort");
+  if (sortFilter) sortFilter.value = "sessions";
+
   try {
     const photographers = await sbFetch("photographers?status=eq.approved&select=*", { headers: { "Prefer": "" } });
     if (!photographers.length) {
@@ -3049,7 +3402,17 @@ async function loadPhotographersPage() {
     }
 
     allPhotographers = photographers;
-    renderPhotographerGrid(photographers);
+
+    // Populate surf spot dropdown from all photographer locations
+    if (spotFilter) {
+      const allSpots = [...new Set(
+        photographers.flatMap(p => p.locations || []).filter(Boolean)
+      )].sort();
+      spotFilter.innerHTML = `<option value="">🌊 All Surf Spots</option>` +
+        allSpots.map(s => `<option value="${s}">📍 ${s}</option>`).join("");
+    }
+
+    filterPhotographers();
   } catch(e) {
     grid.innerHTML = `<p style="color:var(--gray)">Could not load photographers.</p>`;
   }
@@ -3087,7 +3450,7 @@ async function surferSignup() {
   if (pw.length < 8) { toast('Password must be at least 8 characters', 'error'); return; }
 
   try {
-    const existing = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=id`, { headers: { 'Prefer': '' } });
+    const existing = await sbFetch(`surfers?email=ilike.${encodeURIComponent(email)}&select=id`, { headers: { 'Prefer': '' } });
     if (existing.length) { toast('An account with this email already exists', 'error'); return; }
 
     const [surfer] = await sbFetch('surfers', {
@@ -3110,7 +3473,7 @@ async function surferLogin() {
   if (!email || !pw) { toast('Please enter email and password', 'error'); return; }
 
   try {
-    const results = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=*`, { headers: { 'Prefer': '' } });
+    const results = await sbFetch(`surfers?email=ilike.${encodeURIComponent(email)}&select=*`, { headers: { 'Prefer': '' } });
     if (!results.length) { toast('No account found with that email', 'error'); return; }
     const surfer = results[0];
     if (surfer.password_hash !== await simpleHash(pw)) { toast('Incorrect password', 'error'); return; }
@@ -3555,7 +3918,7 @@ async function openPhotographerProfile(photographerId) {
               return `<div class="surfer-card" onclick="openModal('${s.id}')">
                 <div class="photo-stack">
                   ${s.preview_url ? `<img class="preview-img" src="${s.preview_url}" alt="${s.surfer_name}"/>` : `<div class="preview-placeholder">🏄</div>`}
-                  <div class="wm-overlay"><div class="wm-text wm-default">WaveShots</div></div>
+                  <div class="wm-overlay"><div class="${purchasedSessionIds.has(s.id) ? 'wm-text wm-sold' : 'wm-text wm-default'}">${purchasedSessionIds.has(s.id) ? 'SOLDSHOTS' : 'WaveShots'}</div></div>
                   <div class="locked-strip">
                     <div class="lock-thumbs">${Array(Math.min(4,locked)).fill(0).map(()=>`<div class="lock-thumb">🔒</div>`).join("")}</div>
                     ${locked > 0 ? `<div class="more-badge">+${locked} locked</div>` : ""}
@@ -3654,7 +4017,7 @@ async function surferSendReset() {
   const email = document.getElementById("sr-email").value.trim();
   if (!email) { toast("Please enter your email", "error"); return; }
   try {
-    const results = await sbFetch(`surfers?email=eq.${encodeURIComponent(email)}&select=id,email`, { headers: { "Prefer": "" } });
+    const results = await sbFetch(`surfers?email=ilike.${encodeURIComponent(email)}&select=id,email`, { headers: { "Prefer": "" } });
     if (!results.length) { toast("No account found with that email", "error"); return; }
     const code = generateResetCode();
     resetCodes[email] = { code, type: "surfer", id: results[0].id, expires: Date.now() + 600000 };
