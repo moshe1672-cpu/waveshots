@@ -790,6 +790,17 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   #page-sessions [style*="padding:16px 48px"]{padding:12px 16px !important}
   #page-sessions [style*="flex:1;min-width:200px"]{min-width:100% !important}
 }
+#home-slider::-webkit-scrollbar{display:none}
+.slider-card{flex:0 0 300px;background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s}
+.slider-card:hover{transform:translateY(-4px);border-color:rgba(6,182,212,0.3)}
+.slider-card .photo-stack{position:relative;height:200px;overflow:hidden;background:var(--mid)}
+.slider-card .photo-stack img{width:100%;height:100%;object-fit:cover}
+.slider-card .card-body{padding:16px}
+.slider-card .surfer-name{font-size:15px;font-weight:700;margin-bottom:6px}
+.slider-card .card-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.slider-card .card-footer{display:flex;align-items:center;justify-content:space-between}
+.slider-card .price{font-size:15px;font-weight:800;color:var(--cyan)}
+.slider-card .buy-btn{padding:6px 14px;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:100px;color:white;cursor:pointer}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -870,6 +881,65 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     </div>
   </div>
 
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="stat-sessions">—</div><div class="stat-label">Sessions Uploaded</div></div>
+    <div class="stat"><div class="stat-num">HD+</div><div class="stat-label">Hi-Res Downloads</div></div>
+    <div class="stat"><div class="stat-num">48hr</div><div class="stat-label">Avg. Turnaround</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Satisfaction</div></div>
+  </div>
+
+  <!-- RECENT SESSIONS SLIDER -->
+  <div style="padding:64px 0;background:var(--ocean);border-bottom:1px solid var(--border)" id="gallery">
+    <div style="max-width:1200px;margin:0 auto;padding:0 48px">
+      <!-- Header row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="sec-tag" style="margin-bottom:8px">Latest Uploads</div>
+          <h2 style="font-size:26px;font-weight:800;letter-spacing:-.5px;margin:0">Recent Sessions</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <!-- Arrow buttons -->
+          <button id="slider-prev" onclick="slideScroll(-1)"
+            style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s"
+            onmouseover="this.style.background='rgba(6,182,212,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">‹</button>
+          <button id="slider-next" onclick="slideScroll(1)"
+            style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s"
+            onmouseover="this.style.background='rgba(6,182,212,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">›</button>
+          <button onclick="navTo('sessions')"
+            style="padding:10px 22px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:100px;color:white;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap">
+            View All Sessions →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slider track — full width with overflow -->
+    <div style="position:relative">
+      <div id="home-slider" style="display:flex;gap:20px;overflow-x:auto;scroll-behavior:smooth;padding:8px 48px 20px;scrollbar-width:none;-ms-overflow-style:none">
+        <div class="loading-state" style="min-width:300px"><div class="loading-spinner"></div><p>Loading...</p></div>
+      </div>
+      <!-- Fade edges -->
+      <div style="position:absolute;top:0;left:0;width:48px;height:100%;background:linear-gradient(to right,var(--ocean),transparent);pointer-events:none"></div>
+      <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(to left,var(--ocean),transparent);pointer-events:none"></div>
+    </div>
+
+    <!-- hidden legacy gallery content still needed for applyFilters() -->
+    <div id="public-gallery-content" style="display:none"></div>
+  </div>
+
+  <!-- SEARCH & FILTER BAR (hidden — kept for applyFilters compatibility) -->
+  <div style="display:none">
+    <input id="pub-search" type="text"/>
+    <select id="filter-spot"></select>
+    <select id="filter-date"></select>
+    <select id="filter-time"></select>
+    <div id="results-bar"></div>
+    <div id="results-count"></div>
+    <div id="active-filters"></div>
+    <button id="filter-clear-btn"></button>
+  </div>
+
   <!-- TWO SIDED VALUE PROPS -->
   <div style="background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
     <div class="two-sided-grid" style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr">
@@ -895,50 +965,6 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
         </div>
         <button class="btn-primary" onclick="showPage('apply')" style="margin-top:32px;width:100%;background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(14,116,144,0.15));border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">Join as Photographer →</button>
       </div>
-    </div>
-  </div>
-
-  <!-- STATS -->
-  <div class="stats-bar">
-    <div class="stat"><div class="stat-num" id="stat-sessions">—</div><div class="stat-label">Sessions Uploaded</div></div>
-    <div class="stat"><div class="stat-num">HD+</div><div class="stat-label">Hi-Res Downloads</div></div>
-    <div class="stat"><div class="stat-num">48hr</div><div class="stat-label">Avg. Turnaround</div></div>
-    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Satisfaction</div></div>
-  </div>
-
-  <!-- SEARCH & FILTER BAR -->
-  <div class="search-filter-bar" id="gallery">
-    <div class="search-filter-inner">
-      <div class="pub-search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" class="pub-search-input" id="pub-search" placeholder="Search by surfer name..." oninput="applyFilters()"/>
-      </div>
-      <select class="filter-select" id="filter-spot" onchange="applyFilters()">
-        <option value="">📍 All Spots</option>
-      </select>
-      <select class="filter-select" id="filter-date" onchange="applyFilters()">
-        <option value="">📅 All Dates</option>
-      </select>
-      <select class="filter-select" id="filter-time" onchange="applyFilters()">
-        <option value="">🕐 Any Time</option>
-        <option value="morning">Morning (before 12pm)</option>
-        <option value="afternoon">Afternoon (12pm–5pm)</option>
-        <option value="evening">Evening (after 5pm)</option>
-      </select>
-      <button class="filter-clear" id="filter-clear-btn" onclick="clearFilters()">✕ Clear</button>
-    </div>
-  </div>
-
-  <!-- RESULTS BAR -->
-  <div class="results-bar" id="results-bar" style="display:none">
-    <div id="results-count"></div>
-    <div class="active-filters" id="active-filters"></div>
-  </div>
-
-  <!-- GALLERY -->
-  <div class="gallery-section" style="padding-top:40px">
-    <div id="public-gallery-content">
-      <div class="loading-state"><div class="loading-spinner"></div><p>Loading sessions...</p></div>
     </div>
   </div>
 
@@ -2192,8 +2218,8 @@ let publicSessions = [];
 let purchasedSessionIds = new Set();
 
 async function loadPublicGallery() {
-  const cont = document.getElementById("public-gallery-content");
-  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading sessions...</p></div>`;
+  const slider = document.getElementById("home-slider");
+  if (slider) slider.innerHTML = `<div class="loading-state" style="min-width:300px"><div class="loading-spinner"></div><p>Loading...</p></div>`;
   try {
     publicSessions = await sbFetch("sessions?is_published=eq.true&order=session_date.desc&select=*", {
       headers: { "Prefer": "" }
@@ -2212,7 +2238,7 @@ async function loadPublicGallery() {
       if (pStat) pStat.textContent = photogs.length;
     } catch(e) {}
 
-    // Fetch purchased sessions for current surfer to show SOLDSHOTS watermark
+    // Fetch purchased sessions for watermark
     purchasedSessionIds = new Set();
     if (currentSurfer) {
       try {
@@ -2221,12 +2247,49 @@ async function loadPublicGallery() {
       } catch(e) {}
     }
 
+    renderHomeSlider();
     populateFilterDropdowns();
-    applyFilters();
   } catch(e) {
-    cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load sessions</h3><p>${e.message}</p></div>`;
+    if (slider) slider.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load sessions</h3><p>${e.message}</p></div>`;
   }
 }
+
+function renderHomeSlider() {
+  const slider = document.getElementById("home-slider");
+  if (!slider) return;
+  if (!publicSessions.length) {
+    slider.innerHTML = `<div class="empty-state" style="min-width:300px"><div class="empty-icon">🌊</div><h3>No sessions yet</h3></div>`;
+    return;
+  }
+  slider.innerHTML = publicSessions.map(s => {
+    const sold = purchasedSessionIds.has(s.id);
+    const locked = Math.max(0, s.total_photos - 1);
+    return `<div class="slider-card" onclick="openModal('${s.id}')">
+      <div class="photo-stack">
+        ${s.preview_url ? `<img src="${s.preview_url}" alt="${s.surfer_name}"/>` : `<div class="preview-placeholder" style="height:200px;display:flex;align-items:center;justify-content:center;font-size:48px">🏄</div>`}
+        <div class="wm-overlay"><div class="${sold ? 'wm-text wm-sold' : 'wm-text wm-default'}">${sold ? 'SOLDSHOTS' : 'WaveShots'}</div></div>
+        ${locked > 0 ? `<div class="locked-strip"><div class="more-badge" style="margin-left:auto">+${locked} locked</div></div>` : ""}
+      </div>
+      <div class="card-body">
+        <div class="surfer-name">${s.surfer_name}</div>
+        <div class="card-pills">
+          <span class="pill">📍 ${s.spot}</span>
+          <span class="pill wave">🌊 ${s.wave_height}</span>
+        </div>
+        <div class="card-footer">
+          <div class="price">$${parseFloat(s.price).toFixed(2)}</div>
+          <button class="buy-btn" onclick="event.stopPropagation();openModal('${s.id}')">View</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function slideScroll(dir) {
+  const slider = document.getElementById("home-slider");
+  if (slider) slider.scrollBy({ left: dir * 660, behavior: "smooth" });
+}
+
 
 function populateFilterDropdowns() {
   // Spots
