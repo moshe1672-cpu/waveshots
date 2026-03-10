@@ -46,6 +46,7 @@ module.exports = async (req, res) => {
 
   console.log("Webhook received:", event.type);
 
+  // ── CHECKOUT COMPLETED ─────────────────────────────────────────
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const { sessionId, surferEmail } = session.metadata || {};
@@ -72,16 +73,14 @@ module.exports = async (req, res) => {
         }
       }
 
-      // Look up session to get photographer_id and price
+      // Look up session to get photographer_id
       let photographerId = null;
-      let sessionPrice = 0;
       try {
         const sessions = await supabase(`sessions?id=eq.${sessionId}&select=photographer_id,price`);
         if (sessions && sessions.length > 0) {
           photographerId = sessions[0].photographer_id;
-          sessionPrice = parseFloat(sessions[0].price) || 0;
         }
-        console.log("Session photographer:", photographerId, "price:", sessionPrice);
+        console.log("Session photographer:", photographerId);
       } catch (e) {
         console.error("Session lookup failed:", e.message);
       }
@@ -116,6 +115,7 @@ module.exports = async (req, res) => {
             amount: photographerEarnings,
             platform_fee: parseFloat((amountPaid * 0.2).toFixed(2)),
             status: "pending",
+            stripe_payment_intent: session.payment_intent,
             created_at: new Date().toISOString(),
           });
           console.log("✅ Payout recorded:", JSON.stringify(payout));
@@ -126,6 +126,55 @@ module.exports = async (req, res) => {
 
     } catch (err) {
       console.error("Failed to process payment:", err.message);
+    }
+  }
+
+  // ── TRANSFER PAID (photographer received their money) ──────────
+  if (event.type === "transfer.paid") {
+    const transfer = event.data.object;
+    const paymentIntent = transfer.source_transaction || transfer.metadata?.payment_intent;
+
+    console.log("Transfer paid — transfer id:", transfer.id, "payment_intent:", paymentIntent);
+
+    if (paymentIntent) {
+      try {
+        // Find the matching payout by stripe_payment_intent and mark as paid
+        const result = await supabase(
+          `payouts?stripe_payment_intent=eq.${paymentIntent}`,
+          "PATCH",
+          {
+            status: "paid",
+            paid_at: new Date().toISOString(),
+          }
+        );
+        console.log("✅ Payout marked as paid:", JSON.stringify(result));
+      } catch (e) {
+        console.error("Failed to update payout status:", e.message);
+      }
+    } else {
+      // Fallback: try matching by transfer amount and recent pending payouts
+      console.warn("No payment_intent on transfer — cannot auto-match payout");
+    }
+  }
+
+  // ── TRANSFER FAILED ────────────────────────────────────────────
+  if (event.type === "transfer.failed") {
+    const transfer = event.data.object;
+    const paymentIntent = transfer.source_transaction || transfer.metadata?.payment_intent;
+
+    console.log("Transfer FAILED — transfer id:", transfer.id);
+
+    if (paymentIntent) {
+      try {
+        await supabase(
+          `payouts?stripe_payment_intent=eq.${paymentIntent}`,
+          "PATCH",
+          { status: "failed" }
+        );
+        console.log("✅ Payout marked as failed");
+      } catch (e) {
+        console.error("Failed to update payout status to failed:", e.message);
+      }
     }
   }
 
