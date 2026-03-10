@@ -72,7 +72,24 @@ module.exports = async (req, res) => {
         }
       }
 
-      // Record purchase — column names match your actual Supabase table
+      // Look up session to get photographer_id and price
+      let photographerId = null;
+      let sessionPrice = 0;
+      try {
+        const sessions = await supabase(`sessions?id=eq.${sessionId}&select=photographer_id,price`);
+        if (sessions && sessions.length > 0) {
+          photographerId = sessions[0].photographer_id;
+          sessionPrice = parseFloat(sessions[0].price) || 0;
+        }
+        console.log("Session photographer:", photographerId, "price:", sessionPrice);
+      } catch (e) {
+        console.error("Session lookup failed:", e.message);
+      }
+
+      const amountPaid = session.amount_total / 100;
+      const photographerEarnings = parseFloat((amountPaid * 0.8).toFixed(2));
+
+      // Record purchase
       const purchase = await supabase("purchases", "POST", {
         session_id: sessionId,
         surfer_id: surferId,
@@ -80,10 +97,27 @@ module.exports = async (req, res) => {
         stripe_payment_id: session.payment_intent,
         purchased_at: new Date().toISOString(),
       });
-
       console.log("✅ Purchase recorded:", JSON.stringify(purchase));
+
+      // Record payout for photographer
+      if (photographerId) {
+        try {
+          const payout = await supabase("payouts", "POST", {
+            photographer_id: photographerId,
+            session_id: sessionId,
+            amount: photographerEarnings,
+            platform_fee: parseFloat((amountPaid * 0.2).toFixed(2)),
+            status: "pending",
+            created_at: new Date().toISOString(),
+          });
+          console.log("✅ Payout recorded:", JSON.stringify(payout));
+        } catch (e) {
+          console.error("Payout record failed:", e.message);
+        }
+      }
+
     } catch (err) {
-      console.error("Failed to record purchase:", err.message);
+      console.error("Failed to process payment:", err.message);
     }
   }
 
