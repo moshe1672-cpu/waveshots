@@ -789,9 +789,19 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .photog-body{padding:20px 16px !important}
   .photog-section-header{text-align:center}
   .photog-section-header h3{text-align:center}
+
+  /* QR card mobile fix */
+  .photog-profile-card{padding:20px 16px}
+  .qr-card{padding:20px 16px;margin-top:16px}
+  .qr-box{width:100%;box-sizing:border-box;display:flex;justify-content:center;padding:16px}
+  .qr-box canvas,.qr-box img{width:160px !important;height:160px !important}
+  .qr-download-btn{padding:12px;font-size:13px;border-radius:10px}
 }
 @media(max-width:768px){
-  #page-sessions [style*="padding:48px 48px"]{padding:32px 16px 20px !important}
+  #gallery{padding:28px 0 !important}
+  #gallery > div:first-child{padding:0 16px !important}
+  #gallery #home-slider{padding:8px 16px 20px !important}
+}
   #page-sessions [style*="padding:20px 48px"]{padding:16px !important}
   #page-sessions [style*="padding:24px 48px"]{padding:16px !important}
   #page-sessions [style*="padding:16px 48px"]{padding:12px 16px !important}
@@ -956,7 +966,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
         <h3 style="font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:24px">Shoot the surf.<br/>Earn from every sale.</h3>
         <div style="display:flex;flex-direction:column;gap:18px">
           <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Apply and get approved</div><div style="font-size:13px;color:var(--gray);line-height:1.6">We review every application within 48 hours</div></div>
-          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Upload sessions and set your price</div><div style="font-size:13px;color:var(--gray);line-height:1.6">You control what you charge — no minimum, no cap</div></div>
+          <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Upload sessions and set your price</div><div style="font-size:13px;color:var(--gray);line-height:1.6">You control what you charge — $10 minimum, no cap</div></div>
           <div><div style="font-size:14px;font-weight:700;margin-bottom:3px">Keep 80% of every sale</div><div style="font-size:13px;color:var(--gray);line-height:1.6">WaveShots takes 20% — you keep the rest, always</div></div>
         </div>
         <button class="btn-primary" onclick="showPage('apply')" style="margin-top:32px;width:100%;background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(14,116,144,0.15));border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">Join as Photographer →</button>
@@ -1082,7 +1092,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
             </div>
             <div class="form-row">
               <label>Price ($)</label>
-              <input type="number" id="f-price" placeholder="29" min="1" step="0.01"/>
+              <input type="number" id="f-price" placeholder="29" min="10" step="0.01"/>
             </div>
           </div>
 
@@ -1181,7 +1191,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       </div>
       <div class="form-row">
         <label>Price ($)</label>
-        <input type="number" id="e-price" min="1" step="0.01"/>
+        <input type="number" id="e-price" min="10" step="0.01"/>
       </div>
     </div>
     <div class="form-row">
@@ -1759,7 +1769,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
           </div>
           <div class="form-row">
             <label>Price ($)</label>
-            <input type="number" id="pu-price" placeholder="29" min="1" step="0.01"/>
+            <input type="number" id="pu-price" placeholder="29" min="10" step="0.01"/>
           </div>
         </div>
         <div class="form-row">
@@ -2017,6 +2027,7 @@ async function createSession() {
   const publish = document.getElementById("f-publish").checked;
 
   if (!name || !date || !price || !spot || !wave) { toast("Please fill in all fields", "error"); return; }
+  if (price < 10) { toast("Minimum price is $10.00", "error"); return; }
   if (selectedFiles.length === 0) { toast("Please upload at least one photo", "error"); return; }
 
   const btn = document.getElementById("submit-btn");
@@ -2757,6 +2768,7 @@ async function saveSession() {
   const publish = document.getElementById("e-publish").checked;
 
   if (!name || !date || !price || !spot || !wave) { toast("Please fill in all fields", "error"); return; }
+  if (price < 10) { toast("Minimum price is $10.00", "error"); return; }
 
   const btn = document.getElementById("edit-submit-btn");
   const txt = document.getElementById("edit-submit-text");
@@ -3037,6 +3049,11 @@ async function loadPhotogDash() {
   document.getElementById("pd-locs").innerHTML = (p.locations || []).map(l =>
     `<span class="photog-loc-tag">📍 ${l}</span>`).join("");
 
+  // Generate QR code for dashboard
+  pdPhotographerName = p.full_name;
+  const profileUrl = `${window.location.origin}${window.location.pathname}?photographer=${p.id}`;
+  setTimeout(() => generateQR("pd-qr-code", profileUrl, 128), 300);
+
   // Load sessions
   try {
     const sessions = await sbFetch(`sessions?photographer_id=eq.${p.id}&order=created_at.desc&select=*`, { headers: { "Prefer": "" } });
@@ -3206,6 +3223,7 @@ async function photographerCreateSession() {
   const publish = document.getElementById("pu-publish").checked;
 
   if (!name || !date || !price || !spot || !wave) { toast("Please fill in all fields", "error"); return; }
+  if (price < 10) { toast("Minimum price is $10.00", "error"); return; }
   if (puFiles.length === 0) { toast("Please upload at least one photo", "error"); return; }
 
   const btn = document.getElementById("pu-submit-btn");
