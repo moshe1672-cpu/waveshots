@@ -435,7 +435,10 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   .admin-body{padding:24px 20px}
   .admin-header{padding:24px 20px}
   .gallery-section{padding:60px 20px}
-  .stats-bar{padding:24px 20px;gap:32px}
+  .stats-bar{padding:16px 12px;gap:0;flex-wrap:nowrap}
+  .stat{flex:1;padding:0 4px}
+  .stat-num{font-size:18px;letter-spacing:-.5px}
+  .stat-label{font-size:10px;margin-top:2px}
   .how-section{padding:60px 20px}
   footer{padding:28px 20px}
   .modal{padding:24px}
@@ -899,12 +902,9 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     <div style="max-width:1200px;margin:0 auto;padding:0 48px">
       <!-- Header row -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-        <div>
-          <div class="sec-tag" style="margin-bottom:8px">Latest Uploads</div>
-          <h2 style="font-size:26px;font-weight:800;letter-spacing:-.5px;margin:0">Recent Sessions</h2>
-        </div>
+        <div class="sec-tag">Latest Uploads</div>
         <button onclick="navTo('sessions')"
-          style="padding:10px 22px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:100px;color:white;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap">
+          style="padding:6px 14px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:100px;color:white;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.05em;text-transform:uppercase">
           View All Sessions →
         </button>
       </div>
@@ -3625,20 +3625,29 @@ async function downloadSession(sessionId, name) {
   try {
     const photos = await sbFetch(`photos?session_id=eq.${sessionId}&select=*`, { headers: { 'Prefer': '' } });
     if (!photos.length) { toast('No photos found', 'error'); return; }
-    // Open each photo in new tab for download
-    photos.forEach((photo, i) => {
-      setTimeout(() => {
-        const url = sbImgUrl(photo.storage_path);
+
+    toast(`Downloading ${photos.length} photo${photos.length !== 1 ? 's' : ''}... 📸`, 'success');
+
+    for (let i = 0; i < photos.length; i++) {
+      const photo = photos[i];
+      const url = sbImgUrl(photo.storage_path);
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `${name}-${i+1}.jpg`;
-        a.target = '_blank';
+        a.href = blobUrl;
+        a.download = `${name}-${i + 1}.jpg`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-      }, i * 300);
-    });
-    toast(`Downloading ${photos.length} photos... 📸`, 'success');
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        // Small delay between downloads to avoid browser blocking
+        if (i < photos.length - 1) await new Promise(r => setTimeout(r, 400));
+      } catch (e) {
+        console.error(`Failed to download photo ${i + 1}:`, e);
+      }
+    }
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
@@ -3810,12 +3819,17 @@ function handlePaymentReturn() {
 
   if (payment === "success") {
     toast("🎉 Payment successful! Your session is now unlocked.", "success");
-    // Reload purchases if surfer is logged in
+    // Refresh purchased session IDs so watermarks update everywhere
     if (currentSurfer) {
+      sbFetch(`purchases?surfer_id=eq.${currentSurfer.id}&select=session_id`, { headers: { "Prefer": "" } })
+        .then(purch => {
+          purchasedSessionIds = new Set(purch.map(p => p.session_id));
+          // Re-render slider if visible
+          if (publicSessions && publicSessions.length) renderHomeSlider();
+        }).catch(() => {});
       showPage("surfer-dash");
       loadSurferDash();
     }
-    // Clear URL params
     window.history.replaceState({}, "", window.location.pathname);
   } else if (payment === "cancelled") {
     toast("Payment cancelled.", "info");
@@ -3824,7 +3838,6 @@ function handlePaymentReturn() {
 
   if (stripeStatus === "success" && photographerId) {
     toast("🎉 Payout account connected! You're ready to receive payments.", "success");
-    // Reload photographer session to get updated stripe_account_id
     if (currentPhotographer && currentPhotographer.id === photographerId) {
       sbFetch(`photographers?id=eq.${photographerId}&select=*`, { headers: { "Prefer": "" } })
         .then(data => {
@@ -4211,14 +4224,34 @@ async function renderBusinessCard() {
   const logoX = M + 20;
   const logoY = M + 48;
 
-  // Wave tilde symbol before logo
-  ctx.font = "300 24px Georgia, serif";
-  ctx.fillStyle = "rgba(6,182,212,0.6)";
-  ctx.fillText("〜", logoX, logoY - 4);
+  // Wave hamburger icon before logo (3 wave lines, white)
+  const waveX = logoX;
+  const waveY = logoY - 32;
+  const waveW = 38;
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,0.9)";
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(waveX, waveY);
+  ctx.quadraticCurveTo(waveX + waveW*0.25, waveY-5, waveX + waveW*0.5, waveY);
+  ctx.quadraticCurveTo(waveX + waveW*0.75, waveY+5, waveX + waveW, waveY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(waveX, waveY+12);
+  ctx.quadraticCurveTo(waveX + waveW*0.25, waveY+7, waveX + waveW*0.5, waveY+12);
+  ctx.quadraticCurveTo(waveX + waveW*0.75, waveY+17, waveX + waveW, waveY+12);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(waveX, waveY+24);
+  ctx.quadraticCurveTo(waveX + waveW*0.25, waveY+19, waveX + waveW*0.5, waveY+24);
+  ctx.quadraticCurveTo(waveX + waveW*0.75, waveY+29, waveX + waveW, waveY+24);
+  ctx.stroke();
+  ctx.restore();
 
   ctx.font = "bold 40px Georgia, 'Times New Roman', serif";
   ctx.fillStyle = "#06b6d4";
-  ctx.fillText("WaveShots", logoX + 38, logoY);
+  ctx.fillText("WaveShots", logoX + waveW + 14, logoY);
 
   // Tagline under logo
   ctx.font = "300 15px Georgia, serif";
