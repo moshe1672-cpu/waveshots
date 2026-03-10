@@ -89,6 +89,14 @@ module.exports = async (req, res) => {
       const amountPaid = session.amount_total / 100;
       const photographerEarnings = parseFloat((amountPaid * 0.8).toFixed(2));
 
+      // Mark session as sold
+      try {
+        await supabase(`sessions?id=eq.${sessionId}`, "PATCH", { is_sold: true });
+        console.log("✅ Session marked as sold");
+      } catch (e) {
+        console.error("Failed to mark session sold:", e.message);
+      }
+
       // Record purchase
       const purchase = await supabase("purchases", "POST", {
         session_id: sessionId,
