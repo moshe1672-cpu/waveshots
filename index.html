@@ -1697,9 +1697,22 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
               <h2 style="margin-bottom:0">🏄 My Sessions</h2>
               <button class="nav-btn" onclick="showPage('photog-upload')" style="padding:9px 18px;font-size:13px">+ Upload New</button>
             </div>
-            <div class="search-wrap" style="margin-bottom:14px">
-              <span class="search-icon">🔍</span>
-              <input type="text" class="search-input" id="pd-session-search" placeholder="Search sessions..." oninput="filterPhotogSessions()"/>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center">
+              <div class="search-wrap" style="flex:2;min-width:160px;margin-bottom:0">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="pd-session-search" placeholder="Search sessions..." oninput="filterPhotogSessions()"/>
+              </div>
+              <select id="pd-filter-status" onchange="filterPhotogSessions()" style="flex:1;min-width:100px;background:var(--card-bg);border:1px solid var(--border);color:var(--white);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;cursor:pointer">
+                <option value="">All</option>
+                <option value="listed">Listed</option>
+                <option value="sold">Sold</option>
+                <option value="draft">Draft</option>
+              </select>
+              <select id="pd-filter-spot" onchange="filterPhotogSessions()" style="flex:1;min-width:120px;background:var(--card-bg);border:1px solid var(--border);color:var(--white);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;cursor:pointer">
+                <option value="">All Spots</option>
+              </select>
+              <input type="date" id="pd-filter-date" onchange="filterPhotogSessions()" style="flex:1;min-width:130px;background:var(--card-bg);border:1px solid var(--border);color:var(--white);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;cursor:pointer"/>
+              <button onclick="clearPhotogFilters()" style="background:none;border:1px solid var(--border);color:var(--gray);border-radius:10px;padding:10px 14px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit">✕ Clear</button>
             </div>
             <div id="pd-sessions-list">
               <div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div>
@@ -3094,6 +3107,7 @@ async function loadPhotogDash() {
 
     // Sessions list
     pdSessions = sessions;
+    populatePdSpotDropdown(sessions);
     renderPhotogSessions(sessions);
 
   } catch(e) {
@@ -3105,12 +3119,37 @@ let pdSessions = [];
 
 function filterPhotogSessions() {
   const q = (document.getElementById("pd-session-search").value || "").toLowerCase();
-  const filtered = pdSessions.filter(s =>
-    s.surfer_name.toLowerCase().includes(q) ||
-    s.spot.toLowerCase().includes(q) ||
-    s.session_date.includes(q)
-  );
+  const status = document.getElementById("pd-filter-status")?.value || "";
+  const spot = document.getElementById("pd-filter-spot")?.value || "";
+  const date = document.getElementById("pd-filter-date")?.value || "";
+
+  const filtered = pdSessions.filter(s => {
+    const matchQ = !q || s.surfer_name.toLowerCase().includes(q) || s.spot.toLowerCase().includes(q);
+    const matchStatus = !status ||
+      (status === "sold" && s.is_sold) ||
+      (status === "listed" && s.is_published && !s.is_sold) ||
+      (status === "draft" && !s.is_published);
+    const matchSpot = !spot || s.spot === spot;
+    const matchDate = !date || s.session_date === date;
+    return matchQ && matchStatus && matchSpot && matchDate;
+  });
   renderPhotogSessions(filtered);
+}
+
+function clearPhotogFilters() {
+  document.getElementById("pd-session-search").value = "";
+  document.getElementById("pd-filter-status").value = "";
+  document.getElementById("pd-filter-spot").value = "";
+  document.getElementById("pd-filter-date").value = "";
+  renderPhotogSessions(pdSessions);
+}
+
+function populatePdSpotDropdown(sessions) {
+  const sel = document.getElementById("pd-filter-spot");
+  if (!sel) return;
+  const spots = [...new Set(sessions.map(s => s.spot).filter(Boolean))].sort();
+  sel.innerHTML = `<option value="">All Spots</option>` +
+    spots.map(sp => `<option value="${sp}">${sp}</option>`).join("");
 }
 
 function renderPhotogSessions(sessions) {
@@ -3133,6 +3172,7 @@ function renderPhotogSessions(sessions) {
       <div class="session-item-bottom">
         <div class="session-badges">
           <span class="${s.is_published ? "badge-published" : "badge-draft"}">${s.is_published ? "Published" : "Draft"}</span>
+          ${s.is_sold ? `<span style="background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.04em">SOLD</span>` : ""}
           <span class="session-price">$${parseFloat(s.price).toFixed(2)}</span>
         </div>
         <div class="session-actions">
@@ -3383,6 +3423,7 @@ async function updatePhotographerFee(id, name) {
 // ── PUBLIC PHOTOGRAPHERS PAGE ─────────────────────────────────────
 let allPhotographers = [];
 let photographerSessionCounts = {};
+let photographerSoldCounts = {};
 
 function filterPhotographers() {
   const q = (document.getElementById("photographer-search")?.value || "").toLowerCase().trim();
@@ -3445,6 +3486,7 @@ function renderPhotographerGrid(photographers) {
       <div class="pc-locs">${(p.locations || []).map(l => `<span class="photog-loc-tag">📍 ${l}</span>`).join("")}</div>
       <div class="pc-stats">
         <div class="pc-stat"><div class="pc-stat-val">${photographerSessionCounts[p.id] || 0}</div><div class="pc-stat-label">Sessions</div></div>
+        <div class="pc-stat"><div class="pc-stat-val" style="color:#ef4444">${photographerSoldCounts[p.id] || 0}</div><div class="pc-stat-label">Sold</div></div>
         <div class="pc-stat"><div class="pc-stat-val" style="font-size:16px">${renderStarRating(p.avg_rating || 0)}</div><div class="pc-stat-label">${p.avg_rating ? parseFloat(p.avg_rating).toFixed(1) + " rating" : "No ratings"}</div></div>
       </div>
     </div>`).join("")}</div>`;
@@ -3468,12 +3510,13 @@ async function loadPhotographersPage() {
       return;
     }
 
-    // Get session counts per photographer
+    // Get session counts and sold counts per photographer
     for (const p of photographers) {
       try {
-        const sessions = await sbFetch(`sessions?photographer_id=eq.${p.id}&is_published=eq.true&select=id`, { headers: { "Prefer": "" } });
+        const sessions = await sbFetch(`sessions?photographer_id=eq.${p.id}&is_published=eq.true&select=id,is_sold`, { headers: { "Prefer": "" } });
         photographerSessionCounts[p.id] = sessions.length;
-      } catch(e) { photographerSessionCounts[p.id] = 0; }
+        photographerSoldCounts[p.id] = sessions.filter(s => s.is_sold).length;
+      } catch(e) { photographerSessionCounts[p.id] = 0; photographerSoldCounts[p.id] = 0; }
     }
 
     allPhotographers = photographers;
