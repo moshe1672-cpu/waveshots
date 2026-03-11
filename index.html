@@ -4881,7 +4881,7 @@ async function loadAdminWallet() {
     const balance = wallet ? parseFloat(wallet.balance) : 0;
 
     // Fetch purchases with no payout (stripe_payment_id exists, no payout row)
-    const purchases = await sbFetch("purchases?select=*&stripe_payment_id=not.is.null&order=purchased_at.desc", { headers: { "Prefer": "" } });
+    const purchases = await sbFetch("purchases?select=*,sessions(price,spot,session_date)&stripe_payment_id=not.is.null&order=purchased_at.desc", { headers: { "Prefer": "" } });
     const payouts = await sbFetch("payouts?select=*", { headers: { "Prefer": "" } });
     const paidSessionIds = new Set((payouts || []).map(p => p.session_id));
     const pendingPayouts = (purchases || []).filter(p => !paidSessionIds.has(p.session_id) && p.stripe_payment_id);
@@ -4910,16 +4910,16 @@ async function loadAdminWallet() {
           <span style="font-size:12px;background:rgba(251,191,36,0.15);padding:2px 8px;border-radius:20px">${pendingPayouts.length} unsent</span>
         </div>
         ${pendingPayouts.length ? pendingPayouts.map(p => {
-          const fullAmt = parseFloat(p.amount_total || 0);
+          const fullAmt = parseFloat(p.sessions?.price || 0);
           const payoutAmt = fullAmt * 0.8;
           const hasStripe = !!sessionPhotogMap[p.session_id];
           const dateStr = p.purchased_at ? new Date(p.purchased_at).toLocaleDateString() : "—";
+          const spotInfo = p.sessions?.spot ? ` · ${p.sessions.spot}` : "";
           return `
           <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center;gap:12px">
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.customer_email || "Unknown surfer"}</div>
-              <div style="font-size:11px;color:var(--gray);margin-top:3px">Session ID: ${p.session_id} · ${dateStr}</div>
-              <div style="font-size:11px;color:var(--gray)">Payment: ${p.stripe_payment_id}</div>
+              <div style="font-size:11px;color:var(--gray);margin-top:3px">${dateStr}${spotInfo} · Payment: ${p.stripe_payment_id}</div>
               ${!hasStripe ? `<div style="font-size:11px;color:#f87171;margin-top:4px;font-weight:600">⚠ Photographer hasn't connected payout account yet</div>` : ""}
             </div>
             <div style="text-align:right;flex-shrink:0">
