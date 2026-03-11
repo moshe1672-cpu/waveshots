@@ -3199,6 +3199,7 @@ async function loadPhotogDash() {
           <div style="text-align:right">
             <div class="earning-amount">+$${parseFloat(payout.amount).toFixed(2)}</div>
             <div class="earning-fee">After 20% fee · <span style="color:${payout.status==="paid"?"#4ade80":"#fbbf24"}">${payout.status}</span></div>
+            ${payout.status === "pending" ? `<button onclick="markEarningPaid('${payout.id}')" style="margin-top:4px;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#fbbf24;border-radius:5px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit">✓ Already received? Mark paid</button>` : ""}
           </div>
         </div>`;
       }).join("")}</div>`;
@@ -3211,6 +3212,19 @@ async function loadPhotogDash() {
 
   } catch(e) {
     console.error(e);
+  }
+}
+
+async function markEarningPaid(payoutId) {
+  try {
+    await sbFetch(`payouts?id=eq.${payoutId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status: "paid", paid_at: new Date().toISOString() })
+    });
+    toast("✅ Marked as paid", "success");
+    loadPhotogDashboard();
+  } catch(e) {
+    toast("❌ " + e.message, "error");
   }
 }
 
