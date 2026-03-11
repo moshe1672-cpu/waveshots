@@ -2222,7 +2222,8 @@ let purchasedSessionIds = new Set();
 
 async function loadPublicGallery() {
   const slider = document.getElementById("home-slider");
-  if (slider) slider.innerHTML = `<div class="loading-state" style="min-width:300px"><div class="loading-spinner"></div><p>Loading...</p></div>`;
+  if (!slider) { console.warn("home-slider not found, retrying..."); setTimeout(loadPublicGallery, 300); return; }
+  slider.innerHTML = `<div class="loading-state" style="min-width:300px"><div class="loading-spinner"></div><p>Loading...</p></div>`;
   try {
     publicSessions = await sbFetch("sessions?is_published=eq.true&order=session_date.desc&select=*", {
       headers: { "Prefer": "" }
@@ -4953,14 +4954,15 @@ function showPhotogLoginMenu() {
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────
-document.getElementById("f-date") && (document.getElementById("f-date").value = new Date().toISOString().split("T")[0]);
-document.getElementById("pu-date") && (document.getElementById("pu-date").value = new Date().toISOString().split("T")[0]);
-restorePhotogSession();
-restoreSurferSession();
-loadPublicGallery();
-handlePaymentReturn();
-// Update Stripe Connect UI if photographer is already logged in
-if (currentPhotographer) updateStripeConnectUI();
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("f-date") && (document.getElementById("f-date").value = new Date().toISOString().split("T")[0]);
+  document.getElementById("pu-date") && (document.getElementById("pu-date").value = new Date().toISOString().split("T")[0]);
+  restorePhotogSession();
+  restoreSurferSession();
+  loadPublicGallery();
+  handlePaymentReturn();
+  if (currentPhotographer) updateStripeConnectUI();
+});
 
 // Handle direct QR code links
 const hash = window.location.hash;
