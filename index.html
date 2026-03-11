@@ -294,7 +294,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 .spot-no-results{padding:20px;text-align:center;color:var(--gray);font-size:13px}
 
 /* ============ ADMIN PAGE ============ */
-.admin-page{min-height:100vh;background:var(--ocean);padding-top:52px}
+.admin-page{min-height:100vh;background:var(--ocean);padding-top:64px}
 .admin-header{background:var(--deep);border-bottom:1px solid var(--border);
   padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .admin-header h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
@@ -1978,7 +1978,7 @@ function adminLogin() {
     sessionStorage.setItem("ws_admin", "1");
     document.getElementById("admin-login").style.display = "none";
     document.getElementById("admin-dashboard").style.display = "block";
-    loadAdminSessions();
+    loadAdminSessions(); loadAdminApplications(); loadAdminSurfers(); loadAdminWallet();
     toast("Welcome back! 🤙", "success");
   } else {
     toast("Incorrect password", "error");
