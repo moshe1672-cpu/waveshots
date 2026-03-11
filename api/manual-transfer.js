@@ -29,22 +29,43 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Calculate 80% photographer share
-    const transferAmount = Math.round(parseFloat(amount) * 0.80 * 100); // in cents
+    // Resolve Charge ID from Payment Intent.
+    // Stripe transfers require source_transaction to be a ch_ Charge ID, not a pi_ Payment Intent ID.
+    let chargeId = stripePaymentIntentId;
 
-    // Create the transfer
+    if (stripePaymentIntentId.startsWith("pi_")) {
+      const paymentIntent = await stripe.paymentIntents.retrieve(stripePaymentIntentId);
+      chargeId = paymentIntent.latest_charge;
+      if (!chargeId) {
+        return res.status(400).json({
+          error: "No charge found for this payment intent. It may not have been captured yet."
+        });
+      }
+      console.log(`Resolved ${stripePaymentIntentId} → charge ${chargeId}`);
+    }
+
+    // Calculate 80% photographer share (in cents)
+    const transferAmount = Math.round(parseFloat(amount) * 0.80 * 100);
+
+    // Create the transfer using the Charge ID as source_transaction
     const transfer = await stripe.transfers.create({
       amount: transferAmount,
       currency: "usd",
       destination: photographerStripeId,
-      source_transaction: stripePaymentIntentId,
-      metadata: { purchaseId: purchaseId || "" }
+      source_transaction: chargeId,
+      metadata: {
+        purchaseId: purchaseId || "",
+        originalPaymentIntent: stripePaymentIntentId
+      }
     });
+
+    console.log(`✅ Transfer ${transfer.id}: $${transferAmount / 100} → ${photographerStripeId}`);
 
     res.status(200).json({
       success: true,
       transferId: transfer.id,
-      amount: transferAmount / 100
+      amount: transferAmount / 100,
+      chargeId
     });
 
   } catch (err) {
