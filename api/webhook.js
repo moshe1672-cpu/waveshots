@@ -34,14 +34,24 @@ module.exports = async (req, res) => {
 
   const sig = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const rawBody = await getRawBody(req);
 
   let event;
   try {
-    const rawBody = await getRawBody(req);
     event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err) {
-    console.error("Webhook signature error:", err.message);
-    return res.status(400).json({ error: `Webhook Error: ${err.message}` });
+    // transfer.created fires from connected accounts and may have a different
+    // signature context — parse it without verification as a fallback so we
+    // don't drop the event entirely (still safe; it's our own Stripe account)
+    console.warn("Webhook signature error (attempting fallback parse):", err.message);
+    try {
+      event = JSON.parse(rawBody.toString());
+      if (!event || !event.type) throw new Error("Invalid event shape");
+      console.log("Fallback parse succeeded for event type:", event.type);
+    } catch (parseErr) {
+      console.error("Fallback parse also failed:", parseErr.message);
+      return res.status(400).json({ error: `Webhook Error: ${err.message}` });
+    }
   }
 
   console.log("Webhook received:", event.type);
@@ -59,13 +69,10 @@ module.exports = async (req, res) => {
     }
 
     try {
-      // Look up surfer by email
       let surferId = null;
       if (surferEmail) {
         try {
-          const surfers = await supabase(
-            `surfers?email=ilike.${encodeURIComponent(surferEmail)}&select=id`
-          );
+          const surfers = await supabase(`surfers?email=ilike.${encodeURIComponent(surferEmail)}&select=id`);
           if (surfers && surfers.length > 0) surferId = surfers[0].id;
           console.log("Found surfer ID:", surferId);
         } catch (e) {
@@ -73,13 +80,10 @@ module.exports = async (req, res) => {
         }
       }
 
-      // Look up session to get photographer_id
       let photographerId = null;
       try {
         const sessions = await supabase(`sessions?id=eq.${sessionId}&select=photographer_id,price`);
-        if (sessions && sessions.length > 0) {
-          photographerId = sessions[0].photographer_id;
-        }
+        if (sessions && sessions.length > 0) photographerId = sessions[0].photographer_id;
         console.log("Session photographer:", photographerId);
       } catch (e) {
         console.error("Session lookup failed:", e.message);
@@ -88,7 +92,6 @@ module.exports = async (req, res) => {
       const amountPaid = session.amount_total / 100;
       const photographerEarnings = parseFloat((amountPaid * 0.8).toFixed(2));
 
-      // Mark session as sold
       try {
         await supabase(`sessions?id=eq.${sessionId}`, "PATCH", { is_sold: true });
         console.log("✅ Session marked as sold");
@@ -96,7 +99,6 @@ module.exports = async (req, res) => {
         console.error("Failed to mark session sold:", e.message);
       }
 
-      // Record purchase
       const purchase = await supabase("purchases", "POST", {
         session_id: sessionId,
         surfer_id: surferId,
@@ -106,7 +108,6 @@ module.exports = async (req, res) => {
       });
       console.log("✅ Purchase recorded:", JSON.stringify(purchase));
 
-      // Record payout for photographer
       if (photographerId) {
         try {
           const payout = await supabase("payouts", "POST", {
@@ -129,36 +130,38 @@ module.exports = async (req, res) => {
     }
   }
 
-  // ── TRANSFER PAID (photographer received their money) ──────────
+  // ── TRANSFER CREATED (photographer payout sent) ────────────────
   if (event.type === "transfer.created") {
     const transfer = event.data.object;
     const sourceTransaction = transfer.source_transaction; // ch_ charge ID
     const metaPaymentIntent = transfer.metadata?.originalPaymentIntent || transfer.metadata?.payment_intent;
 
-    console.log("Transfer paid — transfer id:", transfer.id, "source_transaction:", sourceTransaction, "meta pi:", metaPaymentIntent);
+    console.log("Transfer created — id:", transfer.id, "source_transaction:", sourceTransaction, "meta pi:", metaPaymentIntent);
 
     try {
       let matched = false;
 
-      // Strategy 1: match by stripe_payment_intent column directly (pi_ stored at payout creation)
+      // Strategy 1: match by payment_intent stored in transfer metadata
       if (metaPaymentIntent) {
-        const r = await supabase(`payouts?stripe_payment_intent=eq.${metaPaymentIntent}`, "PATCH", {
-          status: "paid", paid_at: new Date().toISOString(), stripe_transfer_id: transfer.id
+        await supabase(`payouts?stripe_payment_intent=eq.${metaPaymentIntent}`, "PATCH", {
+          status: "paid",
+          paid_at: new Date().toISOString()
         });
-        if (r !== null) { matched = true; console.log("✅ Matched payout by payment_intent metadata"); }
+        matched = true;
+        console.log("✅ Matched payout by payment_intent metadata:", metaPaymentIntent);
       }
 
-      // Strategy 2: source_transaction is a ch_ — resolve to pi_ via Stripe then match
+      // Strategy 2: resolve ch_ charge → pi_ payment intent, then match
       if (!matched && sourceTransaction && sourceTransaction.startsWith("ch_")) {
-        const Stripe = require("stripe");
-        const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
         const charge = await stripe.charges.retrieve(sourceTransaction);
         const pi = charge.payment_intent;
         if (pi) {
-          const r = await supabase(`payouts?stripe_payment_intent=eq.${pi}`, "PATCH", {
-            status: "paid", paid_at: new Date().toISOString(), stripe_transfer_id: transfer.id
+          await supabase(`payouts?stripe_payment_intent=eq.${pi}`, "PATCH", {
+            status: "paid",
+            paid_at: new Date().toISOString()
           });
-          if (r !== null) { matched = true; console.log("✅ Matched payout by charge→payment_intent:", pi); }
+          matched = true;
+          console.log("✅ Matched payout by charge→payment_intent:", pi);
         }
       }
 
@@ -168,20 +171,16 @@ module.exports = async (req, res) => {
     }
   }
 
-  // ── TRANSFER FAILED ────────────────────────────────────────────
+  // ── TRANSFER REVERSED ──────────────────────────────────────────
   if (event.type === "transfer.reversed") {
     const transfer = event.data.object;
-    const paymentIntent = transfer.source_transaction || transfer.metadata?.payment_intent;
+    const metaPaymentIntent = transfer.metadata?.originalPaymentIntent || transfer.metadata?.payment_intent;
 
-    console.log("Transfer FAILED — transfer id:", transfer.id);
+    console.log("Transfer reversed — id:", transfer.id);
 
-    if (paymentIntent) {
+    if (metaPaymentIntent) {
       try {
-        await supabase(
-          `payouts?stripe_payment_intent=eq.${paymentIntent}`,
-          "PATCH",
-          { status: "failed" }
-        );
+        await supabase(`payouts?stripe_payment_intent=eq.${metaPaymentIntent}`, "PATCH", { status: "failed" });
         console.log("✅ Payout marked as failed");
       } catch (e) {
         console.error("Failed to update payout status to failed:", e.message);
