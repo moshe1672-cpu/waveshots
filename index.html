@@ -3297,7 +3297,7 @@ function renderPhotogSessions(sessions) {
         <div class="session-actions">
           <button class="action-btn" onclick="openPhotogEditModal('${s.id}')">✏️ Edit</button>
           <button class="action-btn publish" onclick="togglePhotogPublish('${s.id}',${s.is_published})">${s.is_published ? "Unpublish" : "Publish"}</button>
-          <button class="action-btn danger" onclick="deletePhotogSession('${s.id}','${s.surfer_name}')">🗑️</button>
+          ${!s.is_sold ? `<button class="action-btn danger" onclick="deletePhotogSession('${s.id}','${s.surfer_name}')">🗑️</button>` : ""}
         </div>
       </div>
     </div>`).join("")}</div>`;
