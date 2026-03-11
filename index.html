@@ -4787,11 +4787,42 @@ async function loadAdminWallet() {
     const [wallet] = await sbFetch("admin_wallet?select=*", { headers: { "Prefer": "" } });
     const txns = await sbFetch("admin_wallet_transactions?order=created_at.desc&limit=10&select=*", { headers: { "Prefer": "" } });
     const balance = wallet ? parseFloat(wallet.balance) : 0;
+
+    // Fetch purchases with no payout (stripe_payment_id exists, no payout row)
+    const purchases = await sbFetch("purchases?select=*&stripe_payment_id=not.is.null&order=created_at.desc", { headers: { "Prefer": "" } });
+    const payouts = await sbFetch("payouts?select=*", { headers: { "Prefer": "" } });
+    const paidSessionIds = new Set((payouts || []).map(p => p.session_id));
+    const pendingPayouts = (purchases || []).filter(p => !paidSessionIds.has(p.session_id) && p.stripe_payment_id);
+
     cont.innerHTML = `
       <div class="admin-wallet-card">
         <div><div class="admin-wallet-label">Total Admin Balance</div><div style="font-size:11px;color:var(--gray);margin-top:2px">From platform fees & transferred balances</div></div>
         <div class="admin-wallet-val">$${balance.toFixed(2)}</div>
       </div>
+
+      <!-- PENDING PAYOUTS -->
+      <div style="background:var(--card-bg);border:1px solid rgba(251,191,36,0.3);border-radius:12px;overflow:hidden;margin-top:4px">
+        <div style="padding:14px 16px;font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid rgba(251,191,36,0.15);display:flex;justify-content:space-between;align-items:center">
+          <span>⚠️ Pending Photographer Payouts</span>
+          <span style="font-size:12px;background:rgba(251,191,36,0.15);padding:2px 8px;border-radius:20px">${pendingPayouts.length} unsent</span>
+        </div>
+        ${pendingPayouts.length ? pendingPayouts.map(p => `
+          <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.customer_email || "Unknown surfer"}</div>
+              <div style="font-size:11px;color:var(--gray);margin-top:3px">Session ID: ${p.session_id} · ${new Date(p.created_at).toLocaleDateString()}</div>
+              <div style="font-size:11px;color:var(--gray)">Payment: ${p.stripe_payment_id}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:14px;font-weight:800;color:#4ade80;margin-bottom:6px">$${parseFloat(p.amount_total || 0).toFixed(2)}</div>
+              <button onclick="sendManualPayout('${p.id}','${p.session_id}','${p.stripe_payment_id}',${parseFloat(p.amount_total||0)})"
+                style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">
+                Send 80% to Photographer
+              </button>
+            </div>
+          </div>`).join("") : `<div style="padding:20px;text-align:center;font-size:13px;color:var(--gray)">✅ All payouts have been sent</div>`}
+      </div>
+
       ${txns.length ? `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden">
         <div style="padding:12px 16px;font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)">Recent Transactions</div>
         ${txns.map(t => `<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center">
@@ -4802,6 +4833,58 @@ async function loadAdminWallet() {
     `;
   } catch(e) {
     cont.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${e.message}</p></div>`;
+  }
+}
+
+async function sendManualPayout(purchaseId, sessionId, stripePaymentId, amount) {
+  // First we need the photographer's Stripe ID from the session
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+
+  try {
+    // Get the session to find the photographer
+    const [session] = await sbFetch(`sessions?id=eq.${sessionId}&select=photographer_id`, { headers: { "Prefer": "" } });
+    if (!session) throw new Error("Session not found");
+
+    const [photographer] = await sbFetch(`photographers?id=eq.${session.photographer_id}&select=stripe_account_id`, { headers: { "Prefer": "" } });
+    if (!photographer || !photographer.stripe_account_id) {
+      throw new Error("Photographer has no Stripe account connected. They need to complete onboarding first.");
+    }
+
+    const resp = await fetch("/api/manual-transfer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stripePaymentIntentId: stripePaymentId,
+        photographerStripeId: photographer.stripe_account_id,
+        amount: amount,
+        purchaseId: purchaseId
+      })
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "Transfer failed");
+
+    // Record in payouts table
+    await sbFetch("payouts", {
+      method: "POST",
+      body: JSON.stringify({
+        session_id: sessionId,
+        photographer_id: session.photographer_id,
+        amount: data.amount,
+        platform_fee: amount - data.amount,
+        status: "paid",
+        stripe_transfer_id: data.transferId
+      })
+    });
+
+    toast(`✅ $${data.amount.toFixed(2)} sent to photographer!`, "success");
+    loadAdminWallet();
+  } catch(e) {
+    toast(`❌ ${e.message}`, "error");
+    btn.disabled = false;
+    btn.textContent = "Send 80% to Photographer";
   }
 }
 
