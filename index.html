@@ -2289,9 +2289,9 @@ async function togglePublish(id, current) {
 }
 
 async function deleteSession(id, name) {
-  if (!confirm(`Delete ${name}'s session? This will permanently delete all photos. This cannot be undone.`)) return;
+  if (!confirm(`Delete ${name}'s session? This will permanently delete all photos and purchase records. This cannot be undone.`)) return;
   try {
-    toast("Deleting photos from storage...", "info");
+    toast("Deleting session...", "info");
 
     // 1. Get all photos for this session
     const photos = await sbFetch(`photos?session_id=eq.${id}&select=storage_path`, { headers: { "Prefer": "" } });
@@ -2302,18 +2302,24 @@ async function deleteSession(id, name) {
       try {
         await fetch(`${SUPABASE_URL}/storage/v1/object/Photos/${photo.storage_path}`, {
           method: "DELETE",
-          headers: {
-            "apikey": SUPABASE_KEY,
-            "Authorization": "Bearer " + SUPABASE_KEY
-          }
+          headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
         });
       } catch(e) { console.warn("Could not delete file:", photo.storage_path); }
     }
 
-    // 3. Delete session (photos rows cascade delete)
+    // 3. Delete payouts referencing this session
+    await sbFetch(`payouts?session_id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
+
+    // 4. Delete purchases referencing this session
+    await sbFetch(`purchases?session_id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
+
+    // 5. Delete photos rows
+    await sbFetch(`photos?session_id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
+
+    // 6. Now safe to delete the session
     await sbFetch(`sessions?id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
 
-    toast(`Deleted ${name}'s session and all photos 🗑️`, "info");
+    toast(`Deleted ${name}'s session 🗑️`, "info");
     loadAdminSessions();
     loadPublicGallery();
   } catch(e) { toast("Error: " + e.message, "error"); }
@@ -3325,6 +3331,10 @@ async function deletePhotogSession(id, name) {
         headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
       });
     }
+    // Delete dependent records before session
+    await sbFetch(`payouts?session_id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
+    await sbFetch(`purchases?session_id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
+    await sbFetch(`photos?session_id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
     await sbFetch(`sessions?id=eq.${id}`, { method: "DELETE", headers: { "Prefer": "" } });
     toast(`Deleted ${name}'s session 🗑️`, "info");
     loadPhotogDash();
