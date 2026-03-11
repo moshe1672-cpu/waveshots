@@ -4886,6 +4886,17 @@ async function loadAdminWallet() {
     const paidSessionIds = new Set((payouts || []).map(p => p.session_id));
     const pendingPayouts = (purchases || []).filter(p => !paidSessionIds.has(p.session_id) && p.stripe_payment_id);
 
+    // Fetch photographer stripe status for each pending payout's session
+    const sessionIds = [...new Set(pendingPayouts.map(p => p.session_id))];
+    let sessionPhotogMap = {};
+    if (sessionIds.length) {
+      const sessions = await sbFetch(`sessions?id=in.(${sessionIds.join(",")})&select=id,photographer_id`, { headers: { "Prefer": "" } });
+      const photogIds = [...new Set(sessions.map(s => s.photographer_id))];
+      const photogs = photogIds.length ? await sbFetch(`photographers?id=in.(${photogIds.join(",")})&select=id,stripe_account_id`, { headers: { "Prefer": "" } }) : [];
+      const photogStripeMap = Object.fromEntries(photogs.map(p => [p.id, p.stripe_account_id]));
+      sessions.forEach(s => { sessionPhotogMap[s.id] = photogStripeMap[s.photographer_id] || null; });
+    }
+
     cont.innerHTML = `
       <div class="admin-wallet-card">
         <div><div class="admin-wallet-label">Total Admin Balance</div><div style="font-size:11px;color:var(--gray);margin-top:2px">From platform fees & transferred balances</div></div>
@@ -4898,21 +4909,30 @@ async function loadAdminWallet() {
           <span>⚠️ Pending Photographer Payouts</span>
           <span style="font-size:12px;background:rgba(251,191,36,0.15);padding:2px 8px;border-radius:20px">${pendingPayouts.length} unsent</span>
         </div>
-        ${pendingPayouts.length ? pendingPayouts.map(p => `
+        ${pendingPayouts.length ? pendingPayouts.map(p => {
+          const fullAmt = parseFloat(p.amount_total || 0);
+          const payoutAmt = fullAmt * 0.8;
+          const hasStripe = !!sessionPhotogMap[p.session_id];
+          const dateStr = p.purchased_at ? new Date(p.purchased_at).toLocaleDateString() : "—";
+          return `
           <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;justify-content:space-between;align-items:center;gap:12px">
             <div style="flex:1;min-width:0">
               <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.customer_email || "Unknown surfer"}</div>
-              <div style="font-size:11px;color:var(--gray);margin-top:3px">Session ID: ${p.session_id} · ${new Date(p.created_at).toLocaleDateString()}</div>
+              <div style="font-size:11px;color:var(--gray);margin-top:3px">Session ID: ${p.session_id} · ${dateStr}</div>
               <div style="font-size:11px;color:var(--gray)">Payment: ${p.stripe_payment_id}</div>
+              ${!hasStripe ? `<div style="font-size:11px;color:#f87171;margin-top:4px;font-weight:600">⚠ Photographer hasn't connected payout account yet</div>` : ""}
             </div>
             <div style="text-align:right;flex-shrink:0">
-              <div style="font-size:14px;font-weight:800;color:#4ade80;margin-bottom:6px">$${parseFloat(p.amount_total || 0).toFixed(2)}</div>
-              <button onclick="sendManualPayout('${p.id}','${p.session_id}','${p.stripe_payment_id}',${parseFloat(p.amount_total||0)})"
-                style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">
+              <div style="font-size:11px;color:var(--gray);margin-bottom:2px">Sale: $${fullAmt.toFixed(2)}</div>
+              <div style="font-size:16px;font-weight:800;color:#4ade80;margin-bottom:6px">→ $${payoutAmt.toFixed(2)}</div>
+              <button onclick="sendManualPayout('${p.id}','${p.session_id}','${p.stripe_payment_id}',${fullAmt})"
+                ${!hasStripe ? "disabled title=\"Photographer must connect Stripe first\"" : ""}
+                style="background:${hasStripe ? "linear-gradient(135deg,#f59e0b,#d97706)" : "rgba(255,255,255,0.1)"};color:${hasStripe ? "white" : "var(--gray)"};border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:${hasStripe ? "pointer" : "not-allowed"};white-space:nowrap;opacity:${hasStripe ? "1" : "0.5"}">
                 Send 80% to Photographer
               </button>
             </div>
-          </div>`).join("") : `<div style="padding:20px;text-align:center;font-size:13px;color:var(--gray)">✅ All payouts have been sent</div>`}
+          </div>`;
+        }).join("") : `<div style="padding:20px;text-align:center;font-size:13px;color:var(--gray)">✅ All payouts have been sent</div>`}
       </div>
 
       ${txns.length ? `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden">
