@@ -19,12 +19,27 @@ module.exports = async (req, res) => {
 
     const priceInCents = Math.round(parseFloat(price) * 100);
 
-    // Only add transfer split if photographer has a connected Stripe account
+    // Only add transfer split if photographer has a fully onboarded Stripe account
     const paymentIntentData = {};
     if (photographerStripeId) {
-      const platformFee = Math.round(priceInCents * 0.20);
-      paymentIntentData.application_fee_amount = platformFee;
-      paymentIntentData.transfer_data = { destination: photographerStripeId };
+      try {
+        const account = await stripe.accounts.retrieve(photographerStripeId);
+        const canTransfer =
+          account.charges_enabled &&
+          account.payouts_enabled &&
+          account.capabilities?.transfers === "active";
+
+        if (canTransfer) {
+          const platformFee = Math.round(priceInCents * 0.20);
+          paymentIntentData.application_fee_amount = platformFee;
+          paymentIntentData.transfer_data = { destination: photographerStripeId };
+        } else {
+          console.log(`Photographer ${photographerStripeId} not fully onboarded — skipping transfer`);
+        }
+      } catch (accountErr) {
+        console.log("Could not retrieve photographer Stripe account:", accountErr.message);
+        // Continue without transfer — don't block the purchase
+      }
     }
 
     const checkoutSession = await stripe.checkout.sessions.create({
