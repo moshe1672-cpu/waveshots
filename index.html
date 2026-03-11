@@ -873,6 +873,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   <button class="dropdown-item" onclick="navTo('sessions')">Sessions Gallery</button>
   <button class="dropdown-item" onclick="navTo('photographers')">Our Photographers</button>
   <button class="dropdown-item" onclick="navTo('apply')">Join as Photographer</button>
+  <button class="dropdown-item" onclick="showPage('about')">About Us</button>
   <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')">My Dashboard</button>
   <div class="dropdown-divider"></div>
   <button class="dropdown-item" id="surfer-login-menu-btn" onclick="navTo('surfer-auth')"><span class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg></span>Surfer Login / Sign Up</button>
@@ -1242,6 +1243,69 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 
 
 
+
+
+<!-- ========== ABOUT PAGE ========== -->
+<div id="page-about" class="page">
+  <div style="min-height:100vh;background:var(--ocean);padding-top:64px">
+
+    <!-- HERO BANNER -->
+    <div style="background:var(--deep);border-bottom:1px solid var(--border);padding:72px 24px 64px;text-align:center">
+      <div class="sec-tag" style="margin-bottom:16px;display:inline-block">About WaveShots</div>
+      <h1 style="font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;max-width:780px;margin:0 auto 24px;text-align:center">
+        Built for the beach.<br/><em style="color:var(--cyan)">Built for the wave.</em>
+      </h1>
+      <p style="font-size:clamp(15px,2.5vw,18px);font-weight:400;line-height:1.8;color:var(--gray);max-width:620px;margin:0 auto;text-align:center">
+        WaveShots gives any photographer the tools to build an income at the beach, and any surfer the ability to find and own their best moments, anywhere in the world.
+      </p>
+    </div>
+
+    <!-- BODY -->
+    <div style="max-width:860px;margin:0 auto;padding:64px 24px 80px;text-align:center">
+
+      <!-- WHAT WE ARE -->
+      <div style="margin-bottom:56px">
+        <div class="sec-tag" style="margin-bottom:16px;display:inline-block">What WaveShots Actually Is</div>
+        <h2 style="font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-.5px;margin-bottom:16px">A two-sided marketplace<br/>for surf photography.</h2>
+        <p style="font-size:15px;color:var(--gray);line-height:1.8;max-width:560px;margin:0 auto">
+          Think eBay or Etsy — but built specifically for the surf community. We connect the people behind the lens with the people in the water.
+        </p>
+      </div>
+
+      <!-- TWO SIDES -->
+      <div class="two-sided-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:56px;text-align:center">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;align-items:center">
+          <div style="margin-bottom:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" width="56" height="56" style="display:inline-block;"><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M485.06,537.37v56.03c0,15.46-12.56,28.02-28.02,28.02h-145.28c-15.46,0-28.02-12.56-28.02-28.02v-56.03c0-15.46,12.56-28.02,28.02-28.02h145.28c15.46,0,28.02,12.56,28.02,28.02Z"/><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M1445.04,648.79h-916.77s82.1-114.7,130.31-182.04c21.48-30.01,56.12-47.81,93.01-47.81h470.08c36.9,0,71.53,17.81,93.01,47.81,48.21,67.35,130.31,182.04,130.31,182.04h.04Z"/><path style="fill:#1c1c1e;fill-rule:evenodd;" d="M1761.91,592.7c65.42,0,118.46,53.04,118.46,118.46v751.45c0,65.42-53.04,118.46-118.46,118.46H238.09c-65.4-.02-118.46-53.04-118.46-118.46v-751.45c0-65.42,53.06-118.46,118.46-118.46h1523.82Z"/><path style="fill:#fff;fill-rule:evenodd;" d="M1641.06,723.58c9.48,0,18.56,3.76,25.27,10.48,6.71,6.71,10.48,15.79,10.48,25.27v69.98c0,9.48-3.76,18.56-10.48,25.27-6.71,6.71-15.79,10.48-25.27,10.48h-160.3c-9.48,0-18.58-3.76-25.29-10.48-6.71-6.71-10.48-15.79-10.48-25.27v-69.98c0-9.48,3.76-18.56,10.48-25.27,6.71-6.71,15.79-10.48,25.29-10.48h160.3Z"/><ellipse style="fill:#fff;" cx="1000.06" cy="1086.87" rx="355.91" ry="363.29"/><ellipse style="fill:#111111;" cx="1000.06" cy="1086.87" rx="260.55" ry="265.96"/><ellipse style="fill:#fff;" cx="1096.83" cy="974.64" rx="65.58" ry="66.93"/></svg></div>
+          <div class="sec-tag" style="margin-bottom:10px;display:inline-block">Supply Side</div>
+          <h3 style="font-size:20px;font-weight:800;margin-bottom:12px">Photographers</h3>
+          <p style="font-size:14px;color:var(--gray);line-height:1.8">From professional surf photographers to hobbyists with a decent camera — anyone who wants to monetize their time at the beach. Upload your sessions, set your price, and keep 80% of every sale.</p>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid rgba(6,182,212,0.25);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;align-items:center">
+          <div style="margin-bottom:18px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="56" height="56" style="display:inline-block;"><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FA6E85;" d="M210.646,270.829c27.881,11.612,59.942,27.516,93.16,46.694c91.575,52.871,157.24,110.578,146.665,128.894c-10.574,18.316-93.382-9.698-184.958-62.569c-43.897-25.343-81.839-51.799-108.285-74.493c-8.646-7.419-5.611-21.411,5.33-24.584L210.646,270.829z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#E33F65;" d="M210.646,270.829c27.881,11.612,59.942,27.516,93.16,46.694c30.436,17.572,58.003,35.677,80.867,52.694c13.459,14.633,19.454,26.247,15.667,32.806c-10.574,18.316-93.382-9.698-184.958-62.569c-22.891-13.216-44.162-26.734-63.028-39.864c-0.96-6.929,3.07-13.75,10.206-15.82L210.646,270.829z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M406.309,229.984c-32.173-39.634-78.282-58.034-127.642-71.479c-51.967-7.966-95.053,3.026-132.747,25.528h91.902l30.634,56.162h35.74l10.211-35.74L406.309,229.984z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#E8BC8E;" d="M310.196,168.112c-10.284-3.545-20.83-6.693-31.529-9.607c-11.151-1.71-21.893-2.543-32.261-2.58c3.281,16.004,17.442,28.042,34.417,28.042C293.107,183.966,303.916,177.661,310.196,168.112z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M232.716,306.569l-24.821,15.513c-3.71,2.319-1.63,8.096,2.707,7.518l51.51-6.868c2.971-0.396,4.517-3.718,2.908-6.246l-32.303-50.762l-30.634,10.211L232.716,306.569z"/><polygon style="fill-rule:evenodd;clip-rule:evenodd;fill:#E8BC8E;" points="248.041,289.806 234.283,268.186 228.782,267.035 202.083,275.935 206.771,280.623"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M273.562,291.252l30.634,71.479l-5.796,31.877c-0.988,5.434,6.213,8.342,9.277,3.748l23.06-34.59c2.62-3.93,2.994-8.559,1.04-12.859l-22.475-49.444l-10.211-20.422L273.562,291.252z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#E8BC8E;" d="M273.562,291.252l2.896,6.758l34.792,7.741c-3.201-7.043-6.699-13.787-10.167-20.724l-7.854-1.642L273.562,291.252z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M278.668,123.402c13.747,0,24.891,11.144,24.891,24.891c0,13.747-11.144,24.892-24.891,24.892c-13.747,0-24.891-11.144-24.891-24.892C253.776,134.547,264.92,123.402,278.668,123.402z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#88C8FE;" d="M202.083,275.935l3.798-18.991c0.85-4.249,3.416-7.537,7.331-9.394l47.081-22.322l47.78,1.399l8.153,9.353c6.773,7.77,8.463,18.013,4.544,27.545l-13.735,33.404l-33.472-5.678l5.106-35.74l-37.957,22.774L202.083,275.935z"/><polygon style="fill-rule:evenodd;clip-rule:evenodd;fill:#60B7FE;" points="247.919,231.095 260.293,225.228 308.072,226.628 315.534,235.188"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#88C8FE;" d="M350.889,157.271c25.752-109.856-162.62-116.343-227.268,0.253c-9.695,17.486-16.608,37.74-19.598,60.828C87.764,343.88,209.731,399.466,293.827,452.089c-58.265-13.519-97.95-23.451-147.588-50.526l40.456,64.055C39.656,396.763,21.573,246.335,77.964,143.956C191.201-61.628,456.003,69.019,350.889,157.271z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#60B7FE;" d="M350.889,157.271c25.752-109.856-162.62-116.343-227.268,0.253c-9.695,17.486-16.608,37.74-19.598,60.828C87.764,343.88,209.731,399.466,293.827,452.089c-58.265-13.519-97.95-23.451-147.588-50.526c-74.96-67.086-107.752-244.729,13.575-314.702C269.89,23.375,392.26,75.397,350.889,157.271z"/></svg></div>
+          <div class="sec-tag" style="margin-bottom:10px;display:inline-block">Demand Side</div>
+          <h3 style="font-size:20px;font-weight:800;margin-bottom:12px">Surfers</h3>
+          <p style="font-size:14px;color:var(--gray);line-height:1.8">Anyone who wants professional-quality photos of their session without hiring a private photographer. Browse by spot, date, or name — preview for free, buy once, download everything instantly.</p>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:48px 24px;text-align:center">
+        <div class="sec-tag" style="margin-bottom:16px;display:inline-block">Contact</div>
+        <h2 style="font-size:clamp(22px,4vw,28px);font-weight:800;letter-spacing:-.5px;margin-bottom:12px">Get in touch</h2>
+        <p style="font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto">Have a question, partnership idea, or just want to say hey? We'd love to hear from you.</p>
+        <div style="display:flex;justify-content:center">
+          <a href="mailto:waveshots.app@gmail.com"
+            style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-weight:700;font-size:14px;padding:14px 24px;border-radius:100px;text-decoration:none;max-width:100%;box-sizing:border-box;word-break:break-all;flex-wrap:wrap;text-align:center"
+            onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <span>waveshots.app@gmail.com</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- ========== PHOTOGRAPHER PUBLIC PROFILE PAGE ========== -->
 <div id="page-photographer-profile" class="page">
