@@ -132,28 +132,39 @@ module.exports = async (req, res) => {
   // ── TRANSFER PAID (photographer received their money) ──────────
   if (event.type === "transfer.paid") {
     const transfer = event.data.object;
-    const paymentIntent = transfer.source_transaction || transfer.metadata?.payment_intent;
+    const sourceTransaction = transfer.source_transaction; // ch_ charge ID
+    const metaPaymentIntent = transfer.metadata?.originalPaymentIntent || transfer.metadata?.payment_intent;
 
-    console.log("Transfer paid — transfer id:", transfer.id, "payment_intent:", paymentIntent);
+    console.log("Transfer paid — transfer id:", transfer.id, "source_transaction:", sourceTransaction, "meta pi:", metaPaymentIntent);
 
-    if (paymentIntent) {
-      try {
-        // Find the matching payout by stripe_payment_intent and mark as paid
-        const result = await supabase(
-          `payouts?stripe_payment_intent=eq.${paymentIntent}`,
-          "PATCH",
-          {
-            status: "paid",
-            paid_at: new Date().toISOString(),
-          }
-        );
-        console.log("✅ Payout marked as paid:", JSON.stringify(result));
-      } catch (e) {
-        console.error("Failed to update payout status:", e.message);
+    try {
+      let matched = false;
+
+      // Strategy 1: match by stripe_payment_intent column directly (pi_ stored at payout creation)
+      if (metaPaymentIntent) {
+        const r = await supabase(`payouts?stripe_payment_intent=eq.${metaPaymentIntent}`, "PATCH", {
+          status: "paid", paid_at: new Date().toISOString(), stripe_transfer_id: transfer.id
+        });
+        if (r !== null) { matched = true; console.log("✅ Matched payout by payment_intent metadata"); }
       }
-    } else {
-      // Fallback: try matching by transfer amount and recent pending payouts
-      console.warn("No payment_intent on transfer — cannot auto-match payout");
+
+      // Strategy 2: source_transaction is a ch_ — resolve to pi_ via Stripe then match
+      if (!matched && sourceTransaction && sourceTransaction.startsWith("ch_")) {
+        const Stripe = require("stripe");
+        const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+        const charge = await stripe.charges.retrieve(sourceTransaction);
+        const pi = charge.payment_intent;
+        if (pi) {
+          const r = await supabase(`payouts?stripe_payment_intent=eq.${pi}`, "PATCH", {
+            status: "paid", paid_at: new Date().toISOString(), stripe_transfer_id: transfer.id
+          });
+          if (r !== null) { matched = true; console.log("✅ Matched payout by charge→payment_intent:", pi); }
+        }
+      }
+
+      if (!matched) console.warn("⚠️ Could not match transfer to a payout row:", transfer.id);
+    } catch (e) {
+      console.error("Failed to update payout status:", e.message);
     }
   }
 
