@@ -130,7 +130,7 @@ module.exports = async (req, res) => {
   }
 
   // ── TRANSFER PAID (photographer received their money) ──────────
-  if (event.type === "transfer.paid") {
+  if (event.type === "transfer.created") {
     const transfer = event.data.object;
     const sourceTransaction = transfer.source_transaction; // ch_ charge ID
     const metaPaymentIntent = transfer.metadata?.originalPaymentIntent || transfer.metadata?.payment_intent;
@@ -169,7 +169,7 @@ module.exports = async (req, res) => {
   }
 
   // ── TRANSFER FAILED ────────────────────────────────────────────
-  if (event.type === "transfer.failed") {
+  if (event.type === "transfer.reversed") {
     const transfer = event.data.object;
     const paymentIntent = transfer.source_transaction || transfer.metadata?.payment_intent;
 
