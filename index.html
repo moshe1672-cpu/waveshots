@@ -1920,7 +1920,8 @@ async function sbFetch(path, opts={}) {
   const res = await fetch(url, { ...opts, headers });
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(err);
+    console.error("sbFetch error:", res.status, url, err);
+    throw new Error(`HTTP ${res.status}: ${err}`);
   }
   const text = await res.text();
   return text ? JSON.parse(text) : [];
@@ -2252,7 +2253,13 @@ async function loadPublicGallery() {
     renderHomeSlider();
     populateFilterDropdowns();
   } catch(e) {
-    if (slider) slider.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Could not load sessions</h3><p>${e.message}</p></div>`;
+    if (slider) slider.innerHTML = `<div class="empty-state" style="min-width:300px;padding:32px;text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">⚠️</div>
+      <h3 style="margin-bottom:8px">Could not load sessions</h3>
+      <p style="font-size:12px;color:var(--gray);margin-bottom:16px;word-break:break-all">${e.message}</p>
+      <button class="btn-primary" onclick="loadPublicGallery()" style="font-size:13px;padding:8px 20px">Retry</button>
+    </div>`;
+    console.error("loadPublicGallery error:", e);
   }
 }
 
