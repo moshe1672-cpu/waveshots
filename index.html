@@ -812,6 +812,9 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 #home-slider::-webkit-scrollbar{height:4px}
 #home-slider::-webkit-scrollbar-track{background:rgba(255,255,255,0.05);border-radius:2px}
 #home-slider::-webkit-scrollbar-thumb{background:rgba(6,182,212,0.4);border-radius:2px}
+#admin-applications-content::-webkit-scrollbar{width:5px}
+#admin-applications-content::-webkit-scrollbar-track{background:rgba(255,255,255,0.04);border-radius:4px}
+#admin-applications-content::-webkit-scrollbar-thumb{background:rgba(6,182,212,0.35);border-radius:4px}
 .slider-card{flex:0 0 300px;background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s}
 .slider-card:hover{transform:translateY(-4px);border-color:rgba(6,182,212,0.3)}
 .slider-card .photo-stack{position:relative;height:200px;overflow:hidden;background:var(--mid)}
@@ -1045,7 +1048,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   </div>
 
   <!-- ADMIN DASHBOARD -->
-  <div id="admin-dashboard" style="display:none">
+  <div id="admin-dashboard" style="display:none;padding-top:64px">
     <div class="admin-header">
       <div>
         <h1><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" width="28" height="28" style="display:inline-block;vertical-align:middle;margin-right:8px;"><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M485.06,537.37v56.03c0,15.46-12.56,28.02-28.02,28.02h-145.28c-15.46,0-28.02-12.56-28.02-28.02v-56.03c0-15.46,12.56-28.02,28.02-28.02h145.28c15.46,0,28.02,12.56,28.02,28.02Z"/><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M1445.04,648.79h-916.77s82.1-114.7,130.31-182.04c21.48-30.01,56.12-47.81,93.01-47.81h470.08c36.9,0,71.53,17.81,93.01,47.81,48.21,67.35,130.31,182.04,130.31,182.04h.04Z"/><path style="fill:#1c1c1e;fill-rule:evenodd;" d="M1761.91,592.7c65.42,0,118.46,53.04,118.46,118.46v751.45c0,65.42-53.04,118.46-118.46,118.46H238.09c-65.4-.02-118.46-53.04-118.46-118.46v-751.45c0-65.42,53.06-118.46,118.46-118.46h1523.82Z"/><path style="fill:#fff;fill-rule:evenodd;" d="M1641.06,723.58c9.48,0,18.56,3.76,25.27,10.48,6.71,6.71,10.48,15.79,10.48,25.27v69.98c0,9.48-3.76,18.56-10.48,25.27-6.71,6.71-15.79,10.48-25.27,10.48h-160.3c-9.48,0-18.58-3.76-25.29-10.48-6.71-6.71-10.48-15.79-10.48-25.27v-69.98c0-9.48,3.76-18.56,10.48-25.27,6.71-6.71,15.79-10.48,25.29-10.48h160.3Z"/><ellipse style="fill:#fff;" cx="1000.06" cy="1086.87" rx="355.91" ry="363.29"/><ellipse style="fill:#111111;" cx="1000.06" cy="1086.87" rx="260.55" ry="265.96"/><ellipse style="fill:#fff;" cx="1096.83" cy="974.64" rx="65.58" ry="66.93"/></svg> Admin Dashboard</h1>
@@ -1060,8 +1063,14 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     <div class="admin-body">
       <!-- APPLICATIONS PANEL -->
       <div class="admin-card applications-section" style="margin-bottom:32px">
-        <h2>🙋 Photographer Applications <span id="pending-count" style="font-size:14px;color:var(--gray);font-weight:400"></span></h2>
-        <div id="admin-applications-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
+          <h2 style="margin-bottom:0">🙋 Photographer Applications <span id="pending-count" style="font-size:14px;color:var(--gray);font-weight:400"></span></h2>
+          <div class="search-wrap" style="min-width:220px;max-width:300px;margin-bottom:0">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="app-search" placeholder="Search by name or email..." oninput="filterAdminApplications()"/>
+          </div>
+        </div>
+        <div id="admin-applications-content" style="max-height:520px;overflow-y:auto;padding-right:4px">
           <div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div>
         </div>
       </div>
@@ -1721,6 +1730,15 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <!-- ========== PHOTOGRAPHER DASHBOARD PAGE ========== -->
 <div id="page-photog-dash" class="page">
   <div class="photog-dash">
+    <!-- SETUP REQUIRED BANNER -->
+    <div id="pd-setup-banner" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(251,191,36,0.05));border-bottom:2px solid rgba(251,191,36,0.5);padding:18px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="font-size:28px">⚠️</div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:16px;font-weight:800;color:#fbbf24;margin-bottom:4px">Connect your payout account to start selling</div>
+        <div style="font-size:13px;color:var(--gray);line-height:1.5">You must connect a bank account via Stripe before you can publish sessions to the marketplace. Sessions can be uploaded as drafts in the meantime.</div>
+      </div>
+      <button onclick="connectStripe()" style="background:linear-gradient(135deg,#635bff,#7c3aed);border:none;color:white;font-weight:700;padding:12px 24px;border-radius:10px;cursor:pointer;font-size:14px;white-space:nowrap;font-family:inherit">Connect Bank Account →</button>
+    </div>
     <div class="photog-header">
       <div class="photog-header-left">
         <div class="photog-avatar" id="pd-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" width="36" height="36" style="display:inline-block;vertical-align:middle;"><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M485.06,537.37v56.03c0,15.46-12.56,28.02-28.02,28.02h-145.28c-15.46,0-28.02-12.56-28.02-28.02v-56.03c0-15.46,12.56-28.02,28.02-28.02h145.28c15.46,0,28.02,12.56,28.02,28.02Z"/><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M1445.04,648.79h-916.77s82.1-114.7,130.31-182.04c21.48-30.01,56.12-47.81,93.01-47.81h470.08c36.9,0,71.53,17.81,93.01,47.81,48.21,67.35,130.31,182.04,130.31,182.04h.04Z"/><path style="fill:#1c1c1e;fill-rule:evenodd;" d="M1761.91,592.7c65.42,0,118.46,53.04,118.46,118.46v751.45c0,65.42-53.04,118.46-118.46,118.46H238.09c-65.4-.02-118.46-53.04-118.46-118.46v-751.45c0-65.42,53.06-118.46,118.46-118.46h1523.82Z"/><path style="fill:#fff;fill-rule:evenodd;" d="M1641.06,723.58c9.48,0,18.56,3.76,25.27,10.48,6.71,6.71,10.48,15.79,10.48,25.27v69.98c0,9.48-3.76,18.56-10.48,25.27-6.71,6.71-15.79,10.48-25.27,10.48h-160.3c-9.48,0-18.58-3.76-25.29-10.48-6.71-6.71-10.48-15.79-10.48-25.27v-69.98c0-9.48,3.76-18.56,10.48-25.27,6.71-6.71,15.79-10.48,25.29-10.48h160.3Z"/><ellipse style="fill:#fff;" cx="1000.06" cy="1086.87" rx="355.91" ry="363.29"/><ellipse style="fill:#111111;" cx="1000.06" cy="1086.87" rx="260.55" ry="265.96"/><ellipse style="fill:#fff;" cx="1096.83" cy="974.64" rx="65.58" ry="66.93"/></svg></div>
@@ -1906,6 +1924,9 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
           <input type="checkbox" id="pu-publish" style="width:auto;accent-color:var(--cyan)"/>
           <label for="pu-publish" style="display:inline;font-size:14px;color:var(--white);font-weight:500;text-transform:none;letter-spacing:0;cursor:pointer">Publish immediately</label>
         </div>
+        <div id="pu-no-stripe-warn" style="display:none;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.4);border-radius:10px;padding:12px 16px;font-size:13px;color:#fbbf24;margin-bottom:4px">
+          ⚠️ <strong>Payout account required to publish.</strong> Connect your bank account in the Payouts tab first.
+        </div>
         <button class="submit-btn" id="pu-submit-btn" onclick="photographerCreateSession()">
           <span id="pu-submit-text">🚀 Upload Session</span>
         </button>
@@ -2043,6 +2064,7 @@ function showPage(name) {
   if (name === "sessions") loadSessionsPage();
   if (name === "photographers") loadPhotographersPage();
   if (name === "photog-dash") loadPhotogDash();
+  if (name === "photog-upload") updateStripeConnectUI();
   if (name === "surfer-dash") loadSurferDash();
   if (name === "admin") {
     const loggedIn = sessionStorage.getItem("ws_admin");
@@ -3262,6 +3284,12 @@ function renderPhotogSessions(sessions) {
 }
 
 async function togglePhotogPublish(id, current) {
+  if (!current && !currentPhotographer?.stripe_account_id) {
+    toast("⚠️ Connect your payout account before publishing sessions.", "error");
+    // Scroll to stripe card
+    document.getElementById("pd-stripe-connect-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
   try {
     await sbFetch(`sessions?id=eq.${id}`, {
       method: "PATCH",
@@ -3341,6 +3369,10 @@ async function photographerCreateSession() {
   const wave = document.getElementById("pu-wave").value.trim();
   const publish = document.getElementById("pu-publish").checked;
 
+  if (publish && !currentPhotographer?.stripe_account_id) {
+    toast("⚠️ Connect your payout account before publishing sessions.", "error");
+    return;
+  }
   if (!name || !date || !price || !spot || !wave) { toast("Please fill in all fields", "error"); return; }
   if (price < 10) { toast("Minimum price is $10.00", "error"); return; }
   if (puFiles.length === 0) { toast("Please upload at least one photo", "error"); return; }
@@ -3410,21 +3442,17 @@ async function photographerCreateSession() {
 }
 
 // ── ADMIN APPLICATIONS ────────────────────────────────────────────
-async function loadAdminApplications() {
+let allAdminApps = [];
+
+function renderAdminApplications(apps) {
   const cont = document.getElementById("admin-applications-content");
   if (!cont) return;
-  try {
-    const apps = await sbFetch("photographers?order=created_at.desc&select=*", { headers: { "Prefer": "" } });
-    const pending = apps.filter(a => a.status === "pending");
-    const countEl = document.getElementById("pending-count");
-    if (countEl) countEl.textContent = pending.length ? `· ${pending.length} pending` : "· All reviewed";
-
-    if (!apps.length) {
-      cont.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">📭</div><h3>No applications yet</h3><p>Share your Join page to attract photographers.</p></div>`;
-      return;
-    }
-
-    cont.innerHTML = apps.map(a => `
+  if (!apps.length) {
+    cont.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">📭</div><h3>No results found</h3><p>Try a different search term.</p></div>`;
+    return;
+  }
+  // Show max 3 items (scrollable), render all since container has max-height
+  cont.innerHTML = apps.map(a => `
       <div class="app-item" id="app-${a.id}">
         <div class="app-top">
           <div class="app-avatar">${a.profile_photo_url ? `<img src="${a.profile_photo_url}" alt=""/>` : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" width="48" height="48" style="display:inline-block;vertical-align:middle;"><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M485.06,537.37v56.03c0,15.46-12.56,28.02-28.02,28.02h-145.28c-15.46,0-28.02-12.56-28.02-28.02v-56.03c0-15.46,12.56-28.02,28.02-28.02h145.28c15.46,0,28.02,12.56,28.02,28.02Z"/><path style="fill:#9a9a9a;fill-rule:evenodd;" d="M1445.04,648.79h-916.77s82.1-114.7,130.31-182.04c21.48-30.01,56.12-47.81,93.01-47.81h470.08c36.9,0,71.53,17.81,93.01,47.81,48.21,67.35,130.31,182.04,130.31,182.04h.04Z"/><path style="fill:#1c1c1e;fill-rule:evenodd;" d="M1761.91,592.7c65.42,0,118.46,53.04,118.46,118.46v751.45c0,65.42-53.04,118.46-118.46,118.46H238.09c-65.4-.02-118.46-53.04-118.46-118.46v-751.45c0-65.42,53.06-118.46,118.46-118.46h1523.82Z"/><path style="fill:#fff;fill-rule:evenodd;" d="M1641.06,723.58c9.48,0,18.56,3.76,25.27,10.48,6.71,6.71,10.48,15.79,10.48,25.27v69.98c0,9.48-3.76,18.56-10.48,25.27-6.71,6.71-15.79,10.48-25.27,10.48h-160.3c-9.48,0-18.58-3.76-25.29-10.48-6.71-6.71-10.48-15.79-10.48-25.27v-69.98c0-9.48,3.76-18.56,10.48-25.27,6.71-6.71,15.79-10.48,25.29-10.48h160.3Z"/><ellipse style="fill:#fff;" cx="1000.06" cy="1086.87" rx="355.91" ry="363.29"/><ellipse style="fill:#111111;" cx="1000.06" cy="1086.87" rx="260.55" ry="265.96"/><ellipse style="fill:#fff;" cx="1096.83" cy="974.64" rx="65.58" ry="66.93"/></svg>`}</div>
@@ -3467,6 +3495,37 @@ async function loadAdminApplications() {
           </div>
         </div>
       </div>`).join("");
+}
+
+function filterAdminApplications() {
+  const q = (document.getElementById("app-search")?.value || "").toLowerCase().trim();
+  const filtered = q
+    ? allAdminApps.filter(a =>
+        a.full_name.toLowerCase().includes(q) ||
+        a.email.toLowerCase().includes(q) ||
+        (a.bio || "").toLowerCase().includes(q) ||
+        (a.locations || []).some(l => l.toLowerCase().includes(q))
+      )
+    : allAdminApps;
+  renderAdminApplications(filtered);
+}
+
+async function loadAdminApplications() {
+  const cont = document.getElementById("admin-applications-content");
+  if (!cont) return;
+  try {
+    const apps = await sbFetch("photographers?order=created_at.desc&select=*", { headers: { "Prefer": "" } });
+    allAdminApps = apps;
+    const pending = apps.filter(a => a.status === "pending");
+    const countEl = document.getElementById("pending-count");
+    if (countEl) countEl.textContent = pending.length ? `· ${pending.length} pending` : "· All reviewed";
+
+    if (!apps.length) {
+      cont.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">📭</div><h3>No applications yet</h3><p>Share your Join page to attract photographers.</p></div>`;
+      return;
+    }
+
+    renderAdminApplications(apps);
   } catch(e) {
     cont.innerHTML = `<p style="color:var(--gray);font-size:13px">Could not load applications.</p>`;
   }
@@ -3950,6 +4009,22 @@ function updateStripeConnectUI() {
   const hasStripe = !!currentPhotographer?.stripe_account_id;
   const statusEl = document.getElementById("pd-stripe-status");
   const btn = document.getElementById("pd-stripe-btn");
+  const banner = document.getElementById("pd-setup-banner");
+
+  // Show/hide top setup banner
+  if (banner) banner.style.display = hasStripe ? "none" : "flex";
+
+  // Upload form publish checkbox
+  const puPublish = document.getElementById("pu-publish");
+  const puWarn = document.getElementById("pu-no-stripe-warn");
+  if (puPublish) {
+    puPublish.disabled = !hasStripe;
+    puPublish.checked = hasStripe ? puPublish.checked : false;
+    if (!hasStripe) puPublish.style.opacity = "0.4";
+    else puPublish.style.opacity = "1";
+  }
+  if (puWarn) puWarn.style.display = hasStripe ? "none" : "block";
+
   if (!statusEl || !btn) return;
   if (hasStripe) {
     statusEl.textContent = "✅ Payout account connected — you'll receive 80% of every sale automatically.";
@@ -4806,7 +4881,7 @@ async function loadAdminWallet() {
     const balance = wallet ? parseFloat(wallet.balance) : 0;
 
     // Fetch purchases with no payout (stripe_payment_id exists, no payout row)
-    const purchases = await sbFetch("purchases?select=*&stripe_payment_id=not.is.null&order=created_at.desc", { headers: { "Prefer": "" } });
+    const purchases = await sbFetch("purchases?select=*&stripe_payment_id=not.is.null&order=purchased_at.desc", { headers: { "Prefer": "" } });
     const payouts = await sbFetch("payouts?select=*", { headers: { "Prefer": "" } });
     const paidSessionIds = new Set((payouts || []).map(p => p.session_id));
     const pendingPayouts = (purchases || []).filter(p => !paidSessionIds.has(p.session_id) && p.stripe_payment_id);
