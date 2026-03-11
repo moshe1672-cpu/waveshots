@@ -40,18 +40,8 @@ module.exports = async (req, res) => {
   try {
     event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err) {
-    // transfer.created fires from connected accounts and may have a different
-    // signature context — parse it without verification as a fallback so we
-    // don't drop the event entirely (still safe; it's our own Stripe account)
-    console.warn("Webhook signature error (attempting fallback parse):", err.message);
-    try {
-      event = JSON.parse(rawBody.toString());
-      if (!event || !event.type) throw new Error("Invalid event shape");
-      console.log("Fallback parse succeeded for event type:", event.type);
-    } catch (parseErr) {
-      console.error("Fallback parse also failed:", parseErr.message);
-      return res.status(400).json({ error: `Webhook Error: ${err.message}` });
-    }
+    console.error("Webhook signature error:", err.message);
+    return res.status(400).json({ error: `Webhook Error: ${err.message}` });
   }
 
   console.log("Webhook received:", event.type);
@@ -91,6 +81,17 @@ module.exports = async (req, res) => {
 
       const amountPaid = session.amount_total / 100;
       const photographerEarnings = parseFloat((amountPaid * 0.8).toFixed(2));
+
+      // Idempotency check — skip if purchase already recorded for this payment intent
+      try {
+        const existing = await supabase(`purchases?stripe_payment_id=eq.${session.payment_intent}&select=id`);
+        if (existing && existing.length > 0) {
+          console.log("⚠️ Purchase already recorded for payment intent:", session.payment_intent, "— skipping duplicate");
+          return res.status(200).json({ received: true });
+        }
+      } catch (e) {
+        console.error("Idempotency check failed:", e.message);
+      }
 
       try {
         await supabase(`sessions?id=eq.${sessionId}`, "PATCH", { is_sold: true });
