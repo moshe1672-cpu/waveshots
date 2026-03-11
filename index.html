@@ -2305,13 +2305,13 @@ function populateFilterDropdowns() {
   // Spots
   const spots = [...new Set(publicSessions.map(s => s.spot).filter(Boolean))].sort();
   const spotSel = document.getElementById("filter-spot");
-  spotSel.innerHTML = `<option value="">📍 All Spots</option>` +
+  if (spotSel) spotSel.innerHTML = `<option value="">📍 All Spots</option>` +
     spots.map(sp => `<option value="${sp}">${sp}</option>`).join("");
 
   // Dates
   const dates = [...new Set(publicSessions.map(s => s.session_date).filter(Boolean))].sort().reverse();
   const dateSel = document.getElementById("filter-date");
-  dateSel.innerHTML = `<option value="">📅 All Dates</option>` +
+  if (dateSel) dateSel.innerHTML = `<option value="">📅 All Dates</option>` +
     dates.map(d => {
       const label = new Date(d + "T12:00:00").toLocaleDateString("en-US", {weekday:"short",month:"short",day:"numeric"});
       return `<option value="${d}">${label}</option>`;
@@ -2319,10 +2319,10 @@ function populateFilterDropdowns() {
 }
 
 function applyFilters() {
-  const query = (document.getElementById("pub-search").value || "").toLowerCase().trim();
-  const spot = document.getElementById("filter-spot").value;
-  const date = document.getElementById("filter-date").value;
-  const time = document.getElementById("filter-time").value;
+  const query = ((document.getElementById("pub-search") || {}).value || "").toLowerCase().trim();
+  const spot = (document.getElementById("filter-spot") || {}).value || "";
+  const date = (document.getElementById("filter-date") || {}).value || "";
+  const time = (document.getElementById("filter-time") || {}).value || "";
 
   const filtered = publicSessions.filter(s => {
     if (query && !s.surfer_name.toLowerCase().includes(query)) return false;
