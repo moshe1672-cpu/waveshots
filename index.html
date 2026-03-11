@@ -4952,13 +4952,11 @@ async function loadAdminWallet() {
 }
 
 async function sendManualPayout(purchaseId, sessionId, stripePaymentId, amount) {
-  // First we need the photographer's Stripe ID from the session
   const btn = event.target;
   btn.disabled = true;
   btn.textContent = "Sending...";
 
   try {
-    // Get the session to find the photographer
     const [session] = await sbFetch(`sessions?id=eq.${sessionId}&select=photographer_id`, { headers: { "Prefer": "" } });
     if (!session) throw new Error("Session not found");
 
@@ -4979,19 +4977,34 @@ async function sendManualPayout(purchaseId, sessionId, stripePaymentId, amount) 
     });
 
     const data = await resp.json();
+
+    // Stripe error: transfer already exists for this charge
+    if (!resp.ok && data.error && data.error.includes("already a transfer")) {
+      btn.disabled = false;
+      btn.textContent = "Send $" + (amount * 0.8).toFixed(2) + " to Photographer";
+
+      // Show inline resolution UI
+      const row = btn.closest("div[style*='border-bottom']");
+      if (row && !row.querySelector(".already-paid-notice")) {
+        const notice = document.createElement("div");
+        notice.className = "already-paid-notice";
+        notice.style.cssText = "margin-top:10px;padding:10px 12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;font-size:12px;color:#fbbf24;line-height:1.5";
+        notice.innerHTML = `⚠️ <strong>Transfer already sent in Stripe</strong> — the payout record just needs to be marked as paid in WaveShots.<br/>
+          <button onclick="markPayoutPaid('${purchaseId}','${sessionId}','${session.photographer_id}',${amount * 0.8},${amount - amount * 0.8})"
+            style="margin-top:8px;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);color:#fbbf24;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">
+            ✓ Mark as Paid in WaveShots
+          </button>`;
+        row.appendChild(notice);
+      }
+      return;
+    }
+
     if (!resp.ok) throw new Error(data.error || "Transfer failed");
 
-    // Record in payouts table
-    await sbFetch("payouts", {
-      method: "POST",
-      body: JSON.stringify({
-        session_id: sessionId,
-        photographer_id: session.photographer_id,
-        amount: data.amount,
-        platform_fee: amount - data.amount,
-        status: "paid",
-        stripe_transfer_id: data.transferId
-      })
+    // Update existing payout row to paid
+    await sbFetch(`payouts?session_id=eq.${sessionId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status: "paid", paid_at: new Date().toISOString(), stripe_transfer_id: data.transferId })
     });
 
     toast(`✅ $${data.amount.toFixed(2)} sent to photographer!`, "success");
@@ -4999,7 +5012,23 @@ async function sendManualPayout(purchaseId, sessionId, stripePaymentId, amount) 
   } catch(e) {
     toast(`❌ ${e.message}`, "error");
     btn.disabled = false;
-    btn.textContent = "Send 80% to Photographer";
+    btn.textContent = "Send $" + (amount * 0.8).toFixed(2) + " to Photographer";
+  }
+}
+
+async function markPayoutPaid(purchaseId, sessionId, photographerId, payoutAmount, platformFee) {
+  try {
+    await sbFetch(`payouts?session_id=eq.${sessionId}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        status: "paid",
+        paid_at: new Date().toISOString()
+      })
+    });
+    toast(`✅ Payout marked as paid — $${payoutAmount.toFixed(2)} to photographer`, "success");
+    loadAdminWallet();
+  } catch(e) {
+    toast(`❌ ${e.message}`, "error");
   }
 }
 
