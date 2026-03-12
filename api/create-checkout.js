@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { sessionId, sessionTitle, price, photographerStripeId, surferEmail } = req.body;
+    const { sessionId, sessionTitle, price, photographerStripeId, surferEmail, platformFee } = req.body;
 
     if (!sessionId || !price) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -30,8 +30,9 @@ module.exports = async (req, res) => {
           account.capabilities?.transfers === "active";
 
         if (canTransfer) {
-          const platformFee = Math.round(priceInCents * 0.20);
-          paymentIntentData.application_fee_amount = platformFee;
+          const feePercent = (platformFee != null ? platformFee : 20) / 100;
+          const platformFeeAmt = Math.round(priceInCents * feePercent);
+          paymentIntentData.application_fee_amount = platformFeeAmt;
           paymentIntentData.transfer_data = { destination: photographerStripeId };
         } else {
           console.log(`Photographer ${photographerStripeId} not fully onboarded — skipping transfer`);
