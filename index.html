@@ -1384,30 +1384,9 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <!-- ========== SURFER AUTH PAGE ========== -->
 <div id="page-surfer-auth" class="page">
   <div class="login-wrap" style="min-height:100vh;padding-top:80px">
-    <div class="login-card" style="max-width:460px">
+    <div class="login-card" style="max-width:420px">
 
-      <!-- ROLE TOGGLE -->
-      <div style="margin-bottom:28px;text-align:center;display:flex;flex-direction:column;align-items:center">
-        <p style="font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--gray);text-transform:uppercase;margin-bottom:14px">I am a</p>
-        <div style="display:inline-flex;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px;padding:4px;gap:4px">
-          <button id="role-surfer-btn" onclick="switchRole('surfer')"
-            style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;display:flex;align-items:center;gap:8px">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg>
-            Surfer
-          </button>
-          <button id="role-photog-btn" onclick="switchRole('photographer')"
-            style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:transparent;color:var(--gray);display:flex;align-items:center;gap:8px">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg>
-            Photographer
-          </button>
-          <button id="role-both-btn" onclick="switchRole('both')"
-            style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:transparent;color:var(--gray);display:flex;align-items:center;gap:8px">
-            ⚡ Both
-          </button>
-        </div>
-      </div>
-
-      <!-- SIGN IN / CREATE ACCOUNT TABS (surfer only) -->
+      <!-- SIGN IN / CREATE ACCOUNT TABS -->
       <div id="auth-tab-row" style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px">
         <button id="auth-login-tab" onclick="switchAuthTab('login')"
           style="flex:1;padding:8px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;transition:all .2s">
@@ -1419,141 +1398,44 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
         </button>
       </div>
 
-      <!-- SURFER PANEL -->
-      <div id="unified-surfer-panel">
-        <!-- LOGIN FORM -->
-        <div id="surfer-login-form">
-          <div id="surfer-signin-panel">
-            <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Welcome back</h2>
-            <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to access your sessions</p>
-            <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-            <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:6px" onkeydown="if(event.key==='Enter')surferLogin()"/>
-            <span class="forgot-link" onclick="showSurferForgot()">Forgot password?</span>
-            <button class="login-btn" onclick="surferLogin()">Sign In</button>
-          </div>
-          <div id="surfer-forgot-panel" class="forgot-panel">
-            <button onclick="hideSurferForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
-            <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Reset Password</h2>
-            <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email and we'll show you a reset code to use.</p>
-            <div id="surfer-reset-success" class="reset-success" style="display:none"></div>
-            <input type="email" id="sr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-            <div id="surfer-reset-code-wrap" style="display:none">
-              <input type="text" id="sr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
-              <input type="password" id="sr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
-              <input type="password" id="sr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
-              <button class="login-btn" onclick="surferResetConfirm()">Update Password</button>
-            </div>
-            <button id="surfer-send-reset-btn" class="login-btn" onclick="surferSendReset()" style="margin-bottom:0">Send Reset Code</button>
-          </div>
-        </div>
-        <!-- SIGNUP FORM -->
-        <div id="surfer-signup-form" style="display:none">
-          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Create account</h2>
-          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Join WaveShots to save and download your sessions</p>
-          <input type="text" id="ss-name" class="login-input" placeholder="Full name" style="margin-bottom:10px"/>
-          <input type="email" id="ss-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-          <input type="password" id="ss-password" class="login-input" placeholder="Password (min 8 chars)" style="margin-bottom:10px"/>
-          <input type="password" id="ss-password2" class="login-input" placeholder="Confirm password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferSignup()"/>
-          <button class="login-btn" onclick="surferSignup()">Create Account</button>
-        </div>
-      </div>
-
-      <!-- PHOTOGRAPHER PANEL -->
-      <div id="unified-photog-panel" style="display:none">
-        <div id="photog-unified-signin-panel">
-          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Photographer Login</h2>
-          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to your WaveShots photographer account</p>
-          <div class="form-row"><label>Email</label>
-            <input type="email" id="pl-email" class="login-input" placeholder="you@example.com" style="margin-bottom:0"/>
-          </div>
-          <div class="form-row"><label>Password</label>
-            <input type="password" id="pl-password" class="login-input" placeholder="Your password" style="margin-bottom:4px" onkeydown="if(event.key==='Enter')photogLogin()"/>
-          </div>
-          <span class="forgot-link" onclick="showPhotogForgot()">Forgot password?</span>
-          <button class="login-btn" onclick="photogLogin()" style="margin-top:8px">Sign In</button>
+      <!-- SIGN IN FORM -->
+      <div id="surfer-login-form">
+        <div id="surfer-signin-panel">
+          <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">Welcome back 🤙</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Sign in to your WaveShots account</p>
+          <input type="email" id="sl-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+          <input type="password" id="sl-password" class="login-input" placeholder="Password" style="margin-bottom:6px" onkeydown="if(event.key==='Enter')unifiedLogin()"/>
+          <span class="forgot-link" onclick="showSurferForgot()">Forgot password?</span>
+          <button class="login-btn" onclick="unifiedLogin()">Sign In</button>
           <p style="text-align:center;font-size:13px;color:var(--gray);margin-top:20px">
-            Not a photographer yet? <span style="color:var(--cyan);cursor:pointer;font-weight:600" onclick="showPage('apply')">Apply here →</span>
+            Photographer? <span style="color:var(--cyan);cursor:pointer;font-weight:600" onclick="showPage('apply')">Apply here →</span>
           </p>
         </div>
-        <div id="photog-forgot-panel" class="forgot-panel">
-          <button onclick="hidePhotogForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
-          <h2 style="font-size:18px;font-weight:800;margin-bottom:6px">Reset Password</h2>
-          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email to get a reset code.</p>
-          <div id="photog-reset-success" class="reset-success" style="display:none"></div>
-          <input type="email" id="pr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-          <div id="photog-reset-code-wrap" style="display:none">
-            <input type="text" id="pr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
-            <input type="password" id="pr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
-            <input type="password" id="pr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
-            <button class="login-btn" onclick="photogResetConfirm()">Update Password</button>
+        <div id="surfer-forgot-panel" class="forgot-panel">
+          <button onclick="hideSurferForgot()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:13px;margin-bottom:16px;padding:0;font-family:inherit">← Back to Sign In</button>
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Reset Password</h2>
+          <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Enter your email and we'll send a reset code.</p>
+          <div id="surfer-reset-success" class="reset-success" style="display:none"></div>
+          <input type="email" id="sr-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+          <div id="surfer-reset-code-wrap" style="display:none">
+            <input type="text" id="sr-code" class="login-input" placeholder="Enter reset code" style="margin-bottom:10px"/>
+            <input type="password" id="sr-newpw" class="login-input" placeholder="New password (min 8 chars)" style="margin-bottom:10px"/>
+            <input type="password" id="sr-newpw2" class="login-input" placeholder="Confirm new password" style="margin-bottom:16px"/>
+            <button class="login-btn" onclick="surferResetConfirm()">Update Password</button>
           </div>
-          <button id="photog-send-reset-btn" class="login-btn" onclick="photogSendReset()">Send Reset Code</button>
+          <button id="surfer-send-reset-btn" class="login-btn" onclick="surferSendReset()" style="margin-bottom:0">Send Reset Code</button>
         </div>
       </div>
 
-    </div>
-  </div>
-</div>
-
-<!-- ========== SURFER DASHBOARD PAGE ========== -->
-<div id="page-surfer-dash" class="page">
-  <div class="surfer-dash">
-    <div class="surfer-header">
-      <div class="surfer-header-left">
-        <div class="surfer-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="28" height="28" style="display:inline-block;vertical-align:middle;"><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FA6E85;" d="M210.646,270.829c27.881,11.612,59.942,27.516,93.16,46.694c91.575,52.871,157.24,110.578,146.665,128.894c-10.574,18.316-93.382-9.698-184.958-62.569c-43.897-25.343-81.839-51.799-108.285-74.493c-8.646-7.419-5.611-21.411,5.33-24.584L210.646,270.829z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#E33F65;" d="M210.646,270.829c27.881,11.612,59.942,27.516,93.16,46.694c30.436,17.572,58.003,35.677,80.867,52.694c13.459,14.633,19.454,26.247,15.667,32.806c-10.574,18.316-93.382-9.698-184.958-62.569c-22.891-13.216-44.162-26.734-63.028-39.864c-0.96-6.929,3.07-13.75,10.206-15.82L210.646,270.829z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M406.309,229.984c-32.173-39.634-78.282-58.034-127.642-71.479c-51.967-7.966-95.053,3.026-132.747,25.528h91.902l30.634,56.162h35.74l10.211-35.74L406.309,229.984z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#E8BC8E;" d="M310.196,168.112c-10.284-3.545-20.83-6.693-31.529-9.607c-11.151-1.71-21.893-2.543-32.261-2.58c3.281,16.004,17.442,28.042,34.417,28.042C293.107,183.966,303.916,177.661,310.196,168.112z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M232.716,306.569l-24.821,15.513c-3.71,2.319-1.63,8.096,2.707,7.518l51.51-6.868c2.971-0.396,4.517-3.718,2.908-6.246l-32.303-50.762l-30.634,10.211L232.716,306.569z"/><polygon style="fill-rule:evenodd;clip-rule:evenodd;fill:#E8BC8E;" points="248.041,289.806 234.283,268.186 228.782,267.035 202.083,275.935 206.771,280.623 	"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M273.562,291.252l30.634,71.479l-5.796,31.877c-0.988,5.434,6.213,8.342,9.277,3.748l23.06-34.59c2.62-3.93,2.994-8.559,1.04-12.859l-22.475-49.444l-10.211-20.422L273.562,291.252z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#E8BC8E;" d="M273.562,291.252l2.896,6.758l34.792,7.741c-3.201-7.043-6.699-13.787-10.167-20.724l-7.854-1.642L273.562,291.252z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FCD4A9;" d="M278.668,123.402c13.747,0,24.891,11.144,24.891,24.891c0,13.747-11.144,24.892-24.891,24.892c-13.747,0-24.891-11.144-24.891-24.892C253.776,134.547,264.92,123.402,278.668,123.402z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#88C8FE;" d="M202.083,275.935l3.798-18.991c0.85-4.249,3.416-7.537,7.331-9.394l47.081-22.322l47.78,1.399l8.153,9.353c6.773,7.77,8.463,18.013,4.544,27.545l-13.735,33.404l-33.472-5.678l5.106-35.74l-37.957,22.774L202.083,275.935z"/><polygon style="fill-rule:evenodd;clip-rule:evenodd;fill:#60B7FE;" points="247.919,231.095 260.293,225.228 308.072,226.628 315.534,235.188 	"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#88C8FE;" d="M350.889,157.271c25.752-109.856-162.62-116.343-227.268,0.253c-9.695,17.486-16.608,37.74-19.598,60.828C87.764,343.88,209.731,399.466,293.827,452.089c-58.265-13.519-97.95-23.451-147.588-50.526l40.456,64.055C39.656,396.763,21.573,246.335,77.964,143.956C191.201-61.628,456.003,69.019,350.889,157.271z"/><path style="fill-rule:evenodd;clip-rule:evenodd;fill:#60B7FE;" d="M350.889,157.271c25.752-109.856-162.62-116.343-227.268,0.253c-9.695,17.486-16.608,37.74-19.598,60.828C87.764,343.88,209.731,399.466,293.827,452.089c-58.265-13.519-97.95-23.451-147.588-50.526c-74.96-67.086-107.752-244.729,13.575-314.702C269.89,23.375,392.26,75.397,350.889,157.271z"/></svg></div>
-        <div>
-          <div class="surfer-header-name" id="sd-name">—</div>
-          <div class="surfer-header-status">🌊 WaveShots Member</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px">
-        <button class="nav-btn" onclick="showPage('public')">Browse Sessions</button>
-        <button class="nav-btn ghost" onclick="surferLogout()">Sign Out</button>
-      </div>
-    </div>
-
-    <div class="surfer-body">
-      <div class="surfer-tabs">
-        <button class="surfer-tab active" onclick="switchSurferTab('purchases')" id="tab-purchases">🔓 My Sessions</button>
-        <button class="surfer-tab" onclick="switchSurferTab('lessons')" id="tab-lessons">🏄 My Lessons</button>
-        <button class="surfer-tab" onclick="switchSurferTab('favourites')" id="tab-favourites">❤️ Favourites</button>
-        <button class="surfer-tab" onclick="switchSurferTab('history')" id="tab-history">📋 Purchase History</button>
-      </div>
-
-      <!-- PURCHASES TAB -->
-      <div id="surfer-tab-purchases">
-        <div id="sd-purchases-content">
-          <div class="loading-state"><div class="loading-spinner"></div><p>Loading your sessions...</p></div>
-        </div>
-      </div>
-
-      <!-- LESSONS TAB -->
-      <div id="surfer-tab-lessons" style="display:none">
-        <div id="sd-lessons-content">
-          <div class="loading-state"><div class="loading-spinner"></div><p>Loading your lessons...</p></div>
-        </div>
-      </div>
-
-      <!-- FAVOURITES TAB -->
-      <div id="surfer-tab-favourites" style="display:none">
-        <div id="sd-favourites-content">
-          <div class="loading-state"><div class="loading-spinner"></div><p>Loading favourites...</p></div>
-        </div>
-      </div>
-
-      <!-- HISTORY TAB -->
-      <div id="surfer-tab-history" style="display:none">
-        <div id="sd-history-content">
-          <div class="loading-state"><div class="loading-spinner"></div><p>Loading history...</p></div>
-        </div>
-      </div>
-      <!-- BOTH PANEL -->
-      <div id="unified-both-panel" style="display:none">
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Sign In</h2>
-        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">We'll detect your roles automatically</p>
-        <input type="email" id="both-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
-        <input type="password" id="both-password" class="login-input" placeholder="Password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')unifiedLogin()"/>
-        <button class="login-btn" onclick="unifiedLogin()">Sign In →</button>
+      <!-- SIGN UP FORM -->
+      <div id="surfer-signup-form" style="display:none">
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">Join WaveShots 🌊</h2>
+        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">Create an account to save and download your sessions</p>
+        <input type="text" id="ss-name" class="login-input" placeholder="Full name" style="margin-bottom:10px"/>
+        <input type="email" id="ss-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+        <input type="password" id="ss-password" class="login-input" placeholder="Password (min 8 chars)" style="margin-bottom:10px"/>
+        <input type="password" id="ss-password2" class="login-input" placeholder="Confirm password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')surferSignup()"/>
+        <button class="login-btn" onclick="surferSignup()">Create Account</button>
       </div>
 
     </div>
@@ -4210,25 +4092,33 @@ function switchRole(role) {
   const isSurfer = role === 'surfer';
   const isPhotog = role === 'photographer';
   const isBoth = role === 'both';
-  // Toggle panels
+  const isCoach = role === 'coach';
+  // Toggle panels — coach reuses photographer panel
   document.getElementById('unified-surfer-panel').style.display = isSurfer ? 'block' : 'none';
-  document.getElementById('unified-photog-panel').style.display = isPhotog ? 'block' : 'none';
+  document.getElementById('unified-photog-panel').style.display = (isPhotog || isCoach) ? 'block' : 'none';
   document.getElementById('unified-both-panel').style.display = isBoth ? 'block' : 'none';
   // Toggle sign in/create tabs row (only for surfer)
   document.getElementById('auth-tab-row').style.display = isSurfer ? 'flex' : 'none';
+  // Update photographer panel heading and subtitle for coach context
+  const photogHeading = document.querySelector('#photog-unified-signin-panel h2');
+  const photogSubtitle = document.getElementById('photog-panel-subtitle');
+  if (photogHeading) photogHeading.textContent = isCoach ? 'Coach Login' : 'Photographer Login';
+  if (photogSubtitle) photogSubtitle.textContent = isCoach ? 'Sign in to manage your lessons and bookings' : 'Sign in to your WaveShots photographer account';
   // Style role buttons
-  const surferBtn = document.getElementById('role-surfer-btn');
-  const photogBtn = document.getElementById('role-photog-btn');
-  const bothBtn = document.getElementById('role-both-btn');
   const activeStyle = 'linear-gradient(135deg,var(--accent),var(--accent2))';
-  if (surferBtn) { surferBtn.style.background = isSurfer ? activeStyle : 'transparent'; surferBtn.style.color = isSurfer ? 'white' : 'var(--gray)'; }
-  if (photogBtn) { photogBtn.style.background = isPhotog ? activeStyle : 'transparent'; photogBtn.style.color = isPhotog ? 'white' : 'var(--gray)'; photogBtn.style.border = 'none'; }
-  if (bothBtn) { bothBtn.style.background = isBoth ? activeStyle : 'transparent'; bothBtn.style.color = isBoth ? 'white' : 'var(--gray)'; }
+  ['surfer','photog','both','coach'].forEach(r => {
+    const btn = document.getElementById(`role-${r}-btn`);
+    if (!btn) return;
+    const isActive = (r === 'surfer' && isSurfer) || (r === 'photog' && isPhotog) || (r === 'both' && isBoth) || (r === 'coach' && isCoach);
+    btn.style.background = isActive ? activeStyle : 'transparent';
+    btn.style.color = isActive ? 'white' : 'var(--gray)';
+    btn.style.border = 'none';
+  });
 }
 
 async function unifiedLogin() {
-  const email = document.getElementById('both-email').value.trim().toLowerCase();
-  const pw = document.getElementById('both-password').value;
+  const email = (document.getElementById('sl-email') || document.getElementById('both-email'))?.value.trim().toLowerCase();
+  const pw = (document.getElementById('sl-password') || document.getElementById('both-password'))?.value;
   if (!email || !pw) { toast('Please enter email and password', 'error'); return; }
 
   const hash = await simpleHash(pw);
