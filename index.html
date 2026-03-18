@@ -842,8 +842,16 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       </svg>
       <span>Login</span>
     </button>
+    <!-- Unified dashboard button (shown when any user logged in) -->
+    <button class="nav-login-btn" id="nav-dash-btn" onclick="showPage('unified-dash')" title="Dashboard" style="display:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="7" r="4"/>
+        <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>Dashboard</span>
+    </button>
     <!-- Surfer dash (shown when surfer logged in) -->
-    <button class="nav-login-btn" id="nav-surfer-dash-btn" onclick="showPage('surfer-dash')" title="My Sessions" style="display:none">
+    <button class="nav-login-btn" id="nav-surfer-dash-btn" onclick="showPage('unified-dash')" title="My Sessions" style="display:none">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="7" r="4"/>
         <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
@@ -851,7 +859,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <span>My Sessions</span>
     </button>
     <!-- Photographer dash (shown when photographer logged in) -->
-    <button class="nav-login-btn photog-btn" id="nav-photog-dash-btn" onclick="showPage('photog-dash')" title="My Dashboard" style="display:none">
+    <button class="nav-login-btn photog-btn" id="nav-photog-dash-btn" onclick="showPage('unified-dash')" title="My Dashboard" style="display:none">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="7" r="4"/>
         <path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/>
@@ -1339,7 +1347,41 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
   </div>
 </div>
 
-<!-- ========== SURFER LOGIN/SIGNUP PAGE ========== -->
+<!-- ========== UNIFIED DASHBOARD PAGE ========== -->
+<div id="page-unified-dash" class="page">
+  <div style="max-width:1200px;margin:0 auto;padding:32px 24px">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div id="ud-greeting" style="font-size:24px;font-weight:800;margin-bottom:4px">Welcome back 👋</div>
+        <div id="ud-email" style="font-size:14px;color:var(--gray)"></div>
+      </div>
+      <button onclick="unifiedLogout()" class="nav-btn ghost" style="padding:10px 20px">Sign Out</button>
+    </div>
+
+    <!-- Role Tabs -->
+    <div id="ud-role-tabs" style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:4px;margin-bottom:32px;width:fit-content">
+      <button id="ud-tab-surfer" onclick="switchUDTab('surfer')" style="display:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;background:transparent;color:var(--gray)">
+        🌊 Surfer
+      </button>
+      <button id="ud-tab-photographer" onclick="switchUDTab('photographer')" style="display:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;background:transparent;color:var(--gray)">
+        📸 Photographer
+      </button>
+      <button id="ud-tab-coach" onclick="switchUDTab('coach')" style="display:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;background:transparent;color:var(--gray)">
+        🏄 Coach
+      </button>
+    </div>
+
+    <!-- Tab Panels -->
+    <div id="ud-panel-surfer" style="display:none"></div>
+    <div id="ud-panel-photographer" style="display:none"></div>
+    <div id="ud-panel-coach" style="display:none"></div>
+
+  </div>
+</div>
+
+<!-- ========== SURFER AUTH PAGE ========== -->
 <div id="page-surfer-auth" class="page">
   <div class="login-wrap" style="min-height:100vh;padding-top:80px">
     <div class="login-card" style="max-width:460px">
@@ -1357,6 +1399,10 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
             style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:transparent;color:var(--gray);display:flex;align-items:center;gap:8px">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.582-7 8-7s8 3 8 7"/></svg>
             Photographer
+          </button>
+          <button id="role-both-btn" onclick="switchRole('both')"
+            style="padding:10px 28px;border-radius:100px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .25s;background:transparent;color:var(--gray);display:flex;align-items:center;gap:8px">
+            ⚡ Both
           </button>
         </div>
       </div>
@@ -1501,11 +1547,18 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
           <div class="loading-state"><div class="loading-spinner"></div><p>Loading history...</p></div>
         </div>
       </div>
+      <!-- BOTH PANEL -->
+      <div id="unified-both-panel" style="display:none">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Sign In</h2>
+        <p style="color:var(--gray);font-size:13px;margin-bottom:20px">We'll detect your roles automatically</p>
+        <input type="email" id="both-email" class="login-input" placeholder="Email address" style="margin-bottom:10px"/>
+        <input type="password" id="both-password" class="login-input" placeholder="Password" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')unifiedLogin()"/>
+        <button class="login-btn" onclick="unifiedLogin()">Sign In →</button>
+      </div>
+
     </div>
   </div>
 </div>
-
-<!-- ========== APPLY PAGE ========== -->
 <div id="page-apply" class="page">
   <div class="pg-hero">
     <div class="pg-hero-content">
@@ -2090,7 +2143,7 @@ function showPage(name) {
   if (name === "sessions") loadSessionsPage();
   if (name === "photographers") loadPhotographersPage();
   if (name === "coaches") loadCoachesPage();
-  if (name === "coaches") loadCoachesPage();
+  if (name === "unified-dash") loadUnifiedDash();
   if (name === "photog-dash") loadPhotogDash();
   if (name === "photog-upload") updateStripeConnectUI();
   if (name === "surfer-dash") loadSurferDash();
@@ -3154,7 +3207,7 @@ async function photogLogin() {
     document.getElementById("nav-login-btn").style.display = "none";
     document.getElementById("nav-photog-dash-btn").style.display = "flex";
     toast(`Welcome back, ${photog.full_name}! 🤙`, "success");
-    showPage("photog-dash");
+    showPage("unified-dash");
   } catch(e) {
     toast("Error: " + e.message, "error");
   }
@@ -3165,8 +3218,11 @@ function photogLogout() {
   sessionStorage.removeItem("ws_photographer");
   document.getElementById("photog-login-btn").style.display = "inline";
   document.getElementById("photog-dash-link").style.display = "none";
-  document.getElementById("nav-login-btn").style.display = "flex";
   document.getElementById("nav-photog-dash-btn").style.display = "none";
+  document.getElementById("nav-dash-btn").style.display = "none";
+  if (!currentSurfer) {
+    document.getElementById("nav-login-btn").style.display = "flex";
+  }
   showPage("public");
   toast("Signed out", "info");
 }
@@ -3179,6 +3235,7 @@ function restorePhotogSession() {
     document.getElementById("photog-dash-link").style.display = "inline";
     document.getElementById("nav-login-btn").style.display = "none";
     document.getElementById("nav-photog-dash-btn").style.display = "flex";
+    document.getElementById("nav-dash-btn").style.display = "flex";
   }
 }
 
@@ -3780,7 +3837,7 @@ async function surferSignup() {
     sessionStorage.setItem('ws_surfer', JSON.stringify(surfer));
     updateSurferNav();
     toast(`Welcome to WaveShots, ${name}! 🤙`, 'success');
-    showPage('surfer-dash');
+    showPage('unified-dash');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
@@ -3800,7 +3857,7 @@ async function surferLogin() {
     sessionStorage.setItem('ws_surfer', JSON.stringify(surfer));
     updateSurferNav();
     toast(`Welcome back, ${surfer.full_name}! 🤙`, 'success');
-    showPage('surfer-dash');
+    showPage('unified-dash');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
@@ -3810,6 +3867,10 @@ function surferLogout() {
   surferFavourites = [];
   sessionStorage.removeItem('ws_surfer');
   updateSurferNav();
+  if (!currentPhotographer) {
+    const unifiedBtn = document.getElementById('nav-dash-btn');
+    if (unifiedBtn) unifiedBtn.style.display = 'none';
+  }
   showPage('public');
   toast('Signed out', 'info');
 }
@@ -3827,15 +3888,20 @@ function updateSurferNav() {
   const dashBtn = document.getElementById('surfer-dash-menu-btn');
   const navLoginBtn = document.getElementById('nav-login-btn');
   const navDashBtn = document.getElementById('nav-surfer-dash-btn');
+  const navUnifiedBtn = document.getElementById('nav-dash-btn');
   if (currentSurfer) {
     if (loginBtn) loginBtn.style.display = 'none';
     if (dashBtn) dashBtn.style.display = 'flex';
     if (navLoginBtn) navLoginBtn.style.display = 'none';
-    if (navDashBtn) navDashBtn.style.display = 'flex';
+    if (navDashBtn) navDashBtn.style.display = 'none';
+    if (navUnifiedBtn) navUnifiedBtn.style.display = 'flex';
   } else {
     if (loginBtn) loginBtn.style.display = 'flex';
     if (dashBtn) dashBtn.style.display = 'none';
-    if (navLoginBtn && !document.getElementById('nav-photog-dash-btn')?.style.display !== 'flex') navLoginBtn.style.display = 'flex';
+    if (!currentPhotographer) {
+      if (navLoginBtn) navLoginBtn.style.display = 'flex';
+      if (navUnifiedBtn) navUnifiedBtn.style.display = 'none';
+    }
     if (navDashBtn) navDashBtn.style.display = 'none';
   }
 }
@@ -4142,21 +4208,68 @@ function handlePaymentReturn() {
 
 function switchRole(role) {
   const isSurfer = role === 'surfer';
+  const isPhotog = role === 'photographer';
+  const isBoth = role === 'both';
   // Toggle panels
   document.getElementById('unified-surfer-panel').style.display = isSurfer ? 'block' : 'none';
-  document.getElementById('unified-photog-panel').style.display = isSurfer ? 'none' : 'block';
+  document.getElementById('unified-photog-panel').style.display = isPhotog ? 'block' : 'none';
+  document.getElementById('unified-both-panel').style.display = isBoth ? 'block' : 'none';
   // Toggle sign in/create tabs row (only for surfer)
   document.getElementById('auth-tab-row').style.display = isSurfer ? 'flex' : 'none';
   // Style role buttons
   const surferBtn = document.getElementById('role-surfer-btn');
   const photogBtn = document.getElementById('role-photog-btn');
-  if (surferBtn && photogBtn) {
-    surferBtn.style.background = isSurfer ? 'linear-gradient(135deg,var(--accent),var(--accent2))' : 'transparent';
-    surferBtn.style.color = isSurfer ? 'white' : 'var(--gray)';
-    photogBtn.style.background = isSurfer ? 'transparent' : 'linear-gradient(135deg,rgba(6,182,212,0.3),rgba(14,116,144,0.3))';
-    photogBtn.style.color = isSurfer ? 'var(--gray)' : 'var(--cyan)';
-    photogBtn.style.border = isSurfer ? 'none' : '1px solid rgba(6,182,212,0.4)';
+  const bothBtn = document.getElementById('role-both-btn');
+  const activeStyle = 'linear-gradient(135deg,var(--accent),var(--accent2))';
+  if (surferBtn) { surferBtn.style.background = isSurfer ? activeStyle : 'transparent'; surferBtn.style.color = isSurfer ? 'white' : 'var(--gray)'; }
+  if (photogBtn) { photogBtn.style.background = isPhotog ? activeStyle : 'transparent'; photogBtn.style.color = isPhotog ? 'white' : 'var(--gray)'; photogBtn.style.border = 'none'; }
+  if (bothBtn) { bothBtn.style.background = isBoth ? activeStyle : 'transparent'; bothBtn.style.color = isBoth ? 'white' : 'var(--gray)'; }
+}
+
+async function unifiedLogin() {
+  const email = document.getElementById('both-email').value.trim().toLowerCase();
+  const pw = document.getElementById('both-password').value;
+  if (!email || !pw) { toast('Please enter email and password', 'error'); return; }
+
+  const hash = await simpleHash(pw);
+  let foundSurfer = null;
+  let foundPhotog = null;
+
+  // Check surfers table
+  try {
+    const surfers = await sbFetch(`surfers?email=ilike.${encodeURIComponent(email)}&select=*`, { headers: { 'Prefer': '' } });
+    if (surfers.length && surfers[0].password_hash === hash) foundSurfer = surfers[0];
+  } catch(e) {}
+
+  // Check photographers table
+  try {
+    const photogs = await sbFetch(`photographers?email=ilike.${encodeURIComponent(email)}&select=*`, { headers: { 'Prefer': '' } });
+    if (photogs.length && photogs[0].password_hash === hash) {
+      const p = photogs[0];
+      if (p.status === 'pending') { toast('Your application is still under review.', 'info'); return; }
+      if (p.status === 'rejected') { toast('Your application was not approved.', 'error'); return; }
+      foundPhotog = p;
+    }
+  } catch(e) {}
+
+  if (!foundSurfer && !foundPhotog) { toast('No account found with those credentials', 'error'); return; }
+
+  if (foundSurfer) {
+    currentSurfer = foundSurfer;
+    sessionStorage.setItem('ws_surfer', JSON.stringify(foundSurfer));
   }
+  if (foundPhotog) {
+    currentPhotographer = foundPhotog;
+    sessionStorage.setItem('ws_photographer', JSON.stringify(foundPhotog));
+    document.getElementById('photog-login-btn').style.display = 'none';
+    document.getElementById('photog-dash-link').style.display = 'inline';
+    document.getElementById('nav-photog-dash-btn').style.display = 'none';
+  }
+
+  updateSurferNav();
+  const roles = [foundSurfer && 'Surfer', foundPhotog && 'Photographer'].filter(Boolean).join(' & ');
+  toast(`Welcome back! Logged in as ${roles} 🤙`, 'success');
+  showPage('unified-dash');
 }
 
 async function openPhotographerProfile(photographerId) {
@@ -5334,6 +5447,228 @@ window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
   bg.style.transform = `translateY(${scrollY * 0.35}px)`;
 }, { passive: true });
+
+// ── UNIFIED DASHBOARD ───────────────────────────────────────────────────
+async function loadUnifiedDash() {
+  // Determine which roles this user has
+  const hasSurfer = !!currentSurfer;
+  const hasPhotographer = !!currentPhotographer;
+  const isCoach = currentPhotographer?.is_coach;
+
+  // If nobody is logged in, redirect to login
+  if (!hasSurfer && !hasPhotographer) {
+    showPage('surfer-auth');
+    return;
+  }
+
+  // Set greeting
+  const name = currentSurfer?.full_name || currentPhotographer?.full_name || 'there';
+  const email = currentSurfer?.email || currentPhotographer?.email || '';
+  document.getElementById('ud-greeting').textContent = `Welcome back, ${name} 👋`;
+  document.getElementById('ud-email').textContent = email;
+
+  // Show/hide tabs based on roles
+  const surferTab = document.getElementById('ud-tab-surfer');
+  const photogTab = document.getElementById('ud-tab-photographer');
+  const coachTab = document.getElementById('ud-tab-coach');
+  surferTab.style.display = hasSurfer ? 'block' : 'none';
+  photogTab.style.display = hasPhotographer ? 'block' : 'none';
+  coachTab.style.display = isCoach ? 'block' : 'none';
+
+  // Update nav — show single dashboard button, hide login
+  document.getElementById('nav-login-btn').style.display = 'none';
+  document.getElementById('nav-dash-btn').style.display = 'flex';
+
+  // Auto-select the most relevant tab
+  if (hasPhotographer) {
+    switchUDTab('photographer');
+  } else if (hasSurfer) {
+    switchUDTab('surfer');
+  }
+}
+
+function switchUDTab(tab) {
+  // Update tab button styles
+  ['surfer','photographer','coach'].forEach(t => {
+    const btn = document.getElementById(`ud-tab-${t}`);
+    const panel = document.getElementById(`ud-panel-${t}`);
+    if (!btn || !panel) return;
+    const isActive = t === tab;
+    btn.style.background = isActive ? 'linear-gradient(135deg,var(--accent),var(--accent2))' : 'transparent';
+    btn.style.color = isActive ? 'white' : 'var(--gray)';
+    panel.style.display = isActive ? 'block' : 'none';
+  });
+
+  // Load content for the selected tab
+  if (tab === 'surfer') renderUDSurferPanel();
+  if (tab === 'photographer') renderUDPhotographerPanel();
+  if (tab === 'coach') renderUDCoachPanel();
+}
+
+function renderUDSurferPanel() {
+  const panel = document.getElementById('ud-panel-surfer');
+  if (!currentSurfer) { panel.innerHTML = `<div class="empty-state"><p>Not logged in as a surfer.</p></div>`; return; }
+
+  // Clone surfer dash content into the panel
+  panel.innerHTML = `
+    <div class="surfer-body" style="padding:0">
+      <div class="surfer-tabs">
+        <button class="surfer-tab active" onclick="switchSurferTab('purchases')" id="tab-purchases">🔓 My Sessions</button>
+        <button class="surfer-tab" onclick="switchSurferTab('lessons')" id="tab-lessons">🏄 My Lessons</button>
+        <button class="surfer-tab" onclick="switchSurferTab('favourites')" id="tab-favourites">❤️ Favourites</button>
+        <button class="surfer-tab" onclick="switchSurferTab('history')" id="tab-history">📋 Purchase History</button>
+      </div>
+      <div id="surfer-tab-purchases"><div id="sd-purchases-content"><div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div></div></div>
+      <div id="surfer-tab-lessons" style="display:none"><div id="sd-lessons-content"><div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div></div></div>
+      <div id="surfer-tab-favourites" style="display:none"><div id="sd-favourites-content"></div></div>
+      <div id="surfer-tab-history" style="display:none"><div id="sd-history-content"></div></div>
+    </div>`;
+
+  document.getElementById('sd-name') && (document.getElementById('sd-name').textContent = currentSurfer.full_name);
+  loadSurferPurchases();
+}
+
+function renderUDPhotographerPanel() {
+  const panel = document.getElementById('ud-panel-photographer');
+  if (!currentPhotographer) { panel.innerHTML = `<div class="empty-state"><p>Not logged in as a photographer.</p></div>`; return; }
+
+  // Render photographer stats + sessions inline
+  panel.innerHTML = `
+    <div id="ud-photog-inner">
+      <div class="photog-stats" style="margin-bottom:24px">
+        <div class="photog-stat"><div class="photog-stat-val" id="pd-total-earned">$0</div><div class="photog-stat-label">Total Earned</div></div>
+        <div class="photog-stat"><div class="photog-stat-val" id="pd-sessions">0</div><div class="photog-stat-label">Sessions</div></div>
+        <div class="photog-stat"><div class="photog-stat-val" id="pd-sales">0</div><div class="photog-stat-label">Sales</div></div>
+        <div class="photog-stat"><div class="photog-stat-val" id="pd-pending">$0</div><div class="photog-stat-label">Pending Payout</div></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+        <button class="nav-btn" onclick="showPage('photog-upload')">+ Upload Session</button>
+        <button class="nav-btn" onclick="openBusinessCardModal()" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan)">🪪 Business Card</button>
+        <button class="nav-btn ghost" onclick="showPage('photog-dash')">Full Dashboard →</button>
+      </div>
+      <div class="admin-card" id="ud-pd-sessions-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <h2 style="margin:0">📸 My Sessions</h2>
+        </div>
+        <div id="ud-pd-sessions-list"><div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div></div>
+      </div>
+      <div class="admin-card" style="margin-top:20px" id="ud-pd-earnings-section">
+        <h2>💰 Recent Earnings</h2>
+        <div id="ud-pd-earnings-list"><div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div></div>
+      </div>
+    </div>`;
+
+  loadUDPhotographerData();
+}
+
+async function loadUDPhotographerData() {
+  const p = currentPhotographer;
+  try {
+    const sessions = await sbFetch(`sessions?photographer_id=eq.${p.id}&order=created_at.desc&select=*&limit=5`, { headers: { 'Prefer': '' } });
+    const payouts = await sbFetch(`payouts?photographer_id=eq.${p.id}&select=*&order=created_at.desc`, { headers: { 'Prefer': '' } });
+
+    const totalEarned = payouts.filter(x => x.status === 'paid').reduce((a, b) => a + parseFloat(b.amount), 0);
+    const pendingEarned = payouts.filter(x => x.status === 'pending').reduce((a, b) => a + parseFloat(b.amount), 0);
+
+    document.getElementById('pd-total-earned').textContent = `$${totalEarned.toFixed(2)}`;
+    document.getElementById('pd-sessions').textContent = sessions.length;
+    document.getElementById('pd-sales').textContent = payouts.length;
+    document.getElementById('pd-pending').textContent = `$${pendingEarned.toFixed(2)}`;
+
+    // Sessions list
+    const sessEl = document.getElementById('ud-pd-sessions-list');
+    if (!sessions.length) {
+      sessEl.innerHTML = `<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📷</div><h3>No sessions yet</h3><button class="btn-primary" onclick="showPage('photog-upload')" style="margin-top:12px;padding:10px 20px">Upload First Session</button></div>`;
+    } else {
+      sessEl.innerHTML = `<div class="earnings-list">${sessions.map(s => `
+        <div class="earning-item">
+          <div>
+            <div class="earning-name">${s.surfer_name || 'Session'}</div>
+            <div class="earning-meta">${s.spot || ''} · ${s.session_date || ''}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earning-amount">$${parseFloat(s.price||0).toFixed(2)}</div>
+            <div class="earning-fee"><span style="color:${s.is_sold?'#4ade80':'var(--gray)'}">${s.is_sold?'Sold':s.status||'listed'}</span></div>
+          </div>
+        </div>`).join('')}</div>
+        <button onclick="showPage('photog-dash')" style="margin-top:12px;background:none;border:none;color:var(--cyan);cursor:pointer;font-size:13px;font-family:inherit">View all sessions →</button>`;
+    }
+
+    // Earnings list
+    const platFee = p.platform_fee != null ? p.platform_fee : 20;
+    const earnEl = document.getElementById('ud-pd-earnings-list');
+    if (!payouts.length) {
+      earnEl.innerHTML = `<div class="empty-state" style="padding:24px 0"><div class="empty-icon">💰</div><h3>No sales yet</h3></div>`;
+    } else {
+      earnEl.innerHTML = `<div class="earnings-list">${payouts.slice(0,5).map(payout => `
+        <div class="earning-item">
+          <div>
+            <div class="earning-name">${new Date(payout.created_at).toLocaleDateString()}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="earning-amount">+$${parseFloat(payout.amount).toFixed(2)}</div>
+            <div class="earning-fee">After ${platFee}% fee · <span style="color:${payout.status==='paid'?'#4ade80':'#fbbf24'}">${payout.status}</span></div>
+          </div>
+        </div>`).join('')}</div>`;
+    }
+  } catch(e) {
+    console.error('Failed to load photographer data:', e);
+  }
+}
+
+function renderUDCoachPanel() {
+  const panel = document.getElementById('ud-panel-coach');
+  if (!currentPhotographer?.is_coach) { panel.innerHTML = `<div class="empty-state"><p>Coach mode not enabled.</p></div>`; return; }
+
+  panel.innerHTML = `
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <h2 style="margin:0">🏄 My Lesson Slots</h2>
+        <button class="nav-btn" onclick="openAddLessonModal()">+ Add Lesson Slot</button>
+      </div>
+      <div id="ud-coach-lessons-list"><div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div></div>
+    </div>`;
+
+  loadUDCoachLessons();
+}
+
+async function loadUDCoachLessons() {
+  const cont = document.getElementById('ud-coach-lessons-list');
+  if (!cont) return;
+  try {
+    const lessons = await sbFetch(`lessons?coach_id=eq.${currentPhotographer.id}&order=date.asc,time_slot.asc`, { headers: { 'Prefer': '' } });
+    if (!lessons.length) {
+      cont.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">📅</div><h3>No lesson slots yet</h3><p>Add your first available slot to start accepting bookings.</p></div>`;
+      return;
+    }
+    cont.innerHTML = `<div class="earnings-list">${lessons.map(l => {
+      const statusColor = l.status === 'available' ? '#4ade80' : l.status === 'booked' ? '#fbbf24' : '#f87171';
+      return `<div class="earning-item">
+        <div>
+          <div class="earning-name">📅 ${new Date(l.date + 'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} · ${l.time_slot}</div>
+          <div class="earning-meta">${l.duration_minutes} min · ${l.skill_level} · ${l.location}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="earning-amount">$${parseFloat(l.price).toFixed(2)}</div>
+          <div class="earning-fee"><span style="color:${statusColor}">${l.status}</span> · <span style="color:#f87171;cursor:pointer" onclick="deleteLesson('${l.id}')">Delete</span></div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    cont.innerHTML = `<p style="color:var(--gray)">Failed to load lessons.</p>`;
+  }
+}
+
+function unifiedLogout() {
+  if (currentSurfer) { currentSurfer = null; surferFavourites = []; sessionStorage.removeItem('ws_surfer'); }
+  if (currentPhotographer) { currentPhotographer = null; sessionStorage.removeItem('ws_photographer'); }
+  document.getElementById('nav-login-btn').style.display = 'flex';
+  document.getElementById('nav-dash-btn').style.display = 'none';
+  document.getElementById('nav-surfer-dash-btn').style.display = 'none';
+  document.getElementById('nav-photog-dash-btn').style.display = 'none';
+  showPage('public');
+  toast('Signed out', 'info');
+}
 
 // ── COACH: STATE ────────────────────────────────────────────────────────
 let allCoaches = [];
