@@ -875,6 +875,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
 <div class="dropdown-menu" id="dropdown-menu">
   <button class="dropdown-item" onclick="navTo('sessions')">Sessions Gallery</button>
   <button class="dropdown-item" onclick="navTo('photographers')">Our Photographers</button>
+  <button class="dropdown-item" onclick="navTo('coaches')">Find a Coach 🏄</button>
   <button class="dropdown-item" onclick="navTo('apply')">Join as Photographer</button>
   <button class="dropdown-item" onclick="showPage('about')">About Us</button>
   <button class="dropdown-item highlight" id="photog-dash-link" style="display:none" onclick="navTo('photog-dash')">My Dashboard</button>
@@ -1468,6 +1469,7 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
     <div class="surfer-body">
       <div class="surfer-tabs">
         <button class="surfer-tab active" onclick="switchSurferTab('purchases')" id="tab-purchases">🔓 My Sessions</button>
+        <button class="surfer-tab" onclick="switchSurferTab('lessons')" id="tab-lessons">🏄 My Lessons</button>
         <button class="surfer-tab" onclick="switchSurferTab('favourites')" id="tab-favourites">❤️ Favourites</button>
         <button class="surfer-tab" onclick="switchSurferTab('history')" id="tab-history">📋 Purchase History</button>
       </div>
@@ -1476,6 +1478,13 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
       <div id="surfer-tab-purchases">
         <div id="sd-purchases-content">
           <div class="loading-state"><div class="loading-spinner"></div><p>Loading your sessions...</p></div>
+        </div>
+      </div>
+
+      <!-- LESSONS TAB -->
+      <div id="surfer-tab-lessons" style="display:none">
+        <div id="sd-lessons-content">
+          <div class="loading-state"><div class="loading-spinner"></div><p>Loading your lessons...</p></div>
         </div>
       </div>
 
@@ -1804,6 +1813,17 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
             </div>
           </div>
 
+          <!-- LESSONS SECTION (only shown if coach) -->
+          <div class="admin-card" id="pd-lessons-section" style="display:none;margin-bottom:24px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+              <h2 style="margin-bottom:0">🏄 My Lessons</h2>
+              <button class="nav-btn" onclick="openAddLessonModal()" style="padding:9px 18px;font-size:13px">+ Add Lesson Slot</button>
+            </div>
+            <div id="pd-lessons-list">
+              <div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div>
+            </div>
+          </div>
+
           <!-- EARNINGS SECTION -->
           <div class="admin-card" id="pd-earnings-section">
             <h2>💰 Recent Earnings</h2>
@@ -1829,6 +1849,14 @@ footer{border-top:1px solid var(--border);padding:36px 48px;
               <div class="qr-card-sub" id="pd-stripe-status">Connect your bank account to receive payouts automatically.</div>
               <button id="pd-stripe-btn" class="qr-download-btn" style="background:linear-gradient(135deg,#635bff,#7c3aed);border:none;color:white;font-weight:700;width:100%;margin-top:8px" onclick="connectStripe()">
                 Connect Bank Account →
+              </button>
+            </div>
+            <!-- COACH TOGGLE -->
+            <div class="qr-card" id="pd-coach-card" style="margin-top:12px">
+              <div class="qr-card-title">🏄 Surf Coach</div>
+              <div class="qr-card-sub" id="pd-coach-status-text">Offer surf lessons directly through WaveShots.</div>
+              <button id="pd-coach-toggle-btn" class="qr-download-btn" style="margin-top:8px;background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(14,116,144,0.15));border:1px solid rgba(6,182,212,0.4);color:var(--cyan)" onclick="toggleCoachStatus()">
+                Enable Coach Mode
               </button>
             </div>
             <!-- QR CODE -->
@@ -2061,6 +2089,8 @@ function showPage(name) {
   if (name === "public") loadPublicGallery();
   if (name === "sessions") loadSessionsPage();
   if (name === "photographers") loadPhotographersPage();
+  if (name === "coaches") loadCoachesPage();
+  if (name === "coaches") loadCoachesPage();
   if (name === "photog-dash") loadPhotogDash();
   if (name === "photog-upload") updateStripeConnectUI();
   if (name === "surfer-dash") loadSurferDash();
@@ -3168,6 +3198,7 @@ async function loadPhotogDash() {
   document.getElementById("pd-profile-bio").textContent = p.bio || "";
   const platformFee = p.platform_fee != null ? p.platform_fee : 20;
   const photographerPct = 100 - platformFee;
+  updateCoachUI();
   document.getElementById("pd-fee-pct").textContent = `${photographerPct}%`;
   document.getElementById("pd-header-status").textContent = `✅ Approved Photographer · ${photographerPct}% earnings`;
   document.getElementById("pd-locs").innerHTML = (p.locations || []).map(l =>
@@ -3818,11 +3849,12 @@ async function loadSurferDash() {
 }
 
 function switchSurferTab(tab) {
-  ['purchases','favourites','history'].forEach(t => {
+  ['purchases','lessons','favourites','history'].forEach(t => {
     document.getElementById(`surfer-tab-${t}`).style.display = t === tab ? 'block' : 'none';
     document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
   });
   if (tab === 'purchases') loadSurferPurchases();
+  if (tab === 'lessons') loadSurferLessonBookings();
   if (tab === 'favourites') renderSurferFavourites();
   if (tab === 'history') loadSurferHistory();
 }
@@ -5302,7 +5334,370 @@ window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
   bg.style.transform = `translateY(${scrollY * 0.35}px)`;
 }, { passive: true });
+
+// ── COACH: STATE ────────────────────────────────────────────────────────
+let allCoaches = [];
+let currentBookingLesson = null;
+
+// ── COACH: LOAD COACHES PAGE ────────────────────────────────────────────
+async function loadCoachesPage() {
+  const grid = document.getElementById('coaches-grid');
+  grid.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading coaches...</p></div>`;
+  try {
+    const coaches = await sbFetch(`photographers?is_coach=eq.true&select=*`, { headers: { 'Prefer': '' } });
+    allCoaches = coaches;
+    renderCoaches(coaches);
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🏄</div><h3>No coaches yet</h3><p>Check back soon!</p></div>`;
+  }
+}
+
+function renderCoaches(coaches) {
+  const grid = document.getElementById('coaches-grid');
+  if (!coaches.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🏄</div><h3>No coaches found</h3><p>Try adjusting your filters.</p></div>`;
+    return;
+  }
+  grid.innerHTML = coaches.map(c => `
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,border-color .2s" onmouseover="this.style.borderColor='rgba(6,182,212,0.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="height:120px;background:linear-gradient(135deg,rgba(6,182,212,0.15),rgba(14,116,144,0.1));display:flex;align-items:center;justify-content:center;font-size:48px">🏄</div>
+      <div style="padding:20px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          ${c.profile_photo_url ? `<img src="${c.profile_photo_url}" style="width:44px;height:44px;border-radius:50%;object-fit:cover"/>` : `<div style="width:44px;height:44px;border-radius:50%;background:rgba(6,182,212,0.2);display:flex;align-items:center;justify-content:center;font-size:20px">🏄</div>`}
+          <div>
+            <div style="font-weight:700;font-size:15px">${c.full_name}</div>
+            <div style="font-size:12px;color:var(--cyan)">${(c.locations||[]).join(' · ') || 'Location TBD'}</div>
+          </div>
+        </div>
+        ${c.coach_bio ? `<p style="font-size:13px;color:var(--gray);margin-bottom:12px;line-height:1.5">${c.coach_bio}</p>` : ''}
+        ${c.coach_specialties?.length ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">${c.coach_specialties.map(s=>`<span style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan);border-radius:20px;padding:3px 10px;font-size:11px">${s}</span>`).join('')}</div>` : ''}
+        ${c.coach_experience_years ? `<div style="font-size:12px;color:var(--gray);margin-bottom:12px">⏱ ${c.coach_experience_years} years experience</div>` : ''}
+        <button onclick="viewCoachLessons('${c.id}','${c.full_name}')" style="width:100%;padding:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">View Available Lessons →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCoaches() {
+  const q = document.getElementById('coach-search').value.toLowerCase();
+  const level = document.getElementById('coach-level-filter').value;
+  let filtered = allCoaches;
+  if (q) filtered = filtered.filter(c => c.full_name?.toLowerCase().includes(q) || (c.locations||[]).join(' ').toLowerCase().includes(q));
+  renderCoaches(filtered);
+}
+
+// ── COACH: VIEW LESSONS FOR A COACH ─────────────────────────────────────
+async function viewCoachLessons(coachId, coachName) {
+  const grid = document.getElementById('coaches-grid');
+  grid.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading lessons...</p></div>`;
+  try {
+    const lessons = await sbFetch(`lessons?coach_id=eq.${coachId}&status=eq.available&order=date.asc,time_slot.asc`, { headers: { 'Prefer': '' } });
+    if (!lessons.length) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1">
+          <button onclick="loadCoachesPage()" style="background:none;border:none;color:var(--cyan);cursor:pointer;font-size:14px;margin-bottom:20px;font-family:inherit">← Back to coaches</button>
+          <div class="empty-state"><div class="empty-icon">📅</div><h3>No available lessons</h3><p>${coachName} hasn't posted any open slots yet.</p></div>
+        </div>`;
+      return;
+    }
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;margin-bottom:8px">
+        <button onclick="loadCoachesPage()" style="background:none;border:none;color:var(--cyan);cursor:pointer;font-size:14px;font-family:inherit">← Back to coaches</button>
+        <h2 style="margin-top:8px">Lessons with ${coachName}</h2>
+      </div>
+      ${lessons.map(l => `
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-weight:700;font-size:16px;margin-bottom:4px">📅 ${new Date(l.date + 'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+              <div style="color:var(--gray);font-size:13px">⏰ ${l.time_slot} · ${l.duration_minutes} min</div>
+            </div>
+            <div style="font-size:22px;font-weight:800;color:var(--cyan)">$${parseFloat(l.price).toFixed(2)}</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <span style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.3);color:var(--cyan);border-radius:20px;padding:3px 10px;font-size:12px">${l.skill_level}</span>
+            <span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--gray);border-radius:20px;padding:3px 10px;font-size:12px">📍 ${l.location}</span>
+          </div>
+          <button onclick="openBookLessonModal(${JSON.stringify(l).replace(/"/g,'&quot;')},'${coachName}')" style="width:100%;padding:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">Book This Lesson →</button>
+        </div>
+      `).join('')}`;
+  } catch(e) {
+    grid.innerHTML = `<div style="grid-column:1/-1"><button onclick="loadCoachesPage()" style="background:none;border:none;color:var(--cyan);cursor:pointer;font-size:14px;font-family:inherit">← Back</button><p style="color:var(--gray);margin-top:16px">Failed to load lessons.</p></div>`;
+  }
+}
+
+// ── COACH: BOOK LESSON MODAL ────────────────────────────────────────────
+function openBookLessonModal(lesson, coachName) {
+  if (!currentSurfer) { showPage('surfer-auth'); toast('Please log in to book a lesson', 'error'); return; }
+  currentBookingLesson = lesson;
+  document.getElementById('book-lesson-details').innerHTML = `
+    <div style="background:var(--deep);border-radius:12px;padding:16px;margin-bottom:4px">
+      <div style="font-weight:700;margin-bottom:8px">📅 ${new Date(lesson.date + 'T00:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+      <div style="margin-bottom:4px">⏰ ${lesson.time_slot} · ${lesson.duration_minutes} min</div>
+      <div style="margin-bottom:4px">📍 ${lesson.location}</div>
+      <div style="margin-bottom:4px">🎯 Level: ${lesson.skill_level}</div>
+      <div style="margin-bottom:4px">👤 Coach: ${coachName}</div>
+      <div style="font-size:20px;font-weight:800;color:var(--cyan);margin-top:12px">Total: $${parseFloat(lesson.price).toFixed(2)}</div>
+    </div>`;
+  const modal = document.getElementById('book-lesson-modal');
+  modal.style.display = 'flex';
+}
+
+function closeBookLessonModal() {
+  document.getElementById('book-lesson-modal').style.display = 'none';
+  currentBookingLesson = null;
+}
+
+async function confirmBookLesson() {
+  if (!currentBookingLesson || !currentSurfer) return;
+  const btn = document.getElementById('book-lesson-confirm-btn');
+  btn.disabled = true; btn.textContent = 'Processing...';
+  try {
+    // Get coach stripe account
+    const coaches = await sbFetch(`photographers?id=eq.${currentBookingLesson.coach_id}&select=stripe_account_id,platform_fee`, { headers: { 'Prefer': '' } });
+    const coach = coaches[0];
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: currentBookingLesson.id,
+        sessionTitle: `Surf Lesson · ${currentBookingLesson.date} ${currentBookingLesson.time_slot}`,
+        price: currentBookingLesson.price,
+        photographerStripeId: coach?.stripe_account_id,
+        surferEmail: currentSurfer?.email || '',
+        platformFee: coach?.platform_fee ?? 20,
+        lessonId: currentBookingLesson.id,
+        isLesson: true,
+      }),
+    });
+    const data = await res.json();
+    if (data.url) { window.location.href = data.url; }
+    else throw new Error(data.error || 'Checkout failed');
+  } catch(e) {
+    toast('Failed to start booking: ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = 'Book & Pay →';
+  }
+}
+
+// ── COACH: SURFER LESSON BOOKINGS ───────────────────────────────────────
+async function loadSurferLessonBookings() {
+  const cont = document.getElementById('sd-lessons-content');
+  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading your lessons...</p></div>`;
+  try {
+    const bookings = await sbFetch(`bookings?surfer_id=eq.${currentSurfer.id}&select=*,lessons(*),photographers(full_name)&order=created_at.desc`, { headers: { 'Prefer': '' } });
+    if (!bookings.length) {
+      cont.innerHTML = `<div class="empty-state"><div class="empty-icon">🏄</div><h3>No lessons booked yet</h3><p>Find a coach and book your first lesson.</p><button class="btn-primary" onclick="showPage('coaches')" style="margin-top:20px;padding:12px 28px;font-size:14px">Find a Coach</button></div>`;
+      return;
+    }
+    cont.innerHTML = `<div class="earnings-list">${bookings.map(b => {
+      const l = b.lessons;
+      const coachName = b.photographers?.full_name || 'Coach';
+      const statusColor = b.status === 'confirmed' ? '#4ade80' : b.status === 'cancelled' ? '#f87171' : '#fbbf24';
+      return `<div class="earning-item">
+        <div>
+          <div class="earning-name">🏄 Lesson with ${coachName}</div>
+          <div class="earning-meta">${l ? `${l.date} · ${l.time_slot} · ${l.location}` : ''} · ${new Date(b.created_at).toLocaleDateString()}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="earning-amount">$${parseFloat(b.amount||0).toFixed(2)}</div>
+          <div class="earning-fee"><span style="color:${statusColor}">${b.status}</span></div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    cont.innerHTML = `<div class="empty-state"><p>Failed to load bookings.</p></div>`;
+  }
+}
+
+// ── COACH: PHOTOGRAPHER DASHBOARD ───────────────────────────────────────
+async function toggleCoachStatus() {
+  if (!currentPhotographer) return;
+  const isCoach = currentPhotographer.is_coach;
+  const newStatus = !isCoach;
+  try {
+    await sbFetch(`photographers?id=eq.${currentPhotographer.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Prefer': '' },
+      body: JSON.stringify({ is_coach: newStatus })
+    });
+    currentPhotographer.is_coach = newStatus;
+    updateCoachUI();
+    toast(newStatus ? '🏄 Coach mode enabled!' : 'Coach mode disabled', 'success');
+  } catch(e) {
+    toast('Failed to update coach status', 'error');
+  }
+}
+
+function updateCoachUI() {
+  const isCoach = currentPhotographer?.is_coach;
+  const btn = document.getElementById('pd-coach-toggle-btn');
+  const statusText = document.getElementById('pd-coach-status-text');
+  const lessonsSection = document.getElementById('pd-lessons-section');
+  if (btn) btn.textContent = isCoach ? '✅ Coach Mode Active — Disable' : 'Enable Coach Mode';
+  if (statusText) statusText.textContent = isCoach ? 'You are listed as a surf coach. Surfers can book lessons with you.' : 'Offer surf lessons directly through WaveShots.';
+  if (lessonsSection) lessonsSection.style.display = isCoach ? 'block' : 'none';
+  if (isCoach) loadCoachLessons();
+}
+
+async function loadCoachLessons() {
+  const cont = document.getElementById('pd-lessons-list');
+  if (!cont) return;
+  cont.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><p>Loading...</p></div>`;
+  try {
+    const lessons = await sbFetch(`lessons?coach_id=eq.${currentPhotographer.id}&order=date.asc,time_slot.asc`, { headers: { 'Prefer': '' } });
+    if (!lessons.length) {
+      cont.innerHTML = `<div class="empty-state" style="padding:32px 0"><div class="empty-icon">📅</div><h3>No lesson slots yet</h3><p>Add your first available slot.</p></div>`;
+      return;
+    }
+    cont.innerHTML = `<div class="earnings-list">${lessons.map(l => {
+      const statusColor = l.status === 'available' ? '#4ade80' : l.status === 'booked' ? '#fbbf24' : '#f87171';
+      return `<div class="earning-item">
+        <div>
+          <div class="earning-name">📅 ${new Date(l.date + 'T00:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} · ${l.time_slot}</div>
+          <div class="earning-meta">${l.duration_minutes} min · ${l.skill_level} · ${l.location}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="earning-amount">$${parseFloat(l.price).toFixed(2)}</div>
+          <div class="earning-fee"><span style="color:${statusColor}">${l.status}</span> · <span style="color:#f87171;cursor:pointer" onclick="deleteLesson('${l.id}')">Delete</span></div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    cont.innerHTML = `<p style="color:var(--gray);padding:16px">Failed to load lessons.</p>`;
+  }
+}
+
+function openAddLessonModal() {
+  document.getElementById('add-lesson-modal').style.display = 'flex';
+}
+
+function closeAddLessonModal() {
+  document.getElementById('add-lesson-modal').style.display = 'none';
+  ['lesson-date','lesson-time','lesson-location','lesson-price'].forEach(id => document.getElementById(id).value = '');
+}
+
+async function saveLesson() {
+  const date = document.getElementById('lesson-date').value;
+  const time = document.getElementById('lesson-time').value;
+  const duration = parseInt(document.getElementById('lesson-duration').value);
+  const skill = document.getElementById('lesson-skill').value;
+  const location = document.getElementById('lesson-location').value.trim();
+  const price = parseFloat(document.getElementById('lesson-price').value);
+  if (!date || !time || !location || !price) { toast('Please fill in all fields', 'error'); return; }
+  try {
+    await sbFetch('lessons', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ coach_id: currentPhotographer.id, date, time_slot: time, duration_minutes: duration, skill_level: skill, location, price })
+    });
+    closeAddLessonModal();
+    loadCoachLessons();
+    toast('✅ Lesson slot added!', 'success');
+  } catch(e) {
+    toast('Failed to save lesson: ' + e.message, 'error');
+  }
+}
+
+async function deleteLesson(lessonId) {
+  if (!confirm('Delete this lesson slot?')) return;
+  try {
+    await sbFetch(`lessons?id=eq.${lessonId}`, { method: 'DELETE', headers: { 'Prefer': '' } });
+    loadCoachLessons();
+    toast('Lesson slot deleted', 'success');
+  } catch(e) {
+    toast('Failed to delete lesson', 'error');
+  }
+}
 </script>
+
+<!-- ========== FIND A COACH PAGE ========== -->
+<div id="page-coaches" class="page">
+  <div class="pg-hero">
+    <div class="pg-hero-content">
+      <div class="hero-badge">🏄 Surf Coaching</div>
+      <h1>Find your<br/><em>surf coach</em></h1>
+      <p>Book a lesson with a verified WaveShots coach. Beginners to advanced — find the right match for your level.</p>
+    </div>
+  </div>
+  <div style="background:var(--deep);border-bottom:1px solid var(--border);padding:20px 48px;position:sticky;top:52px;z-index:50">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+      <div style="position:relative;flex:1;min-width:200px">
+        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;opacity:.4" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="coach-search" placeholder="Search by name or location…" oninput="filterCoaches()"
+          style="width:100%;padding:10px 14px 10px 40px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;font-family:inherit"/>
+      </div>
+      <select id="coach-level-filter" onchange="filterCoaches()"
+        style="padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:100px;color:white;font-size:14px;outline:none;cursor:pointer;font-family:inherit">
+        <option value="">All Levels</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
+    </div>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding:40px 24px">
+    <div id="coaches-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
+      <div class="loading-state"><div class="loading-spinner"></div><p>Loading coaches...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ADD LESSON MODAL ========== -->
+<div id="add-lesson-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:480px;width:90%;max-height:90vh;overflow-y:auto">
+    <h2 style="margin-bottom:24px">+ Add Lesson Slot</h2>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="font-size:13px;color:var(--gray);display:block;margin-bottom:6px">Date</label>
+        <input type="date" id="lesson-date" style="width:100%;padding:12px;background:var(--deep);border:1px solid var(--border);border-radius:10px;color:white;font-size:14px;font-family:inherit"/>
+      </div>
+      <div>
+        <label style="font-size:13px;color:var(--gray);display:block;margin-bottom:6px">Time</label>
+        <input type="time" id="lesson-time" style="width:100%;padding:12px;background:var(--deep);border:1px solid var(--border);border-radius:10px;color:white;font-size:14px;font-family:inherit"/>
+      </div>
+      <div>
+        <label style="font-size:13px;color:var(--gray);display:block;margin-bottom:6px">Duration</label>
+        <select id="lesson-duration" style="width:100%;padding:12px;background:var(--deep);border:1px solid var(--border);border-radius:10px;color:white;font-size:14px;font-family:inherit">
+          <option value="60">1 hour</option>
+          <option value="90">1.5 hours</option>
+          <option value="120">2 hours</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:13px;color:var(--gray);display:block;margin-bottom:6px">Skill Level</label>
+        <select id="lesson-skill" style="width:100%;padding:12px;background:var(--deep);border:1px solid var(--border);border-radius:10px;color:white;font-size:14px;font-family:inherit">
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:13px;color:var(--gray);display:block;margin-bottom:6px">Location</label>
+        <input type="text" id="lesson-location" placeholder="e.g. Rockaway Beach, NY" style="width:100%;padding:12px;background:var(--deep);border:1px solid var(--border);border-radius:10px;color:white;font-size:14px;font-family:inherit"/>
+      </div>
+      <div>
+        <label style="font-size:13px;color:var(--gray);display:block;margin-bottom:6px">Price ($)</label>
+        <input type="number" id="lesson-price" placeholder="75" min="1" style="width:100%;padding:12px;background:var(--deep);border:1px solid var(--border);border-radius:10px;color:white;font-size:14px;font-family:inherit"/>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button onclick="closeAddLessonModal()" style="flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--gray);font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+        <button onclick="saveLesson()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Save Slot</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== BOOK LESSON MODAL ========== -->
+<div id="book-lesson-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:480px;width:90%">
+    <h2 style="margin-bottom:8px">Book a Lesson</h2>
+    <div id="book-lesson-details" style="margin-bottom:24px;color:var(--gray);font-size:14px;line-height:1.6"></div>
+    <div style="display:flex;gap:12px">
+      <button onclick="closeBookLessonModal()" style="flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--gray);font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+      <button id="book-lesson-confirm-btn" onclick="confirmBookLesson()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Book & Pay →</button>
+    </div>
+  </div>
+</div>
 
 <!-- ========== BUSINESS CARD MODAL ========== -->
 <div id="bcard-modal" style="display:none" class="bcard-modal-overlay" onclick="if(event.target===this)closeBusinessCardModal()">
