@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { sessionId, sessionTitle, price, photographerStripeId, surferEmail, platformFee } = req.body;
+    const { sessionId, sessionTitle, price, photographerStripeId, surferEmail, platformFee, lessonId, isLesson } = req.body;
 
     if (!sessionId || !price) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -65,6 +65,8 @@ module.exports = async (req, res) => {
       metadata: {
         sessionId,
         surferEmail: surferEmail || "",
+        isLesson: isLesson ? "true" : "false",
+        platformFee: String(platformFee != null ? platformFee : 20),
       },
       success_url: `https://waveshots.vercel.app/?payment=success&session_id=${sessionId}`,
       cancel_url: `https://waveshots.vercel.app/?payment=cancelled`,
